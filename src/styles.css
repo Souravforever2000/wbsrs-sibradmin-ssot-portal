@@ -1,4 +1,21 @@
 @import './app/assets/assets.css';
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,300,0,0&display=swap');
 
 html, body { min-height: 100%; }
 body { margin: 0; font-family: Inter, 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased; background:#f4f7fb; }
+.material-symbols-rounded { font-family:'Material Symbols Rounded'; font-weight:normal; font-style:normal; font-size:20px; line-height:1; letter-spacing:normal; text-transform:none; display:inline-block; white-space:nowrap; word-wrap:normal; direction:ltr; -webkit-font-feature-settings:'liga'; -webkit-font-smoothing:antialiased; font-feature-settings:'liga'; font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24; }
+
+/* Shared surface language: crisp borders with a restrained blue elevation. */
+.panel, .filters-panel, .kpi-card, .chart-card, .chart-panel, .table-card, .insight, .method-card, .summary-strip, .workspace-grid > article, .module-landing, .auth-card {
+  box-shadow: 0 10px 26px rgba(38, 91, 163, .075), 0 2px 6px rgba(24, 52, 91, .045) !important;
+  transition: box-shadow .22s ease, transform .22s ease, border-color .22s ease;
+}
+.panel:hover, .filters-panel:hover, .chart-card:hover, .chart-panel:hover, .table-card:hover, .method-card:hover, .summary-strip:hover, .module-landing:hover, .auth-card:hover {
+  border-color: #bfd4f2;
+  box-shadow: 0 16px 34px rgba(38, 91, 163, .12), 0 3px 9px rgba(24, 52, 91, .06) !important;
+}
+.material-symbols-rounded { vertical-align: middle; }
+button, a, select, input { -webkit-tap-highlight-color: transparent; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
+}

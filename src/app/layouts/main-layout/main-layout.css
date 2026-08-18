@@ -1,1 +1,5 @@
-:host { display:block; min-height:100vh; }.layout-body { display:flex; min-height:calc(100vh - 72px); }.layout-content { min-width:0; flex:1; display:flex; flex-direction:column; }.layout-content main { flex:1; background:#f4f7fb; }
+:host { display:block; height:100dvh; min-height:100vh; overflow:hidden; }
+.layout { height:100%; min-height:0; display:flex; flex-direction:column; overflow:hidden; background:#f4f7fb; }
+.layout-body { display:flex; flex:1 1 auto; min-height:0; overflow:hidden; }
+.layout-content { min-width:0; min-height:0; flex:1 1 auto; display:flex; flex-direction:column; overflow:hidden; }
+.layout-content main { min-width:0; min-height:0; flex:1 1 auto; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; background:#f4f7fb; }

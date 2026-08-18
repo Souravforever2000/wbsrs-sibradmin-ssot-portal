@@ -2,6 +2,6 @@
 .filters-panel { display:flex; align-items:flex-end; gap:12px; padding:13px 15px; border:1px solid #d9e4f1; border-radius:9px; background:#fff; box-shadow:0 2px 8px rgba(28,65,114,.04); }
 .filter-heading { display:flex; align-items:center; gap:7px; min-width:130px; color:#344967; font-size:11px; }.filter-heading small { display:block; margin-left:auto; color:#98a4b4; font-size:8px; font-weight:400; }.filter-icon { color:#286df0; font-size:18px; }
 label { display:flex; flex:1; min-width:120px; flex-direction:column; gap:5px; } label span { color:#73829a; font-size:9px; font-weight:700; } select { width:100%; height:32px; padding:0 8px; border:1px solid #cad6e7; border-radius:5px; color:#2b3d5a; background:#fff; font-size:10px; }
-.reset-button { height:32px; padding:0 12px; border:1px solid #cad7e6; border-radius:5px; color:#48607c; background:#fff; font-size:10px; font-weight:700; white-space:nowrap; }
+.reset-button { height:32px; display:inline-flex; align-items:center; gap:4px; padding:0 12px; border:1px solid #cad7e6; border-radius:5px; color:#48607c; background:#fff; font-size:10px; font-weight:700; white-space:nowrap; }.reset-button .material-symbols-rounded { font-size:15px; }
 @media (max-width:900px) { .filters-panel { display:grid; grid-template-columns:repeat(3,1fr); }.filter-heading { grid-column:1/-1; }.department-filter { grid-column:span 2; } }
 @media (max-width:600px) { .filters-panel { grid-template-columns:1fr 1fr; }.department-filter { grid-column:auto; } }

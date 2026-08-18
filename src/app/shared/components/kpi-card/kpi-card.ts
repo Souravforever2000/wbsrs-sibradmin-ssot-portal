@@ -12,5 +12,5 @@ export class KpiCardComponent {
   readonly detail = input<string>('');
   readonly trend = input<string>('');
   readonly tone = input<'blue' | 'green' | 'amber' | 'red'>('blue');
-  readonly icon = input('◈');
+  readonly icon = input('insights');
 }

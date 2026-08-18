@@ -5,9 +5,9 @@
     <span class="version">v2.5 Match &amp; Fuzzy Engine</span>
   </a>
   <div class="top-actions">
-    <button type="button" class="regenerate" [disabled]="regenerating()" (click)="regenerateEngineData()"><span [class.spin]="regenerating()">⟳</span> {{ regenerating() ? 'Refreshing…' : 'Regenerate Engine Data' }}</button>
+    <button type="button" class="regenerate" [disabled]="regenerating()" (click)="regenerateEngineData()"><span class="material-symbols-rounded" [class.spin]="regenerating()">sync</span> {{ regenerating() ? 'Refreshing…' : 'Regenerate Engine Data' }}</button>
     <div class="schema"><span>DB Schema: <b>sibradmin</b></span><small>Master &amp; Cross-Match DB</small></div>
-    <button type="button" class="notification" aria-label="Notifications"><span class="notification-dot"></span>♢</button>
+    <button type="button" class="notification" aria-label="Notifications"><span class="notification-dot"></span><span class="material-symbols-rounded">notifications</span></button>
     <div class="avatar" aria-label="Signed in user">AS</div>
   </div>
 </header>
