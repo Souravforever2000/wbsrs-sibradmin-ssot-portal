@@ -1,0 +1,5 @@
+<article class="kpi-card" [class]="'kpi-card ' + tone()">
+  <div class="kpi-label"><span>{{ label() }}</span><span class="kpi-icon">{{ icon() }}</span></div>
+  <strong>{{ value() }}</strong>
+  <div class="kpi-meta"><span>{{ detail() }}</span><b>{{ trend() }}</b></div>
+</article>

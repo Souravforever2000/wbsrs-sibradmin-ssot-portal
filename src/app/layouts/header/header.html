@@ -1,1 +1,13 @@
-<p>header works!</p>
+<header class="topbar">
+  <a class="brand" routerLink="/" aria-label="WBSSOT home">
+    <img src="assets/brand/logo.svg" alt="WBSSOT" class="brand-logo" />
+    <span class="brand-copy"><strong>SIBRADADMIN SRS Analytics</strong><small>Social Registry Data Matching &amp; Scheme Entitlement Audit System</small></span>
+    <span class="version">v2.5 Match &amp; Fuzzy Engine</span>
+  </a>
+  <div class="top-actions">
+    <button type="button" class="regenerate" [disabled]="regenerating()" (click)="regenerateEngineData()"><span [class.spin]="regenerating()">⟳</span> {{ regenerating() ? 'Refreshing…' : 'Regenerate Engine Data' }}</button>
+    <div class="schema"><span>DB Schema: <b>sibradmin</b></span><small>Master &amp; Cross-Match DB</small></div>
+    <button type="button" class="notification" aria-label="Notifications"><span class="notification-dot"></span>♢</button>
+    <div class="avatar" aria-label="Signed in user">AS</div>
+  </div>
+</header>

@@ -1,0 +1,1 @@
+:host { display:block; }.footer { display:flex; align-items:center; justify-content:space-between; gap:15px; min-height:42px; padding:0 28px; border-top:1px solid #dfe7f1; color:#91a0b3; background:#f8faff; font-size:8px; }.footer b { color:#527eb9; }@media (max-width:600px) { .footer { display:block; padding:9px 14px; line-height:1.7; } }

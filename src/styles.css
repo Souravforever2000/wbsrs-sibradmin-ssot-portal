@@ -1,1 +1,4 @@
-/* You can add global styles to this file, and also import other style files */
+@import './app/assets/assets.css';
+
+html, body { min-height: 100%; }
+body { margin: 0; font-family: Inter, 'Segoe UI', Arial, sans-serif; -webkit-font-smoothing: antialiased; background:#f4f7fb; }

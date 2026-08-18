@@ -1,12 +1,23 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { Component, computed, inject, signal } from '@angular/core';
+import { NavigationEnd, Router, RouterOutlet } from '@angular/router';
+import { filter } from 'rxjs';
+import { Header } from './layouts/header/header';
+import { Sidebar } from './layouts/sidebar/sidebar';
+import { Navbar } from './layouts/navbar/navbar';
+import { Footer } from './layouts/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet],
+  imports: [RouterOutlet, Header, Sidebar, Navbar, Footer],
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrl: './app.css',
 })
 export class App {
-  protected readonly title = signal('wbsrs-sibradmin-ssot-portal');
+  private readonly router = inject(Router);
+  readonly routeUrl = signal('/');
+  readonly isPublicRoute = computed(() => this.routeUrl() === '/login');
+
+  constructor() {
+    this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => this.routeUrl.set(event.urlAfterRedirects));
+  }
 }

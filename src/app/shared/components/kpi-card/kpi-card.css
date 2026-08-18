@@ -1,0 +1,7 @@
+:host { display: block; }
+.kpi-card { min-height: 112px; padding: 15px; border: 1px solid #d9e3ef; border-radius: 9px; background: #fff; box-shadow: 0 3px 10px rgba(35,75,125,.05); transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease; }.kpi-card:hover { transform:translateY(-4px); border-color:#a9c7f4; box-shadow:0 14px 28px rgba(35,75,125,.12); }
+.kpi-label { display:flex; align-items:center; justify-content:space-between; color:#687b96; font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:.04em; }
+.kpi-icon { width:28px; height:28px; display:grid; place-items:center; border-radius:8px; background:#e4edff; color:#2169e9; font-size:15px; }
+.kpi-card.green .kpi-icon { background:#dff8ed; color:#078e6b; }.kpi-card.amber .kpi-icon { background:#fff2d5; color:#ca7b00; }.kpi-card.red .kpi-icon { background:#ffe3e7; color:#e43b59; }
+.kpi-card > strong { display:block; margin-top:9px; color:#182941; font-size:26px; letter-spacing:-.04em; }.kpi-card.green > strong { color:#079c73; }.kpi-card.red > strong { color:#e23a56; }
+.kpi-meta { display:flex; justify-content:space-between; gap:8px; margin-top:7px; color:#8997aa; font-size:9px; }.kpi-meta b { color:#0b9e76; font-weight:800; }.kpi-card.red .kpi-meta b { color:#e44d64; }

@@ -1,0 +1,13 @@
+<app-page-heading title="Executive Overview" description="A state-wide view of citizen coverage, scheme delivery and data quality."></app-page-heading>
+<app-global-filters></app-global-filters>
+@if (summary$ | async; as summary) {
+  <section class="kpi-grid">
+    <app-kpi-card label="Total citizens" [value]="(summary.totalCitizens / 10000000 | number:'1.1-1') + ' Cr'" detail="Master registry" trend="+4.2% YoY" icon="♟"></app-kpi-card>
+    <app-kpi-card label="Active beneficiaries" [value]="(summary.activeBeneficiaries / 10000000 | number:'1.1-1') + ' Cr'" detail="Current status" trend="+8.4% YoY" tone="green" icon="✓"></app-kpi-card>
+    <app-kpi-card label="Scheme enrollments" [value]="(summary.schemeEnrollments / 10000000 | number:'1.1-1') + ' Cr'" detail="Across 31 schemes" trend="+12.6%" tone="blue" icon="⌁"></app-kpi-card>
+    <app-kpi-card label="Welfare gap signal" value="28.3%" detail="Measured analytical gap" trend="Requires review" tone="red" icon="!"></app-kpi-card>
+  </section>
+}
+<section class="insight-section"><div class="section-title"><div><span>INTELLIGENCE FEED</span><h2>Key highlights</h2></div><small>Generated from current aggregate metrics</small></div><div class="insight-grid">@for (insight of (insights$ | async); track insight.title) { <article class="insight" [class]="'insight ' + insight.severity"><strong>{{ insight.title }}</strong><p>{{ insight.text }}</p><small>Open analytical detail →</small></article> }</div></section>
+<app-dashboard-charts></app-dashboard-charts>
+<section class="table-card"><div class="card-title"><div><h2>District performance snapshot</h2><p>Top and bottom coverage signals from the latest materialized view</p></div><button class="outline-button">Open district analytics →</button></div><div class="table-wrap"><table><thead><tr><th>Rank</th><th>District</th><th>Beneficiaries</th><th>Coverage</th><th>YoY growth</th><th>Signal</th></tr></thead><tbody>@for (row of (performance$ | async); track row.district) { <tr><td><span class="rank">{{ row.rank }}</span></td><td><strong>{{ row.district }}</strong></td><td>{{ row.beneficiaries }}</td><td><div class="coverage"><i [style.width.%]="row.coverage"></i><b>{{ row.coverage }}%</b></div></td><td [class.good]="row.growth > 0" [class.bad]="row.growth < 0">{{ row.growth > 0 ? '+' : '' }}{{ row.growth }}%</td><td><span class="signal" [class.down]="row.growth < 0">{{ row.growth > 0 ? 'Improving' : 'Declining' }}</span></td></tr> }</tbody></table></div></section>
