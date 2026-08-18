@@ -2,6 +2,7 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { RouterLink } from '@angular/router';
 import { filter } from 'rxjs';
+import { UiPreferencesService } from '../../core/preferences/ui-preferences.service';
 
 @Component({
   selector: 'app-navbar',
@@ -12,8 +13,11 @@ import { filter } from 'rxjs';
 })
 export class Navbar {
   private readonly router = inject(Router);
+  private readonly preferences = inject(UiPreferencesService);
   readonly url = signal('/');
   readonly title = computed(() => this.getTitle(this.url()));
+  readonly helpLabel = computed(() => this.preferences.language() === 'bn' ? 'সহায়তা কেন্দ্র' : this.preferences.language() === 'hi' ? 'सहायता केंद्र' : 'Help centre');
+  readonly environmentLabel = computed(() => this.preferences.language() === 'bn' ? 'ডেমো ডেটা' : this.preferences.language() === 'hi' ? 'डेमो डेटा' : 'DEMO DATA');
 
   constructor() {
     this.router.events.pipe(filter((event): event is NavigationEnd => event instanceof NavigationEnd)).subscribe((event) => this.url.set(event.urlAfterRedirects));

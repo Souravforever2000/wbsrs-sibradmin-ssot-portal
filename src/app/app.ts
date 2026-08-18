@@ -5,6 +5,7 @@ import { Header } from './layouts/header/header';
 import { Sidebar } from './layouts/sidebar/sidebar';
 import { Navbar } from './layouts/navbar/navbar';
 import { Footer } from './layouts/footer/footer';
+import { UiPreferencesService } from './core/preferences/ui-preferences.service';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +15,7 @@ import { Footer } from './layouts/footer/footer';
 })
 export class App {
   private readonly router = inject(Router);
+  private readonly preferences = inject(UiPreferencesService);
   readonly routeUrl = signal('/');
   readonly isPublicRoute = computed(() => this.routeUrl() === '/login');
 

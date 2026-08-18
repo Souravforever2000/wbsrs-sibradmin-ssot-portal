@@ -19,3 +19,88 @@ button, a, select, input { -webkit-tap-highlight-color: transparent; }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; }
 }
+
+/* The dark palette is applied at the document level so every lazy route follows the same preference. */
+html.dark-theme body,
+html.dark-theme .app-shell,
+html.dark-theme .route-content { background:#0b1424 !important; color:#dbe7f7; }
+html.dark-theme .sidebar,
+html.dark-theme .navbar,
+html.dark-theme .footer { border-color:#2d405b !important; background:#101c30 !important; color:#b8c9df; }
+html.dark-theme .filters-panel,
+html.dark-theme .kpi-card,
+html.dark-theme .chart-card,
+html.dark-theme .chart-panel,
+html.dark-theme .table-card,
+html.dark-theme .insight,
+html.dark-theme .method-card,
+html.dark-theme .summary-strip,
+html.dark-theme .summary-strip > div,
+html.dark-theme .workspace-grid > article,
+html.dark-theme .module-landing,
+html.dark-theme .auth-card { border-color:#2d405b !important; background:#111f34 !important; color:#dbe7f7; }
+html.dark-theme .toolbar,
+html.dark-theme .identity,
+html.dark-theme .grid article,
+html.dark-theme .scheme-card,
+html.dark-theme .timeline,
+html.dark-theme .login-card { border-color:#2d405b !important; background:#111f34 !important; color:#dbe7f7; }
+html.dark-theme .login-page { background:linear-gradient(135deg,#0b1424,#14233a) !important; }
+html.dark-theme .login-card h1,
+html.dark-theme .identity h2,
+html.dark-theme .grid h3,
+html.dark-theme .scheme-card h3,
+html.dark-theme .timeline h3 { color:#edf4ff !important; }
+html.dark-theme .login-card input { border-color:#3c5271 !important; color:#e6effd !important; background:#16263d !important; }
+html.dark-theme .filter-heading,
+html.dark-theme .kpi-label,
+html.dark-theme .card-title h2,
+html.dark-theme .section-title h2,
+html.dark-theme .chart-head h2,
+html.dark-theme .card-head h2,
+html.dark-theme .method-card h2,
+html.dark-theme .table-head h2,
+html.dark-theme .page-heading h1 { color:#edf4ff !important; }
+html.dark-theme .description,
+html.dark-theme .section-title small,
+html.dark-theme .card-title p,
+html.dark-theme .chart-head p,
+html.dark-theme .card-head p,
+html.dark-theme .kpi-meta,
+html.dark-theme .notes p,
+html.dark-theme .footer,
+html.dark-theme .eyebrow { color:#91a7c4 !important; }
+html.dark-theme .filters-panel select,
+html.dark-theme .toolbar select,
+html.dark-theme .search-box input { border-color:#3c5271 !important; color:#e6effd !important; background:#16263d !important; }
+html.dark-theme .search-box input::placeholder { color:#8096b5; }
+html.dark-theme .table-card th { color:#9cb0cb !important; background:#17263d !important; border-color:#2d405b !important; }
+html.dark-theme .table-card td { color:#afc1d9 !important; border-color:#263a55 !important; }
+html.dark-theme .table-card td strong,
+html.dark-theme .table-card td a { color:#e4edfb !important; }
+html.dark-theme .dashboard-links a,
+html.dark-theme .utility-links a,
+html.dark-theme .dashboard-toggle { color:#a5b7d0; }
+html.dark-theme .dashboard-links a:hover,
+html.dark-theme .utility-links a:hover,
+html.dark-theme .dashboard-links a.active,
+html.dark-theme .utility-links a.active,
+html.dark-theme .dashboard-toggle:hover,
+html.dark-theme .dashboard-toggle.active { color:#ffd19a; background:#26344b; }
+html.dark-theme .side-divider,
+html.dark-theme .side-bottom { border-color:#263a55; }
+html.dark-theme .language-picker option { color:#1b2b44; background:#fff; }
+html.high-contrast .topbar { border-bottom-width:3px; }
+html.high-contrast .kpi-card,
+html.high-contrast .chart-card,
+html.high-contrast .chart-panel,
+html.high-contrast .table-card,
+html.high-contrast .filters-panel { border-width:2px !important; }
+app-dashboard-overview .kpi-grid,
+app-dashboard-overview .insight-grid,
+app-dashboard-overview .analytics-grid,
+app-dashboard-overview .charts-grid { gap:16px; }
+app-dashboard-overview .table-card,
+app-dashboard-overview .chart-panel { margin-bottom:16px; }
+app-operational-workspace .workspace-grid { gap:16px; }
+app-operational-workspace .summary-strip { margin-bottom:16px; }
