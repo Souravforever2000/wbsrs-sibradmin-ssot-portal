@@ -1,1 +1,60 @@
-<section class="charts-grid"><article class="chart-panel"><div class="chart-head"><div><span class="chart-eyebrow">STATE TREND</span><h2>Active beneficiary movement</h2><p>Year-over-year aggregate trend · Chart.js</p></div><span class="chart-badge positive">+8.4% YoY</span></div><div class="canvas-wrap"><canvas #trendCanvas></canvas></div></article><article class="chart-panel"><div class="chart-head"><div><span class="chart-eyebrow">SCHEME COVERAGE</span><h2>Coverage by major scheme</h2><p>Current selected geography and financial year</p></div><span class="chart-badge">State-wide</span></div><div class="canvas-wrap coverage-canvas"><canvas #coverageCanvas></canvas></div></article></section>
+<section class="charts-shell">
+  <div class="chart-row">
+    <article class="chart-panel">
+      <div class="chart-head">
+        <div>
+          <span class="chart-eyebrow">MEMBER DATA GRADE</span>
+          <h2>Distribution</h2>
+        </div>
+        <span class="chart-badge">Grade 1 - 5</span>
+      </div>
+      <div class="canvas-wrap donut-wrap">
+        <canvas #gradeCanvas></canvas>
+      </div>
+      <div class="legend-list">
+        @for (item of gradeDistribution; track item.grade) {
+          <span class="legend-pill"><i [style.background]="item.color"></i>{{ item.grade }}</span>
+        }
+      </div>
+    </article>
+
+    <article class="chart-panel">
+      <div class="chart-head">
+        <div>
+          <span class="chart-eyebrow">MATCH STATUS</span>
+          <h2>Breakdown across schemes</h2>
+        </div>
+        <span class="chart-badge positive">Active</span>
+      </div>
+      <div class="canvas-wrap bar-wrap">
+        <canvas #statusCanvas></canvas>
+      </div>
+    </article>
+  </div>
+
+  <div class="chart-row">
+    <article class="chart-panel short-panel">
+      <div class="chart-head">
+        <div>
+          <span class="chart-eyebrow">DISCREPANCY TYPE</span>
+          <h2>Frequency</h2>
+        </div>
+      </div>
+      <div class="canvas-wrap compact-wrap">
+        <canvas #discrepancyCanvas></canvas>
+      </div>
+    </article>
+
+    <article class="chart-panel short-panel">
+      <div class="chart-head">
+        <div>
+          <span class="chart-eyebrow">CONFIDENCE</span>
+          <h2>Overall score spectrum</h2>
+        </div>
+      </div>
+      <div class="canvas-wrap compact-wrap">
+        <canvas #confidenceCanvas></canvas>
+      </div>
+    </article>
+  </div>
+</section>

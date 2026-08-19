@@ -6,13 +6,15 @@ export interface PageResponse<T> {
   totalPages: number;
 }
 
-export interface DashboardSummary {
-  totalCitizens: number;
-  totalBeneficiaries: number;
-  activeBeneficiaries: number;
-  schemeEnrollments: number;
-  coveragePercentage: number;
-  growthRate: number;
+export interface ApiError {
+  code?: string;
+  message: string;
+  details?: Record<string, string[]>;
+}
+
+export interface SortRequest {
+  field: string;
+  direction: 'asc' | 'desc';
 }
 
 export interface CitizenRecord {
@@ -24,6 +26,60 @@ export interface CitizenRecord {
   block: string;
   maskedAadhaar: string;
   schemeCount: number;
-  status: 'Active' | 'Inactive' | 'Pending';
+  status: 'Active' | 'Inactive';
   lastUpdated: string;
 }
+
+export interface DashboardSummary {
+  totalUniqueMembers: number;
+  schemeMatchesChecked: number;
+  highMatchRate: number;
+  criticalDiscrepancies: number;
+}
+
+export interface GradeDistributionItem {
+  grade: string;
+  value: number;
+  color: string;
+  label: string;
+}
+
+export interface StatusBreakdownItem {
+  scheme: string;
+  exact: number;
+  partial: number;
+  mismatch: number;
+  color: string;
+}
+
+export interface DiscrepancyItem {
+  label: string;
+  value: number;
+  color: string;
+}
+
+export interface ConfidenceBucket {
+  label: string;
+  value: number;
+  color: string;
+}
+
+export interface GradeMatrixItem {
+  grade: string;
+  description: string;
+  members: number;
+  avgNameMatch: number;
+  dobVariance: number;
+  aadhaarVault: number;
+  recommendedAudit: string;
+}
+
+export interface DashboardDataset {
+  summary: DashboardSummary;
+  gradeDistribution: GradeDistributionItem[];
+  statusBreakdown: StatusBreakdownItem[];
+  discrepancyFrequency: DiscrepancyItem[];
+  confidenceSpectrum: ConfidenceBucket[];
+  gradeMatrix: GradeMatrixItem[];
+}
+

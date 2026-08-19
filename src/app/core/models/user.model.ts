@@ -17,3 +17,15 @@ export interface CurrentUser {
   blockId?: string;
   permissions: string[];
 }
+
+export interface LoginRequest {
+  username: string;
+  password: string;
+}
+
+export interface AuthSession {
+  accessToken: string;
+  refreshToken?: string;
+  expiresAt?: string;
+  user: CurrentUser;
+}
