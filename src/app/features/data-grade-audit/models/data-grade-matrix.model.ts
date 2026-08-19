@@ -1,0 +1,1 @@
+export interface DataGradeMatrix { grade: number; sourceAuthorityDescription: string; totalMembers: number; averageNameMatchPercentage: number; dobVariancePercentage: number; aadhaarVaultLinkedPercentage: number; recommendedAuditPolicy: string; }
