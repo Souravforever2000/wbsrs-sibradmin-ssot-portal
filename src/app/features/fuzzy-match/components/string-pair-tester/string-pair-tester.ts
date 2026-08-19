@@ -1,0 +1,3 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
+@Component({ selector: 'app-string-pair-tester', standalone: true, templateUrl: './string-pair-tester.html', styleUrl: './string-pair-tester.css', changeDetection: ChangeDetectionStrategy.OnPush })
+export class StringPairTesterComponent { readonly masterName = input(''); readonly schemeName = input(''); readonly namesChange = output<{ masterName: string; schemeName: string }>(); readonly calculate = output<void>(); readonly loadPreset = output<void>(); update(masterName: string, schemeName: string): void { this.namesChange.emit({ masterName, schemeName }); } }

@@ -1,0 +1,2 @@
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core'; import { FuzzyMatchRecord } from '../../models/fuzzy-match-record.model';
+@Component({ selector: 'app-fuzzy-match-table', standalone: true, templateUrl: './fuzzy-match-table.html', styleUrl: './fuzzy-match-table.css', changeDetection: ChangeDetectionStrategy.OnPush }) export class FuzzyMatchTableComponent { readonly records = input<FuzzyMatchRecord[]>([]); readonly loading = input(false); readonly testInLab = output<FuzzyMatchRecord>(); }

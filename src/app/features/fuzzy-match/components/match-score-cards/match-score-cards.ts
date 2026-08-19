@@ -1,0 +1,2 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core'; import { FuzzyMatchResult } from '../../models/fuzzy-match-result.model';
+@Component({ selector: 'app-match-score-cards', standalone: true, templateUrl: './match-score-cards.html', styleUrl: './match-score-cards.css', changeDetection: ChangeDetectionStrategy.OnPush }) export class MatchScoreCardsComponent { readonly result = input.required<FuzzyMatchResult>(); }

@@ -1,0 +1,1 @@
+:host{display:block;padding:13px 18px 18px;border-top:1px solid #edf1f6}h3{margin:0 0 8px;font-size:11px}:host>section>div{display:grid;grid-template-columns:1fr 1fr;gap:7px}p{margin:0;padding:10px 8px;border:1px solid #dbe4f0;border-radius:5px;color:#4b6384;font-size:9px;line-height:1.35}b{color:#10284e}@media(max-width:420px){:host>section>div{grid-template-columns:1fr}}

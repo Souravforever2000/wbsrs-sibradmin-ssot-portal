@@ -10,7 +10,7 @@ export const routes: Routes = [
   { path: 'schemes', data: { workspace: 'schemes' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
   { path: 'schemes/compare', data: { workspace: 'schemes' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
   { path: 'match-workbench', data: { workspace: 'workbench' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'fuzzy-match', data: { workspace: 'fuzzy' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
+  { path: 'fuzzy-match', loadComponent: () => import('./features/fuzzy-match/pages/fuzzy-match-lab/fuzzy-match-lab').then((m) => m.FuzzyMatchLabPage) },
   { path: 'data-audit', data: { workspace: 'audit' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
   { path: 'citizens', loadComponent: () => import('./features/citizens/pages/citizen-list/citizen-list').then((m) => m.CitizenListPage) },
   { path: 'directory', redirectTo: 'citizens', pathMatch: 'full' },
