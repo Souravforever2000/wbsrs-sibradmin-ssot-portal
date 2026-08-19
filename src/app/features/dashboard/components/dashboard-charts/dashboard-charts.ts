@@ -21,10 +21,10 @@ export class DashboardChartsComponent implements AfterViewInit, OnDestroy {
   @ViewChild('discrepancyCanvas') private discrepancyCanvas?: ElementRef<HTMLCanvasElement>;
   @ViewChild('confidenceCanvas') private confidenceCanvas?: ElementRef<HTMLCanvasElement>;
 
-  private gradeChart?: Chart;
-  private statusChart?: Chart;
-  private discrepancyChart?: Chart;
-  private confidenceChart?: Chart;
+  private gradeChart?: Chart<'doughnut', number[], string>;
+  private statusChart?: Chart<'bar', number[], string>;
+  private discrepancyChart?: Chart<'bar', number[], string>;
+  private confidenceChart?: Chart<'bar', number[], string>;
 
   ngAfterViewInit(): void {
     this.renderCharts();
