@@ -1,0 +1,61 @@
+<main class="workbench"><app-fuzzy-header [threshold]="threshold()" [regenerating]="regenerating()"
+        (thresholdChange)="setThreshold($event)" (regenerate)="regenerate()" />
+    <p class="error" role="alert" [class.visible]="error()">{{ error() }}</p>
+    <section class="workbench-toolbar"><label class="search"><span class="material-symbols-rounded">search</span><input
+                placeholder="Search UID, Master Name, Scheme Name" /></label><select>
+            <option>All Schemes</option>
+        </select><select>
+            <option>All Name Match Status</option>
+        </select><label class="confidence">Min Conf.<input type="range" min="0" max="100"
+                value="0" /><b>0%</b></label><button type="button" class="reset" (click)="loadRecords()"><span
+                class="material-symbols-rounded">sync</span>Reset</button></section><app-match-workbench-table
+        [records]="records()" [loading]="loading()" (inspectRecord)="inspect($event)" />
+    @if (selectedRecord(); as record) { <div class="modal-backdrop" role="presentation" (click)="closeInspect()">
+        <section class="inspect-modal" role="dialog" aria-modal="true" aria-labelledby="inspect-title"
+            (click)="$event.stopPropagation()">
+            <header>
+                <h2 id="inspect-title"><span class="material-symbols-rounded">hub</span>Cross-Scheme Attribute
+                    Inspection &amp; Reconciliation</h2><button type="button" aria-label="Close"
+                    (click)="closeInspect()">&times;</button>
+            </header>
+            <section class="confidence-panel">
+                <div><small>OVERALL MATCH CONFIDENCE</small><strong>{{ record.finalScore ?? record.jaroWinklerScore
+                        }}.0%</strong></div>
+                <div><small>TARGET SCHEME</small><b>{{ record.schemeCode ?? 'SCHEME MATCH' }} (Scheme Record)</b></div>
+            </section>
+            <div class="record-grid">
+                <article>
+                    <header><b>SRS Master Record (srs_master)</b><span>Grade 4</span></header>
+                    <dl>
+                        <dt>FULL NAME</dt>
+                        <dd>{{ record.masterName }}</dd>
+                        <dt>DATE OF BIRTH</dt>
+                        <dd>1972-04-21</dd>
+                        <dt>GENDER</dt>
+                        <dd>Male</dd>
+                        <dt>CASTE CATEGORY</dt>
+                        <dd>ST</dd>
+                    </dl>
+                </article>
+                <article>
+                    <header><b>Scheme Dept Record (srs_master_match)</b><span>Target DB</span></header>
+                    <dl>
+                        <dt>SCHEME BENEFICIARY NAME</dt>
+                        <dd>{{ record.schemeName }} <small>Similarity: {{ record.jaroWinklerScore }}% (PARTIAL)</small>
+                        </dd>
+                        <dt>SCHEME DATE OF BIRTH</dt>
+                        <dd>1972-04-21 <small class="match">MATCH</small></dd>
+                        <dt>SCHEME GENDER</dt>
+                        <dd>Male <small class="match">MATCH</small></dd>
+                        <dt>SCHEME CASTE</dt>
+                        <dd>ST <small class="match">MATCH</small></dd>
+                    </dl>
+                </article>
+            </div>
+            <footer>
+                <p><span class="material-symbols-rounded">info</span>Match analysis computed using Jaro-Winkler &amp;
+                    Levenshtein distance.</p><button type="button" (click)="closeInspect()">Done</button>
+            </footer>
+        </section>
+    </div> }
+</main>
