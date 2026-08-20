@@ -31,11 +31,11 @@
 }
 
 .state-overview-grid {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1.05fr 0.95fr;
   gap: 0;
   align-items: stretch;
-  max-width: none;
+  width: 100%;
   margin: 0;
 }
 
@@ -74,25 +74,41 @@
 .wb-map {
   display: block;
   width: 100%;
-  height: 260px;
+  height: 420px;
   margin-top: 0;
+  overflow: visible;
+  preserveAspectRatio: xMidYMid meet;
 }
 
 .district {
-  fill: #f2e5d7;
+  fill: #F97316;
   stroke: #ffffff;
-  stroke-width: 0.9;
+  stroke-width: 1;
   vector-effect: non-scaling-stroke;
-  transition: fill .15s ease, stroke-width .15s ease, filter .15s ease;
+  transition:
+    fill 0.15s ease,
+    stroke-width 0.15s ease,
+    filter 0.15s ease;
   cursor: pointer;
 }
 
 .district:hover,
-.district.is-hovered,
+.district.is-hovered {
+  fill: #F97316;
+  stroke: #ffffff;
+  stroke-width: 1.5;
+  filter: drop-shadow(
+    0 0 7px rgba(249, 115, 22, 0.35)
+  );
+}
+
 .district.is-selected {
-  fill: #B45309;
-  stroke-width: 1.05;
-  filter: drop-shadow(0 0 8px rgba(180, 83, 9, 0.18));
+  fill: #F97316;
+  stroke: #ffffff;
+  stroke-width: 1.8;
+  filter: drop-shadow(
+    0 0 8px rgba(249, 115, 22, 0.35)
+  );
 }
 
 .stat-box.watch {
@@ -502,4 +518,133 @@
   .wb-map { height: 350px; }
   .chart-card,
   .table-card { padding:13px; }
+}
+
+
+/* ========================= */
+/* REAL WEST BENGAL MAP       */
+/* ========================= */
+
+.map-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 10px;
+  min-height: 28px;
+  margin-top: 2px;
+}
+
+.map-selection-count {
+  color: #7d6c57;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+
+.map-clear-button {
+  padding: 4px 9px;
+  border: 1px solid #e5c8a8;
+  border-radius: 999px;
+  background: #fff;
+  color: #a96218;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.map-clear-button:hover {
+  background: #fff3e5;
+}
+
+.wb-map {
+  display: block;
+  width: 100%;
+  height: 360px;
+  margin-top: 0;
+  overflow: visible;
+}
+
+.district {
+  fill: #f2e5d7;
+  stroke: #ffffff;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+  transition:
+    fill .15s ease,
+    stroke-width .15s ease,
+    filter .15s ease;
+  cursor: pointer;
+}
+
+.district:hover,
+.district.is-hovered {
+  fill: #c26312;
+  stroke: #ffffff;
+  stroke-width: 1.4;
+  filter: drop-shadow(
+    0 0 7px rgba(180, 83, 9, 0.2)
+  );
+}
+
+.district.is-selected {
+  fill: #b45309;
+  stroke: #ffffff;
+  stroke-width: 1.7;
+  filter: drop-shadow(
+    0 0 8px rgba(180, 83, 9, 0.25)
+  );
+}
+
+.map-loading {
+  fill: #a96218;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: .08em;
+}
+
+.selected-districts {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+}
+
+.district-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 8px 5px 10px;
+  border: 1px solid #e5c8a8;
+  border-radius: 999px;
+  background: #fff8ef;
+  color: #a04d08;
+  font-size: 9px;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.district-chip:hover {
+  background: #fff0dc;
+}
+
+.district-chip .material-symbols-rounded {
+  font-size: 13px;
+}
+
+.design {
+  fill: #F97316;
+  stroke: #ffffff;
+  stroke-width: 1;
+  vector-effect: non-scaling-stroke;
+}
+.design:hover,
+.design.is-hovered {
+  fill: #B45309;
+  stroke: #ffffff;
+  stroke-width: 1.4;
+  filter: drop-shadow(      
+    0 0 7px rgba(235, 233, 232, 0.2)
+  );
 }
