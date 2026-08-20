@@ -1,5 +1,110 @@
-<app-page-heading title="Executive Overview" description="A state-wide view of member coverage, scheme matching and data quality."></app-page-heading>
+﻿<app-page-heading title="Executive Overview" description="A state-wide view of member coverage, scheme matching and data quality."></app-page-heading>
 <app-global-filters></app-global-filters>
+
+<section class="state-overview-shell" aria-label="State overview map panel">
+  <div class="state-overview-title">
+    <span class="title-accent">STATE OVERVIEW</span>
+  </div>
+
+  <div class="state-overview-grid">
+    <div class="map-card">
+      <div class="panel-label"><span class="dot"></span> INTERACTIVE MAP</div>
+      <svg viewBox="0 0 520 420" class="wb-map" role="img" aria-label="GeoJSON district map of West Bengal">
+        @for (district of districtFeatures; track district.properties.name) {
+          <path
+            class="district"
+            [class.is-selected]="district.properties.name === activeDistrictName()"
+            [class.is-hovered]="district.properties.name === hoveredDistrict()"
+            [attr.d]="toSvgPath(district.geometry.coordinates[0])"
+            [attr.data-district]="district.properties.name"
+            (mouseenter)="hoveredDistrict.set(district.properties.name)"
+            (mouseleave)="clearHover()"
+            (click)="selectDistrict(district.properties.name)"
+          ></path>
+        }
+      </svg>
+    </div>
+
+    <aside class="district-card">
+      <div class="card-header">
+        <div>
+          <span class="card-kicker">DISTRICT ANALYTICS</span>
+          <h2>{{ activeDistrict().name }}</h2>
+        </div>
+        <span class="live-pill"><span class="live-dot"></span> LIVE STATS</span>
+      </div>
+
+      <div class="stats-grid">
+        <div class="stat-box">
+          <span class="label">LGD District Code</span>
+          <strong>{{ activeDistrict().lgdDistrictCode }}</strong>
+        </div>
+        <div class="stat-box">
+          <span class="label">Unique UID</span>
+          <strong>{{ activeDistrict().uniqueUid }}</strong>
+        </div>
+        <div class="stat-box">
+          <span class="label">Highest Beneficiary Count Scheme wise</span>
+          <strong>{{ activeDistrict().highestBeneficiaryScheme }}</strong>
+          <small>{{ activeDistrict().highestBeneficiaryCount | number }} beneficiaries</small>
+        </div>
+        <div class="stat-box">
+          <span class="label">Total citizens in district</span>
+          <strong>{{ activeDistrict().totalCitizens | number }}</strong>
+        </div>
+
+        <div class="stat-box wide">
+          <span class="label">Gender split</span>
+          <strong>Male {{ activeDistrict().malePercentage }}% / Female {{ activeDistrict().femalePercentage }}%</strong>
+        </div>
+
+        <div class="stat-box wide">
+          <span class="label">Age-band distribution</span>
+          <div class="inline-list">
+            @for (band of activeDistrict().ageBands; track band.label) {
+              <span><b>{{ band.label }}</b> {{ band.value }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="stat-box wide">
+          <span class="label">JM status flag count</span>
+          <strong>Alive {{ activeDistrict().aliveFlag | number }} / Death {{ activeDistrict().deathFlag | number }}</strong>
+          <small>Alive {{ activeDistrict().alivePercentage }}% • Death {{ activeDistrict().deathPercentage }}%</small>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">Active valid ration card %</span>
+          <strong>{{ activeDistrict().activeValidRationCardPercentage }}%</strong>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">Top 5 schemes by enrollment count</span>
+          <div class="scheme-list">
+            @for (scheme of activeDistrict().topSchemes; track scheme.label) {
+              <div><span>{{ scheme.label }}</span><b>{{ scheme.value }}</b></div>
+            }
+          </div>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">Avg schemes enrolled / citizen</span>
+          <strong>{{ activeDistrict().avgSchemesPerCitizen }}</strong>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">% citizens with zero schemes</span>
+          <strong>{{ activeDistrict().zeroSchemePercent }}%</strong>
+        </div>
+
+        <div class="stat-box">
+          <span class="label">Match Rate</span>
+          <strong>{{ activeDistrict().matchRate }}%</strong>
+        </div>
+      </div>
+    </aside>
+  </div>
+</section>
 
 @if (dashboard$ | async; as dashboard) {
   <section class="kpi-grid">
