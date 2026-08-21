@@ -6,7 +6,9 @@
     --ink: #17243d;
     --muted: #6c7b91;
     --line: #dce5ee;
-    --teal: #007f78;
+    --primary: #c2410c;
+    --primary-hover: #9a3412;
+    --teal: #c2410c;
     --amber: #d4871c;
     max-width: 1060px;
     margin: 0 auto;
@@ -195,13 +197,13 @@ tbody tr:hover {
 }
 
 td:first-child a {
-    color: #087b8b;
+    color: var(--primary);
     font-weight: 800;
     text-decoration: none
 }
 
 td:first-child a:hover {
-    color: #d4871c
+    color: var(--primary-hover)
 }
 
 td:nth-child(3) b,
@@ -288,15 +290,19 @@ td:nth-child(5) {
     inset: 0;
     display: grid;
     place-items: center;
-    padding: 20px;
-    background: #101b2dcc;
+    overflow: auto;
+    padding: 16px;
+    background: #101b2db8;
     backdrop-filter: blur(8px);
     animation: fade-in .2s ease both
 }
 
 .resolve-modal {
     width: min(760px, 100%);
+    max-height: calc(100dvh - 32px);
     overflow: hidden;
+    display: flex;
+    flex-direction: column;
     border: 1px solid #d6e0e8;
     border-radius: 15px;
     background: #fff;
@@ -381,6 +387,11 @@ td:nth-child(5) {
     grid-template-columns: 1fr 1fr;
     gap: 14px;
     padding: 0 20px 20px
+}
+
+.resolve-modal .record-grid {
+    min-height: 0;
+    overflow-y: auto;
 }
 
 .record-grid article {

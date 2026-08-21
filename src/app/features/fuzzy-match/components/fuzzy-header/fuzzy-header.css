@@ -5,11 +5,11 @@
     gap: 28px;
     overflow: hidden;
     padding: 27px;
-    border: 1px solid #2d6370;
+    border: 1px solid #b45309;
     border-radius: 15px;
     color: #fff;
-    background: linear-gradient(115deg, #14283f 0%, #123e4c 58%, #176b68 100%);
-    box-shadow: 0 16px 34px #123b4a2b;
+    background: linear-gradient(115deg, #14283f 0%, #26354b 55%, #9a3412 100%);
+    box-shadow: 0 16px 34px #7c2d122b;
     isolation: isolate
 }
 
@@ -32,8 +32,8 @@
     padding: 5px 10px;
     border: 1px solid #8be4d333;
     border-radius: 999px;
-    color: #bdf4e9;
-    background: #087e7866;
+    color: #ffedd5;
+    background: #c2410c66;
     font-size: 10px;
     font-weight: 800;
     letter-spacing: .04em
@@ -48,7 +48,7 @@
 .hero p {
     max-width: 730px;
     margin: 0;
-    color: #d8e9eb;
+    color: #f8e7dc;
     font-size: 11px;
     line-height: 1.5
 }
@@ -67,7 +67,7 @@
     border: 1px solid #ffffff24;
     border-radius: 9px;
     background: #102d3dcc;
-    color: #b5d9da;
+    color: #f8d8c2;
     font-size: 10px;
     font-weight: 800;
     text-align: center;
@@ -75,7 +75,7 @@
 }
 
 .controls strong {
-    color: #62e1c5;
+    color: #fdba74;
     font-size: 15px
 }
 
@@ -88,7 +88,7 @@
 }
 
 .controls button {
-    border: 1px solid #b4e0d966;
+    border: 1px solid #fed7aa66;
     border-radius: 8px;
     padding: 8px;
     color: #fff;
