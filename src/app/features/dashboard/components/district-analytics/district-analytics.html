@@ -1,0 +1,155 @@
+    <aside class="district-card">
+
+      <div class="analytics-header">
+        <div>
+          <span class="card-kicker">DISTRICT ANALYTICS</span>
+          <h2>{{ district().name }}</h2>
+          <p>Live district-level coverage and beneficiary profile</p>
+        </div>
+
+        <span class="live-pill">
+          <span class="live-dot"></span>
+          LIVE STATS
+        </span>
+      </div>
+
+      <!-- Compact identity / reference information -->
+      <div class="district-meta" aria-label="District reference information">
+        <div class="meta-item">
+          <span>LGD District Code</span>
+          <strong>{{ district().lgdDistrictCode }}</strong>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <span>Unique UID</span>
+          <strong>{{ district().uniqueUid }}</strong>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <span>Total Citizens</span>
+          <strong>{{ district().totalCitizens | number }}</strong>
+        </div>
+      </div>
+
+      <!-- Coverage overview -->
+      <section class="analytics-section">
+        <div class="analytics-section-heading">
+          <span>01</span>
+          <h3>Coverage overview</h3>
+        </div>
+
+        <div class="metric-row metric-row-three">
+          <div class="metric">
+            <span class="label">Active valid ration card</span>
+            <strong>{{ district().activeValidRationCardPercentage }}%</strong>
+          </div>
+
+          <div class="metric">
+            <span class="label">Match rate</span>
+            <strong class="metric-positive">{{ district().matchRate }}%</strong>
+          </div>
+
+          <div class="metric">
+            <span class="label">Avg schemes / citizen</span>
+            <strong>{{ district().avgSchemesPerCitizen }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Beneficiary and scheme profile -->
+      <section class="analytics-section">
+        <div class="analytics-section-heading">
+          <span>02</span>
+          <h3>Beneficiary & scheme profile</h3>
+        </div>
+
+        <div class="analytics-two-column">
+          <div class="feature-metric">
+            <span class="label">Highest beneficiary scheme</span>
+            <strong>{{ district().highestBeneficiaryScheme }}</strong>
+            <small>
+              {{ district().highestBeneficiaryCount | number }} beneficiaries
+            </small>
+          </div>
+
+          <div class="feature-metric">
+            <span class="label">Citizens with zero schemes</span>
+            <strong>{{ district().zeroSchemePercent }}%</strong>
+            <small>Require scheme coverage attention</small>
+          </div>
+        </div>
+
+        <div class="scheme-list-wrap">
+          <span class="label">Top 5 schemes by enrollment</span>
+          <div class="scheme-list">
+            @for (
+            scheme of district().topSchemes;
+            track scheme.label
+            ) {
+            <div>
+              <span>{{ scheme.label }}</span>
+              <b>{{ scheme.value }}</b>
+            </div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Demographic profile -->
+      <section class="analytics-section">
+        <div class="analytics-section-heading">
+          <span>03</span>
+          <h3>Demographic profile</h3>
+        </div>
+
+        <div class="demographic-row">
+          <div class="demographic-block">
+            <span class="label">Gender split</span>
+            <strong>
+              Male {{ district().malePercentage }}%
+              <span>/</span>
+              Female {{ district().femalePercentage }}%
+            </strong>
+          </div>
+
+          <div class="age-block">
+            <span class="label">Age-band distribution</span>
+            <div class="age-list">
+              @for (
+              band of district().ageBands;
+              track band.label
+              ) {
+              <span>
+                <b>{{ band.label }}</b> {{ band.value }}
+              </span>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data quality -->
+      <section class="analytics-section analytics-section-last">
+        <div class="analytics-section-heading">
+          <span>04</span>
+          <h3>Data quality</h3>
+        </div>
+
+        <div class="quality-row">
+          <div>
+            <span class="label">JM status flag count</span>
+            <strong>
+              Alive {{ district().aliveFlag | number }}
+              <span>/</span>
+              Death {{ district().deathFlag | number }}
+            </strong>
+          </div>
+
+          <div class="quality-status">
+            <span>Alive {{ district().alivePercentage }}%</span>
+            <span>Death {{ district().deathPercentage }}%</span>
+          </div>
+        </div>
+      </section>
+
+    </aside>

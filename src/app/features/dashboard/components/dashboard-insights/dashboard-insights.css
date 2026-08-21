@@ -1,0 +1,93 @@
+.insight-section {
+  margin: 22px 0;
+}
+
+.section-title,
+.card-title {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.section-title>div>span {
+  color: #7387a7;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .1em;
+}
+
+.section-title h2,
+.card-title h2 {
+  margin: 4px 0 0;
+  color: #253a58;
+  font-size: 16px;
+}
+
+.section-title small,
+.card-title p {
+  color: #8998ac;
+  font-size: 9px;
+}
+
+.insight-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 11px;
+}
+
+.insight {
+  padding: 14px;
+  border: 1px solid #dbe4ef;
+  border-left: 3px solid #2c73e7;
+  border-radius: 8px;
+  background: #fff;
+  transition: transform .22s ease, box-shadow .22s ease;
+}
+
+.insight:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 12px 24px rgba(27, 65, 114, 0.08);
+}
+
+.insight.success {
+  border-left-color: #16b789;
+}
+
+.insight.warning {
+  border-left-color: #f59e0b;
+}
+
+.insight strong {
+  color: #2d405e;
+  font-size: 11px;
+}
+
+.insight p {
+  margin: 6px 0;
+  color: #70819a;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.insight small {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  color: #9aa8ba;
+  font-size: 9px;
+}
+
+.insight small .material-symbols-rounded {
+  font-size: 14px;
+}
+
+.analytics-grid {
+
+  @media (max-width: 620px) {
+    .insight-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+}

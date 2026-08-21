@@ -1,0 +1,50 @@
+<section class="table-card">
+  <div class="card-title">
+    <div>
+      <h2>District performance snapshot</h2>
+      <p>Top and bottom coverage signals from the latest materialized view</p>
+    </div>
+    <button type="button" class="outline-button">
+      Open district analytics
+      <span class="material-symbols-rounded">arrow_forward</span>
+    </button>
+  </div>
+
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Rank</th>
+          <th>District</th>
+          <th>Beneficiaries</th>
+          <th>Coverage</th>
+          <th>YoY growth</th>
+          <th>Signal</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (row of rows() ?? []; track row.district) {
+          <tr>
+            <td><span class="rank">{{ row.rank }}</span></td>
+            <td><strong>{{ row.district }}</strong></td>
+            <td>{{ row.beneficiaries }}</td>
+            <td>
+              <div class="coverage">
+                <i [style.width.%]="row.coverage"></i>
+                <b>{{ row.coverage }}%</b>
+              </div>
+            </td>
+            <td [class.good]="row.growth > 0" [class.bad]="row.growth < 0">
+              {{ row.growth > 0 ? '+' : '' }}{{ row.growth }}%
+            </td>
+            <td>
+              <span class="signal" [class.down]="row.growth < 0">
+                {{ row.growth > 0 ? 'Improving' : 'Declining' }}
+              </span>
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</section>

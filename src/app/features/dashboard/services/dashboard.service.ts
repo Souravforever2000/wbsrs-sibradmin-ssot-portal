@@ -1,20 +1,7 @@
 import { Injectable } from '@angular/core';
 import { map, Observable, of } from 'rxjs';
+import type { DashboardInsight, DistrictPerformanceRow } from '../models/dashboard.models';
 import { DashboardDataset, DashboardSummary, GradeMatrixItem, GradeDistributionItem, StatusBreakdownItem, DiscrepancyItem, ConfidenceBucket } from '../../../core/models/api.models';
-
-export interface Insight {
-  title: string;
-  text: string;
-  severity: 'success' | 'warning' | 'info';
-}
-
-export interface PerformanceRow {
-  district: string;
-  beneficiaries: string;
-  coverage: number;
-  growth: number;
-  rank: number;
-}
 
 @Injectable({ providedIn: 'root' })
 export class DashboardService {
@@ -71,7 +58,7 @@ export class DashboardService {
     return this.getDashboard().pipe(map((dataset) => dataset.summary));
   }
 
-  getInsights(): Observable<Insight[]> {
+  getInsights(): Observable<DashboardInsight[]> {
     return of([
       { title: 'Top growth district', text: 'Kolkata recorded 12.1% beneficiary growth versus 2024-25.', severity: 'success' },
       { title: 'Coverage gap', text: 'Purulia has the lowest measured scheme coverage at 71.2%.', severity: 'warning' },
@@ -79,7 +66,7 @@ export class DashboardService {
     ]);
   }
 
-  getDistrictPerformance(): Observable<PerformanceRow[]> {
+  getDistrictPerformance(): Observable<DistrictPerformanceRow[]> {
     return of([
       { rank: 1, district: 'Kolkata', beneficiaries: '4.8L', coverage: 98.2, growth: 12.1 },
       { rank: 2, district: 'Nadia', beneficiaries: '8.1L', coverage: 96.7, growth: 9.8 },

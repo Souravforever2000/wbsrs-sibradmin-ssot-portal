@@ -1,0 +1,19 @@
+<section class="insight-section">
+  <div class="section-title">
+    <div>
+      <span>INTELLIGENCE FEED</span>
+      <h2>Key highlights</h2>
+    </div>
+    <small>Generated from the current SRS master aggregate</small>
+  </div>
+
+  <div class="insight-grid">
+    @for (insight of insights() ?? []; track insight.title) {
+      <article class="insight" [class]="'insight ' + insight.severity">
+        <strong>{{ insight.title }}</strong>
+        <p>{{ insight.text }}</p>
+        <small>Open analytical detail <span class="material-symbols-rounded">arrow_forward</span></small>
+      </article>
+    }
+  </div>
+</section>

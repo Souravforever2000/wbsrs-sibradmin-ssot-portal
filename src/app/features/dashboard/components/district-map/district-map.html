@@ -1,0 +1,39 @@
+<div class="map-stage">
+  <svg
+    viewBox="0 0 700 520"
+    class="wb-map"
+    role="img"
+    aria-label="Interactive GeoJSON district map of West Bengal"
+    (pointerleave)="onDistrictLeave()"
+  >
+    @if (projectedDistricts().length === 0) {
+      <text x="350" y="260" text-anchor="middle" class="map-loading">
+        Loading West Bengal map...
+      </text>
+    } @else {
+      @for (item of projectedDistricts(); track getDistrictName(item)) {
+        @let districtName = getDistrictName(item);
+
+        <g class="district-group" [attr.data-district]="districtName">
+          @for (path of item.paths; track path) {
+            <path
+              class="district"
+              [class.is-selected]="selectedDistrict() === districtName"
+              [class.is-hovered]="hoveredDistrict() === districtName"
+              [attr.d]="path"
+              [attr.data-district]="districtName"
+              [attr.aria-label]="districtName"
+              (pointerenter)="onDistrictEnter(districtName)"
+              (click)="selectDistrict(districtName)"
+            />
+          }
+        </g>
+      }
+    }
+  </svg>
+
+  <div class="map-footer">
+    <span><i class="map-legend-dot"></i> Active district</span>
+    <span>Click any district to update analytics</span>
+  </div>
+</div>
