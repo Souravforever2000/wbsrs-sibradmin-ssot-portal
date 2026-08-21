@@ -2,514 +2,7 @@
   description="A state-wide view of member coverage, scheme matching and data quality."></app-page-heading>
 <app-global-filters></app-global-filters>
 
-<section class="state-overview-shell" aria-label="State overview map panel">
-  <div class="state-overview-title">
-    <span class="title-accent">STATE OVERVIEW</span>
-  </div>
 
-  <!-- <div class="state-overview-grid">
-    <div class="map-card">
-      <div class="panel-label"><span class="dot"></span> INTERACTIVE MAP</div>
-      <svg viewBox="0 0 520 420" class="wb-map" role="img" aria-label="GeoJSON district map of West Bengal">
-        @for (district of districtFeatures; track district.properties.name) {
-          <path
-            class="district"
-            [class.is-selected]="district.properties.name === activeDistrictName()"
-            [class.is-hovered]="district.properties.name === hoveredDistrict()"
-            [attr.d]="toSvgPath(district.geometry.coordinates[0])"
-            [attr.data-district]="district.properties.name"
-            (mouseenter)="hoveredDistrict.set(district.properties.name)"
-            (mouseleave)="clearHover()"
-            (click)="selectDistrict(district.properties.name)"
-          ></path>
-        }
-      </svg>
-    </div>
-
-    <aside class="district-card">
-      <div class="card-header">
-        <div>
-          <span class="card-kicker">DISTRICT ANALYTICS</span>
-          <h2>{{ activeDistrict().name }}</h2>
-        </div>
-        <span class="live-pill"><span class="live-dot"></span> LIVE STATS</span>
-      </div>
-
-      <div class="stats-grid">
-        <div class="stat-box">
-          <span class="label">LGD District Code</span>
-          <strong>{{ activeDistrict().lgdDistrictCode }}</strong>
-        </div>
-        <div class="stat-box">
-          <span class="label">Unique UID</span>
-          <strong>{{ activeDistrict().uniqueUid }}</strong>
-        </div>
-        <div class="stat-box">
-          <span class="label">Highest Beneficiary Count Scheme wise</span>
-          <strong>{{ activeDistrict().highestBeneficiaryScheme }}</strong>
-          <small>{{ activeDistrict().highestBeneficiaryCount | number }} beneficiaries</small>
-        </div>
-        <div class="stat-box">
-          <span class="label">Total citizens in district</span>
-          <strong>{{ activeDistrict().totalCitizens | number }}</strong>
-        </div>
-
-        <div class="stat-box wide">
-          <span class="label">Gender split</span>
-          <strong>Male {{ activeDistrict().malePercentage }}% / Female {{ activeDistrict().femalePercentage }}%</strong>
-        </div>
-
-        <div class="stat-box wide">
-          <span class="label">Age-band distribution</span>
-          <div class="inline-list">
-            @for (band of activeDistrict().ageBands; track band.label) {
-              <span><b>{{ band.label }}</b> {{ band.value }}</span>
-            }
-          </div>
-        </div>
-
-        <div class="stat-box wide">
-          <span class="label">JM status flag count</span>
-          <strong>Alive {{ activeDistrict().aliveFlag | number }} / Death {{ activeDistrict().deathFlag | number }}</strong>
-          <small>Alive {{ activeDistrict().alivePercentage }}% • Death {{ activeDistrict().deathPercentage }}%</small>
-        </div>
-
-        <div class="stat-box">
-          <span class="label">Active valid ration card %</span>
-          <strong>{{ activeDistrict().activeValidRationCardPercentage }}%</strong>
-        </div>
-
-        <div class="stat-box">
-          <span class="label">Top 5 schemes by enrollment count</span>
-          <div class="scheme-list">
-            @for (scheme of activeDistrict().topSchemes; track scheme.label) {
-              <div><span>{{ scheme.label }}</span><b>{{ scheme.value }}</b></div>
-            }
-          </div>
-        </div>
-
-        <div class="stat-box">
-          <span class="label">Avg schemes enrolled / citizen</span>
-          <strong>{{ activeDistrict().avgSchemesPerCitizen }}</strong>
-        </div>
-
-        <div class="stat-box">
-          <span class="label">% citizens with zero schemes</span>
-          <strong>{{ activeDistrict().zeroSchemePercent }}%</strong>
-        </div>
-
-        <div class="stat-box">
-          <span class="label">Match Rate</span>
-          <strong>{{ activeDistrict().matchRate }}%</strong>
-        </div>
-      </div>
-    </aside>
-  </div> -->
-
-  <div class="state-overview-grid">
-
-    <!-- ========================= -->
-    <!-- INTERACTIVE MAP -->
-    <!-- ========================= -->
-
-    <div class="map-card">
-
-      <div class="panel-label">
-        <span class="dot"></span>
-        INTERACTIVE MAP
-      </div>
-
-      <div class="map-toolbar">
-
-        <span class="map-selection-count">
-          @if (selectedDistricts().length === 0) {
-          All districts
-          } @else {
-          {{ selectedDistricts().length }}
-          district{{ selectedDistricts().length > 1 ? 's' : '' }}
-          selected
-          }
-        </span>
-
-        @if (selectedDistricts().length > 0) {
-        <button type="button" class="map-clear-button" (click)="clearDistrictSelection()">
-          Clear
-        </button>
-        }
-
-      </div>
-
-      <svg viewBox="0 0 700 520" class="wb-map" role="img" aria-label="Interactive GeoJSON district map of West Bengal">
-
-        <!-- Loading state -->
-
-        @if (projectedDistricts().length === 0) {
-
-        <text x="350" y="260" text-anchor="middle" class="map-loading">
-          Loading West Bengal map...
-        </text>
-
-        } @else {
-
-        <!-- Real GeoJSON districts -->
-
-        @for (
-        item of projectedDistricts();
-        track getDistrictName(item.feature)
-        ) {
-
-        <!-- Polygon / MultiPolygon paths -->
-
-        @for (
-        path of item.paths;
-        track path
-        ) {
-
-        <path class="district design" [class.is-selected]="
-                isDistrictSelected(
-                  getDistrictName(item.feature)
-                )
-              " [class.is-hovered]="
-                getDistrictName(item.feature) === hoveredDistrict()
-              " [attr.d]="path" [attr.data-district]="
-                getDistrictName(item.feature)
-              " [attr.aria-label]="
-                getDistrictName(item.feature)
-              " (mouseenter)="
-                hoveredDistrict.set(
-                  getDistrictName(item.feature)
-                )
-              " (mouseleave)="clearHover()" (click)="
-                selectDistrict(
-                  getDistrictName(item.feature)
-                )
-              "></path>
-
-        }
-
-        }
-
-        }
-
-      </svg>
-
-      <!-- ========================= -->
-      <!-- SELECTED DISTRICT CHIPS -->
-      <!-- ========================= -->
-
-      @if (selectedDistricts().length > 0) {
-
-      <div class="selected-districts">
-
-        @for (
-        district of selectedDistricts();
-        track district
-        ) {
-
-        <button type="button" class="district-chip" (click)="selectDistrict(district)">
-
-          {{ district }}
-
-          <span class="material-symbols-rounded">
-            close
-          </span>
-
-        </button>
-
-        }
-
-      </div>
-
-      }
-
-    </div>
-
-
-    <!-- ========================= -->
-    <!-- DISTRICT ANALYTICS -->
-    <!-- ========================= -->
-
-    <aside class="district-card">
-
-      <div class="card-header">
-
-        <div>
-
-          <span class="card-kicker">
-            DISTRICT ANALYTICS
-          </span>
-
-          <h2>
-            {{ activeDistrict().name }}
-          </h2>
-
-        </div>
-
-        <span class="live-pill">
-
-          <span class="live-dot"></span>
-
-          LIVE STATS
-
-        </span>
-
-      </div>
-
-
-      <div class="stats-grid">
-
-        <!-- LGD -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            LGD District Code
-          </span>
-
-          <strong>
-            {{ activeDistrict().lgdDistrictCode }}
-          </strong>
-
-        </div>
-
-
-        <!-- UNIQUE UID -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            Unique UID
-          </span>
-
-          <strong>
-            {{ activeDistrict().uniqueUid }}
-          </strong>
-
-        </div>
-
-
-        <!-- HIGHEST BENEFICIARY SCHEME -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            Highest Beneficiary Count Scheme wise
-          </span>
-
-          <strong>
-            {{ activeDistrict().highestBeneficiaryScheme }}
-          </strong>
-
-          <small>
-            {{
-            activeDistrict().highestBeneficiaryCount
-            | number
-            }}
-            beneficiaries
-          </small>
-
-        </div>
-
-
-        <!-- TOTAL CITIZENS -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            Total citizens in district
-          </span>
-
-          <strong>
-            {{
-            activeDistrict().totalCitizens
-            | number
-            }}
-          </strong>
-
-        </div>
-
-
-        <!-- GENDER -->
-
-        <div class="stat-box wide">
-
-          <span class="label">
-            Gender split
-          </span>
-
-          <strong>
-            Male {{ activeDistrict().malePercentage }}%
-            /
-            Female {{ activeDistrict().femalePercentage }}%
-          </strong>
-
-        </div>
-
-
-        <!-- AGE BANDS -->
-
-        <div class="stat-box wide">
-
-          <span class="label">
-            Age-band distribution
-          </span>
-
-          <div class="inline-list">
-
-            @for (
-            band of activeDistrict().ageBands;
-            track band.label
-            ) {
-
-            <span>
-              <b>
-                {{ band.label }}
-              </b>
-
-              {{ band.value }}
-            </span>
-
-            }
-
-          </div>
-
-        </div>
-
-
-        <!-- JM STATUS -->
-
-        <div class="stat-box wide">
-
-          <span class="label">
-            JM status flag count
-          </span>
-
-          <strong>
-
-            Alive
-            {{ activeDistrict().aliveFlag | number }}
-
-            /
-
-            Death
-            {{ activeDistrict().deathFlag | number }}
-
-          </strong>
-
-          <small>
-
-            Alive
-            {{ activeDistrict().alivePercentage }}%
-
-            •
-
-            Death
-            {{ activeDistrict().deathPercentage }}%
-
-          </small>
-
-        </div>
-
-
-        <!-- RATION CARD -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            Active valid ration card %
-          </span>
-
-          <strong>
-            {{ activeDistrict().activeValidRationCardPercentage }}%
-          </strong>
-
-        </div>
-
-
-        <!-- TOP SCHEMES -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            Top 5 schemes by enrollment count
-          </span>
-
-          <div class="scheme-list">
-
-            @for (
-            scheme of activeDistrict().topSchemes;
-            track scheme.label
-            ) {
-
-            <div>
-
-              <span>
-                {{ scheme.label }}
-              </span>
-
-              <b>
-                {{ scheme.value }}
-              </b>
-
-            </div>
-
-            }
-
-          </div>
-
-        </div>
-
-
-        <!-- AVG SCHEMES -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            Avg schemes enrolled / citizen
-          </span>
-
-          <strong>
-            {{ activeDistrict().avgSchemesPerCitizen }}
-          </strong>
-
-        </div>
-
-
-        <!-- ZERO SCHEME -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            % citizens with zero schemes
-          </span>
-
-          <strong>
-            {{ activeDistrict().zeroSchemePercent }}%
-          </strong>
-
-        </div>
-
-
-        <!-- MATCH RATE -->
-
-        <div class="stat-box">
-
-          <span class="label">
-            Match Rate
-          </span>
-
-          <strong>
-            {{ activeDistrict().matchRate }}%
-          </strong>
-
-        </div>
-
-      </div>
-
-    </aside>
-
-  </div>
-</section>
 
 @if (dashboard$ | async; as dashboard) {
 <section class="kpi-grid">
@@ -588,5 +81,271 @@
         }
       </tbody>
     </table>
+  </div>
+</section>
+
+<section class="state-overview-shell" aria-label="State overview map and district analytics">
+  <div class="state-overview-title">
+    <div>
+      <span class="title-accent">STATE OVERVIEW</span>
+      <span class="title-subtitle">District coverage & citizen intelligence</span>
+    </div>
+  </div>
+
+  <div class="state-overview-grid">
+
+    <!-- ========================= -->
+    <!-- INTERACTIVE MAP -->
+    <!-- ========================= -->
+
+    <div class="map-card">
+      <div class="map-heading">
+        <div>
+          <div class="panel-label">
+            <span class="dot"></span>
+            INTERACTIVE MAP
+          </div>
+          <p class="map-description">
+            Select a district to inspect its live analytics.
+          </p>
+        </div>
+
+        <div class="map-toolbar">
+          <span class="map-selection-count">
+            @if (selectedDistricts().length === 0) {
+              All districts
+            } @else {
+              {{ selectedDistricts().length }}
+              district{{ selectedDistricts().length > 1 ? 's' : '' }} selected
+            }
+          </span>
+
+          @if (selectedDistricts().length > 0) {
+            <button type="button" class="map-clear-button" (click)="clearDistrictSelection()">
+              Clear
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="map-stage">
+        <svg viewBox="0 0 700 520" class="wb-map" role="img"
+          aria-label="Interactive GeoJSON district map of West Bengal">
+
+          @if (projectedDistricts().length === 0) {
+            <text x="350" y="260" text-anchor="middle" class="map-loading">
+              Loading West Bengal map...
+            </text>
+          } @else {
+
+            @for (
+              item of projectedDistricts();
+              track getDistrictName(item.feature)
+            ) {
+
+              @for (
+                path of item.paths;
+                track path
+              ) {
+
+                <path
+                  class="district design"
+                  [class.is-selected]="isDistrictSelected(getDistrictName(item.feature))"
+                  [class.is-hovered]="getDistrictName(item.feature) === hoveredDistrict()"
+                  [attr.d]="path"
+                  [attr.data-district]="getDistrictName(item.feature)"
+                  [attr.aria-label]="getDistrictName(item.feature)"
+                  (mouseenter)="hoveredDistrict.set(getDistrictName(item.feature))"
+                  (mouseleave)="clearHover()"
+                  (click)="selectDistrict(getDistrictName(item.feature))">
+                </path>
+
+              }
+
+            }
+
+          }
+        </svg>
+
+        <div class="map-footer">
+          <span><i class="map-legend-dot"></i> Active district</span>
+          <span>Click any district to update analytics</span>
+        </div>
+      </div>
+
+      @if (selectedDistricts().length > 0) {
+        <div class="selected-districts">
+          @for (
+            district of selectedDistricts();
+            track district
+          ) {
+            <button type="button" class="district-chip" (click)="selectDistrict(district)">
+              {{ district }}
+              <span class="material-symbols-rounded">close</span>
+            </button>
+          }
+        </div>
+      }
+    </div>
+
+    <!-- ========================= -->
+    <!-- DISTRICT ANALYTICS -->
+    <!-- ========================= -->
+
+    <aside class="district-card">
+
+      <div class="analytics-header">
+        <div>
+          <span class="card-kicker">DISTRICT ANALYTICS</span>
+          <h2>{{ activeDistrict().name }}</h2>
+          <p>Live district-level coverage and beneficiary profile</p>
+        </div>
+
+        <span class="live-pill">
+          <span class="live-dot"></span>
+          LIVE STATS
+        </span>
+      </div>
+
+      <!-- Compact identity / reference information -->
+      <div class="district-meta" aria-label="District reference information">
+        <div class="meta-item">
+          <span>LGD District Code</span>
+          <strong>{{ activeDistrict().lgdDistrictCode }}</strong>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <span>Unique UID</span>
+          <strong>{{ activeDistrict().uniqueUid }}</strong>
+        </div>
+        <div class="meta-divider"></div>
+        <div class="meta-item">
+          <span>Total Citizens</span>
+          <strong>{{ activeDistrict().totalCitizens | number }}</strong>
+        </div>
+      </div>
+
+      <!-- Coverage overview -->
+      <section class="analytics-section">
+        <div class="analytics-section-heading">
+          <span>01</span>
+          <h3>Coverage overview</h3>
+        </div>
+
+        <div class="metric-row metric-row-three">
+          <div class="metric">
+            <span class="label">Active valid ration card</span>
+            <strong>{{ activeDistrict().activeValidRationCardPercentage }}%</strong>
+          </div>
+
+          <div class="metric">
+            <span class="label">Match rate</span>
+            <strong class="metric-positive">{{ activeDistrict().matchRate }}%</strong>
+          </div>
+
+          <div class="metric">
+            <span class="label">Avg schemes / citizen</span>
+            <strong>{{ activeDistrict().avgSchemesPerCitizen }}</strong>
+          </div>
+        </div>
+      </section>
+
+      <!-- Beneficiary and scheme profile -->
+      <section class="analytics-section">
+        <div class="analytics-section-heading">
+          <span>02</span>
+          <h3>Beneficiary & scheme profile</h3>
+        </div>
+
+        <div class="analytics-two-column">
+          <div class="feature-metric">
+            <span class="label">Highest beneficiary scheme</span>
+            <strong>{{ activeDistrict().highestBeneficiaryScheme }}</strong>
+            <small>
+              {{ activeDistrict().highestBeneficiaryCount | number }} beneficiaries
+            </small>
+          </div>
+
+          <div class="feature-metric">
+            <span class="label">Citizens with zero schemes</span>
+            <strong>{{ activeDistrict().zeroSchemePercent }}%</strong>
+            <small>Require scheme coverage attention</small>
+          </div>
+        </div>
+
+        <div class="scheme-list-wrap">
+          <span class="label">Top 5 schemes by enrollment</span>
+          <div class="scheme-list">
+            @for (
+              scheme of activeDistrict().topSchemes;
+              track scheme.label
+            ) {
+              <div>
+                <span>{{ scheme.label }}</span>
+                <b>{{ scheme.value }}</b>
+              </div>
+            }
+          </div>
+        </div>
+      </section>
+
+      <!-- Demographic profile -->
+      <section class="analytics-section">
+        <div class="analytics-section-heading">
+          <span>03</span>
+          <h3>Demographic profile</h3>
+        </div>
+
+        <div class="demographic-row">
+          <div class="demographic-block">
+            <span class="label">Gender split</span>
+            <strong>
+              Male {{ activeDistrict().malePercentage }}%
+              <span>/</span>
+              Female {{ activeDistrict().femalePercentage }}%
+            </strong>
+          </div>
+
+          <div class="age-block">
+            <span class="label">Age-band distribution</span>
+            <div class="age-list">
+              @for (
+                band of activeDistrict().ageBands;
+                track band.label
+              ) {
+                <span>
+                  <b>{{ band.label }}</b> {{ band.value }}
+                </span>
+              }
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Data quality -->
+      <section class="analytics-section analytics-section-last">
+        <div class="analytics-section-heading">
+          <span>04</span>
+          <h3>Data quality</h3>
+        </div>
+
+        <div class="quality-row">
+          <div>
+            <span class="label">JM status flag count</span>
+            <strong>
+              Alive {{ activeDistrict().aliveFlag | number }}
+              <span>/</span>
+              Death {{ activeDistrict().deathFlag | number }}
+            </strong>
+          </div>
+
+          <div class="quality-status">
+            <span>Alive {{ activeDistrict().alivePercentage }}%</span>
+            <span>Death {{ activeDistrict().deathPercentage }}%</span>
+          </div>
+        </div>
+      </section>
+
+    </aside>
   </div>
 </section>
