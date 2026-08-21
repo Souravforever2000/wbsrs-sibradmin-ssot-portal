@@ -109,23 +109,6 @@
             Select a district to inspect its live analytics.
           </p>
         </div>
-
-        <div class="map-toolbar">
-          <span class="map-selection-count">
-            @if (selectedDistricts().length === 0) {
-              All districts
-            } @else {
-              {{ selectedDistricts().length }}
-              district{{ selectedDistricts().length > 1 ? 's' : '' }} selected
-            }
-          </span>
-
-          @if (selectedDistricts().length > 0) {
-            <button type="button" class="map-clear-button" (click)="clearDistrictSelection()">
-              Clear
-            </button>
-          }
-        </div>
       </div>
 
       <div class="map-stage">
@@ -133,36 +116,33 @@
           aria-label="Interactive GeoJSON district map of West Bengal">
 
           @if (projectedDistricts().length === 0) {
-            <text x="350" y="260" text-anchor="middle" class="map-loading">
-              Loading West Bengal map...
-            </text>
+          <text x="350" y="260" text-anchor="middle" class="map-loading">
+            Loading West Bengal map...
+          </text>
           } @else {
 
+          @for (
+          item of projectedDistricts();
+          track getDistrictName(item.feature)
+          ) {
+
+          <g class="district-group" [class.is-hovered]="getDistrictName(item.feature) === hoveredDistrict()"
+            [attr.data-district]="getDistrictName(item.feature)"
+            (mouseenter)="setHoveredDistrict(getDistrictName(item.feature))"
+            (click)="selectDistrict(getDistrictName(item.feature))">
+
             @for (
-              item of projectedDistricts();
-              track getDistrictName(item.feature)
+            path of item.paths;
+            track path
             ) {
-
-              @for (
-                path of item.paths;
-                track path
-              ) {
-
-                <path
-                  class="district design"
-                  [class.is-selected]="isDistrictSelected(getDistrictName(item.feature))"
-                  [class.is-hovered]="getDistrictName(item.feature) === hoveredDistrict()"
-                  [attr.d]="path"
-                  [attr.data-district]="getDistrictName(item.feature)"
-                  [attr.aria-label]="getDistrictName(item.feature)"
-                  (mouseenter)="hoveredDistrict.set(getDistrictName(item.feature))"
-                  (mouseleave)="clearHover()"
-                  (click)="selectDistrict(getDistrictName(item.feature))">
-                </path>
-
-              }
-
+            <path class="district" [class.is-selected]="isDistrictSelected(getDistrictName(item.feature))"
+              [class.is-hovered]="getDistrictName(item.feature) === hoveredDistrict()" [attr.d]="path"
+              [attr.data-district]="getDistrictName(item.feature)" [attr.aria-label]="getDistrictName(item.feature)" />
             }
+
+          </g>
+
+          }
 
           }
         </svg>
@@ -172,20 +152,6 @@
           <span>Click any district to update analytics</span>
         </div>
       </div>
-
-      @if (selectedDistricts().length > 0) {
-        <div class="selected-districts">
-          @for (
-            district of selectedDistricts();
-            track district
-          ) {
-            <button type="button" class="district-chip" (click)="selectDistrict(district)">
-              {{ district }}
-              <span class="material-symbols-rounded">close</span>
-            </button>
-          }
-        </div>
-      }
     </div>
 
     <!-- ========================= -->
@@ -277,13 +243,13 @@
           <span class="label">Top 5 schemes by enrollment</span>
           <div class="scheme-list">
             @for (
-              scheme of activeDistrict().topSchemes;
-              track scheme.label
+            scheme of activeDistrict().topSchemes;
+            track scheme.label
             ) {
-              <div>
-                <span>{{ scheme.label }}</span>
-                <b>{{ scheme.value }}</b>
-              </div>
+            <div>
+              <span>{{ scheme.label }}</span>
+              <b>{{ scheme.value }}</b>
+            </div>
             }
           </div>
         </div>
@@ -310,12 +276,12 @@
             <span class="label">Age-band distribution</span>
             <div class="age-list">
               @for (
-                band of activeDistrict().ageBands;
-                track band.label
+              band of activeDistrict().ageBands;
+              track band.label
               ) {
-                <span>
-                  <b>{{ band.label }}</b> {{ band.value }}
-                </span>
+              <span>
+                <b>{{ band.label }}</b> {{ band.value }}
+              </span>
               }
             </div>
           </div>

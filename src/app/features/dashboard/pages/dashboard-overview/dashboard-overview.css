@@ -45,7 +45,7 @@
 
 .title-accent {
   display: inline-block;
-  color: #f97316;
+  color: #b45309;
   font-size: 30px;
   font-weight: 900;
   letter-spacing: .02em;
@@ -116,38 +116,7 @@
   line-height: 1.4;
 }
 
-.map-toolbar {
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 9px;
-  min-height: 24px;
-}
 
-.map-selection-count {
-  color: #7d6c57;
-  font-size: 9px;
-  font-weight: 800;
-  letter-spacing: .06em;
-  text-transform: uppercase;
-}
-
-.map-clear-button {
-  padding: 4px 9px;
-  border: 1px solid #e5c8a8;
-  border-radius: 999px;
-  background: #fff;
-  color: #a96218;
-  font-size: 9px;
-  font-weight: 800;
-  cursor: pointer;
-  transition: background .15s ease, transform .15s ease;
-}
-
-.map-clear-button:hover {
-  background: #fff3e5;
-  transform: translateY(-1px);
-}
 
 .map-stage {
   position: relative;
@@ -256,37 +225,6 @@
   background: #f97316;
 }
 
-.selected-districts {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 6px;
-  margin: 6px 0 0;
-  padding-top: 9px;
-  border-top: 1px solid #e5d9cc;
-}
-
-.district-chip {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 5px 8px 5px 10px;
-  border: 1px solid #e5c8a8;
-  border-radius: 999px;
-  background: #fff8ef;
-  color: #a04d08;
-  font-size: 9px;
-  font-weight: 800;
-  cursor: pointer;
-}
-
-.district-chip:hover {
-  background: #fff0dc;
-}
-
-.district-chip .material-symbols-rounded {
-  font-size: 13px;
-}
 
 /* =========================================
    DISTRICT ANALYTICS — BORDERLESS METRICS
@@ -965,4 +903,14 @@
   .table-card {
     padding: 13px;
   }
+
+  /* Hover stability fix for the interactive SVG map */
+.district-group {
+  cursor: pointer;
+  pointer-events: all;
+}
+
+.district-group .district {
+  pointer-events: all;
+}
 }
