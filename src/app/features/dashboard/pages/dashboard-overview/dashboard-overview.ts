@@ -101,9 +101,8 @@ export class DashboardOverviewPage {
   /* MAP STATE                      */
   /* ============================= */
 
+  readonly selectedDistrict = signal<string | null>(null);
   readonly hoveredDistrict = signal<string | null>(null);
-
-  readonly selectedDistricts = signal<string[]>([]);
 
   readonly districtGeoJson = signal<WestBengalGeoJson | null>(null);
 
@@ -679,16 +678,10 @@ export class DashboardOverviewPage {
   };
 
   readonly activeDistrictName = computed(() => {
-    // 1. While hovering, show the hovered district
-    if (this.hoveredDistrict()) {
-      return this.hoveredDistrict()!;
-    }
+    const selected = this.selectedDistrict();
 
-    // 2. When mouse leaves, return to selected district
-    const selected = this.selectedDistricts();
-
-    if (selected.length > 0) {
-      return selected[0];
+    if (selected) {
+      return selected;
     }
 
     const globalDistrict = this.state.filters().district;
@@ -751,43 +744,35 @@ export class DashboardOverviewPage {
   });
 
   selectDistrict(name: string): void {
-    const current = this.selectedDistricts();
+    const current = this.selectedDistrict();
 
-    if (current.includes(name)) {
-      this.selectedDistricts.set(current.filter((district) => district !== name));
-    } else {
-      this.selectedDistricts.set([...current, name]);
-    }
+    // Clicking the selected district again clears the selection.
+    if (current === name) {
+      this.selectedDistrict.set(null);
 
-    this.hoveredDistrict.set(null);
-
-    const selected = this.selectedDistricts();
-
-    if (selected.length === 1) {
-      this.state.update({
-        district: selected[0],
-        block: 'All blocks',
-      });
-    } else if (selected.length === 0) {
       this.state.update({
         district: 'All districts',
         block: 'All blocks',
       });
-    } else {
-      this.state.update({
-        district: selected[0],
-        block: 'All blocks',
-      });
+
+      return;
     }
+
+    // Only one district can be selected at a time.
+    this.selectedDistrict.set(name);
+
+    this.state.update({
+      district: name,
+      block: 'All blocks',
+    });
   }
 
   isDistrictSelected(name: string): boolean {
-    return this.selectedDistricts().includes(name);
+    return this.selectedDistrict() === name;
   }
 
   clearDistrictSelection(): void {
-    this.selectedDistricts.set([]);
-
+    this.selectedDistrict.set(null);
     this.hoveredDistrict.set(null);
 
     this.state.update({
@@ -796,7 +781,10 @@ export class DashboardOverviewPage {
     });
   }
 
-  clearHover(): void {
-    this.hoveredDistrict.set(null);
+  setHoveredDistrict(name: string): void {
+    if (this.hoveredDistrict() !== name) {
+      this.hoveredDistrict.set(name);
+    }
   }
+
 }
