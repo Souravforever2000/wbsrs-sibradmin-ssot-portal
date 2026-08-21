@@ -1,38 +1,633 @@
-:host { display:block; position:relative; z-index:20; }
-.topbar { height:72px; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:0 28px; color:#1f2937; background:linear-gradient(90deg, #FAFAFA 0%, #FEF6E9 100%); border-bottom:2px solid #F97316; box-shadow:0 5px 18px rgba(249,115,22,.12); }
-.brand { display:flex; align-items:center; gap:12px; min-width:0; color:inherit; text-decoration:none; }
-.brand-logo { width:40px; height:40px; flex:0 0 40px; border-radius:10px; box-shadow:0 5px 15px rgba(249,115,22,.18); }
-.brand-copy { min-width:0; display:flex; flex-direction:column; gap:4px; }
-.brand-copy strong { overflow:hidden; color:#1f2937; font-size:16px; font-weight:900; letter-spacing:.02em; text-transform:uppercase; text-overflow:ellipsis; white-space:nowrap; }
-.brand-copy small { color:#6b4a2f; font-size:9px; white-space:nowrap; }
-.version { padding:4px 7px; border:1px solid #F97316; border-radius:4px; color:#9a4a0d; background:#FEF6E9; font-size:9px; font-weight:700; white-space:nowrap; }
-.top-actions { display:flex; align-items:center; gap:11px; min-width:0; }
-.header-status { display:flex; align-items:center; gap:9px; color:#5f6b7a; font-size:9px; white-space:nowrap; }
-.header-status > span { display:inline-flex; align-items:center; gap:4px; }
-.header-status .material-symbols-rounded { color:#F97316; font-size:15px; }
-.header-status .session { padding-left:9px; border-left:1px solid rgba(249,115,22,.28); color:#374151; font-variant-numeric:tabular-nums; }
-.header-status .session .material-symbols-rounded { color:#d97706; }
-.regenerate { height:37px; padding:0 12px; border:1px solid #F97316; border-radius:7px; color:#7c2d12; background:#FFF7ED; font-size:10px; font-weight:700; transition:transform .2s ease,background .2s ease,box-shadow .2s ease,border-color .2s ease; }
-.regenerate:disabled { cursor:wait; opacity:.8; }
-.regenerate:hover { transform:translateY(-2px); border-color:#ea580c; background:#FFEDD5; box-shadow:0 7px 18px rgba(249,115,22,.14); }
-.regenerate .material-symbols-rounded { margin-right:5px; color:#F97316; font-size:16px; }
-.spin { display:inline-block; animation:spin .8s linear infinite; }
-@keyframes spin { to { transform:rotate(360deg); } }
-.schema { display:flex; flex-direction:column; align-items:flex-end; gap:3px; color:#4b5563; font-size:10px; white-space:nowrap; }
-.schema b { color:#F97316; }
-.schema small { color:#7c5d42; font-size:8px; }
-.header-controls { display:flex; align-items:center; gap:5px; }
-.language-picker { height:31px; display:flex; align-items:center; gap:4px; padding:0 7px; border:1px solid rgba(249,115,22,.35); border-radius:7px; color:#374151; background:#fff; }
-.language-picker .material-symbols-rounded { color:#F97316; font-size:16px; }
-.language-picker select { width:45px; padding:0; border:0; outline:0; color:#374151; background:transparent; font-size:9px; font-weight:800; }
-.language-picker option { color:#1f2937; background:#fff; }
-.icon-control,.notification { width:31px; height:31px; display:grid; place-items:center; border:1px solid rgba(249,115,22,.28); border-radius:8px; color:#4b5563; background:#fff; transition:color .18s ease,border-color .18s ease,background .18s ease,transform .18s ease; }
-.icon-control:hover,.icon-control.active,.notification:hover { transform:translateY(-1px); border-color:#F97316; color:#9a4a0d; background:#FFF7ED; }
-.icon-control .material-symbols-rounded,.notification .material-symbols-rounded { font-size:17px; }
-.notification { position:relative; }
-.notification-dot { position:absolute; top:5px; right:5px; width:5px; height:5px; border-radius:50%; background:#F97316; box-shadow:0 0 0 2px #fff; }
-.avatar { width:34px; height:34px; display:grid; place-items:center; border:1px solid rgba(249,115,22,.4); border-radius:50%; color:#7c2d12; background:#FEF6E9; font-size:10px; font-weight:800; }
-.avatar:hover { border-color:#F97316; background:#FFEDD5; }
-@media (max-width:1280px) { .header-status { display:none; } }
-@media (max-width:1080px) { .topbar { padding:0 18px; }.version,.schema { display:none; }.top-actions { gap:8px; } }
-@media (max-width:560px) { .topbar { height:64px; padding:0 13px; }.brand { gap:8px; }.brand-logo { width:35px; height:35px; flex-basis:35px; }.brand-copy strong { font-size:12px; }.brand-copy small { display:none; }.top-actions { gap:5px; }.regenerate { width:34px; padding:0; font-size:0; }.regenerate .material-symbols-rounded { margin:0; font-size:16px; }.language-picker { padding:0 5px; }.language-picker select { width:33px; }.notification { display:none; }.icon-control { width:29px; height:29px; } }
+:host {
+  display: block;
+  position: relative;
+  z-index: 20;
+}
+
+/* =========================================================
+   TOP HEADER
+   ========================================================= */
+
+.topbar {
+  position: relative;
+
+  /*
+   * Slightly increased height to accommodate
+   * the skyline without covering the content.
+   */
+  height: 90px;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  gap: 18px;
+
+  padding: 14px 28px 0;
+
+  color: #1f2937;
+
+  background:
+    linear-gradient(
+      90deg,
+      #fafafa 0%,
+      #fef6e9 100%
+    );
+
+  border-bottom: 2px solid #f97316;
+
+  box-shadow:
+    0 5px 18px rgba(249, 115, 22, 0.12);
+
+  overflow: hidden;
+}
+
+/* =========================================================
+   KOLKATA / WEST BENGAL SKYLINE
+   ========================================================= */
+
+.header-skyline {
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  width: 100%;
+  height: 74px;
+
+  /*
+   * IMPORTANT:
+   * Do NOT use object-fit: cover.
+   *
+   * The original PNG is a panoramic skyline.
+   * `cover` would crop the top of the buildings.
+   */
+  object-fit: fill;
+
+  object-position: center bottom;
+
+  /*
+   * Clearly visible.
+   */
+  opacity: 0.72;
+
+  /*
+   * Decorative image only.
+   */
+  pointer-events: none;
+
+  /*
+   * Keep it behind header controls.
+   */
+  z-index: 1;
+}
+
+/*
+ * Very subtle white fade at the top of
+ * the skyline so header text remains clear.
+ */
+.topbar::after {
+  content: '';
+
+  position: absolute;
+
+  left: 0;
+  right: 0;
+  bottom: 0;
+
+  height: 42px;
+
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(255, 255, 255, 0),
+      rgba(255, 255, 255, 0.18)
+    );
+
+  pointer-events: none;
+
+  z-index: 2;
+}
+
+/* =========================================================
+   BRAND
+   ========================================================= */
+
+.brand {
+  position: relative;
+  z-index: 4;
+
+  display: flex;
+  align-items: center;
+
+  gap: 12px;
+
+  min-width: 0;
+
+  color: inherit;
+
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: 40px;
+  height: 40px;
+
+  flex: 0 0 40px;
+
+  border-radius: 10px;
+
+  box-shadow:
+    0 5px 15px rgba(249, 115, 22, 0.18);
+}
+
+.brand-copy {
+  min-width: 0;
+
+  display: flex;
+  flex-direction: column;
+
+  gap: 4px;
+}
+
+.brand-copy strong {
+  overflow: hidden;
+
+  color: #1f2937;
+
+  font-size: 16px;
+  font-weight: 900;
+
+  letter-spacing: 0.02em;
+
+  text-transform: uppercase;
+
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+}
+
+.brand-copy small {
+  color: #6b4a2f;
+
+  font-size: 9px;
+
+  white-space: nowrap;
+}
+
+.version {
+  padding: 4px 7px;
+
+  border: 1px solid #f97316;
+
+  border-radius: 4px;
+
+  color: #9a4a0d;
+
+  background: #fef6e9;
+
+  font-size: 9px;
+
+  font-weight: 700;
+
+  white-space: nowrap;
+}
+
+/* =========================================================
+   HEADER ACTIONS
+   ========================================================= */
+
+.top-actions {
+  position: relative;
+  z-index: 4;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  min-width: 0;
+}
+
+.header-status {
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  color: #5f6b7a;
+
+  font-size: 9px;
+
+  white-space: nowrap;
+}
+
+.header-status > span {
+  display: inline-flex;
+  align-items: center;
+
+  gap: 4px;
+}
+
+.header-status .material-symbols-rounded {
+  color: #f97316;
+
+  font-size: 15px;
+}
+
+.header-status .session {
+  padding-left: 9px;
+
+  border-left:
+    1px solid rgba(249, 115, 22, 0.28);
+
+  color: #374151;
+
+  font-variant-numeric: tabular-nums;
+}
+
+.header-status .session .material-symbols-rounded {
+  color: #d97706;
+}
+
+/* =========================================================
+   REGENERATE BUTTON
+   ========================================================= */
+
+.regenerate {
+  height: 37px;
+
+  padding: 0 12px;
+
+  border: 1px solid #f97316;
+
+  border-radius: 7px;
+
+  color: #7c2d12;
+
+  background: #fff7ed;
+
+  font-size: 10px;
+
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.regenerate:disabled {
+  cursor: wait;
+
+  opacity: 0.8;
+}
+
+.regenerate:hover {
+  transform: translateY(-2px);
+
+  border-color: #ea580c;
+
+  background: #ffedd5;
+
+  box-shadow:
+    0 7px 18px rgba(249, 115, 22, 0.14);
+}
+
+.regenerate .material-symbols-rounded {
+  margin-right: 5px;
+
+  color: #f97316;
+
+  font-size: 16px;
+}
+
+.spin {
+  display: inline-block;
+
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* =========================================================
+   DATABASE SCHEMA
+   ========================================================= */
+
+.schema {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+
+  gap: 3px;
+
+  color: #4b5563;
+
+  font-size: 10px;
+
+  white-space: nowrap;
+}
+
+.schema b {
+  color: #f97316;
+}
+
+.schema small {
+  color: #7c5d42;
+
+  font-size: 8px;
+}
+
+/* =========================================================
+   HEADER CONTROLS
+   ========================================================= */
+
+.header-controls {
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+}
+
+.language-picker {
+  height: 31px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 4px;
+
+  padding: 0 7px;
+
+  border: 1px solid rgba(249, 115, 22, 0.35);
+
+  border-radius: 7px;
+
+  color: #374151;
+
+  background: #fff;
+}
+
+.language-picker .material-symbols-rounded {
+  color: #f97316;
+
+  font-size: 16px;
+}
+
+.language-picker select {
+  width: 45px;
+
+  padding: 0;
+
+  border: 0;
+
+  outline: 0;
+
+  color: #374151;
+
+  background: transparent;
+
+  font-size: 9px;
+
+  font-weight: 800;
+}
+
+.language-picker option {
+  color: #1f2937;
+
+  background: #fff;
+}
+
+/* =========================================================
+   ICON CONTROLS
+   ========================================================= */
+
+.icon-control,
+.notification {
+  width: 31px;
+  height: 31px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(249, 115, 22, 0.28);
+
+  border-radius: 8px;
+
+  color: #4b5563;
+
+  background: #fff;
+
+  cursor: pointer;
+
+  transition:
+    color 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    transform 0.18s ease;
+}
+
+.icon-control:hover,
+.icon-control.active,
+.notification:hover {
+  transform: translateY(-1px);
+
+  border-color: #f97316;
+
+  color: #9a4a0d;
+
+  background: #fff7ed;
+}
+
+.icon-control .material-symbols-rounded,
+.notification .material-symbols-rounded {
+  font-size: 17px;
+}
+
+/* =========================================================
+   NOTIFICATION
+   ========================================================= */
+
+.notification {
+  position: relative;
+}
+
+.notification-dot {
+  position: absolute;
+
+  top: 5px;
+  right: 5px;
+
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #f97316;
+
+  box-shadow:
+    0 0 0 2px #fff;
+}
+
+/* =========================================================
+   AVATAR
+   ========================================================= */
+
+.avatar {
+  width: 34px;
+  height: 34px;
+
+  display: grid;
+  place-items: center;
+
+  border:
+    1px solid rgba(249, 115, 22, 0.4);
+
+  border-radius: 50%;
+
+  color: #7c2d12;
+
+  background: #fef6e9;
+
+  font-size: 10px;
+
+  font-weight: 800;
+}
+
+.avatar:hover {
+  border-color: #f97316;
+
+  background: #ffedd5;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1280px) {
+
+  .header-status {
+    display: none;
+  }
+}
+
+@media (max-width: 1080px) {
+
+  .topbar {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+
+  .version,
+  .schema {
+    display: none;
+  }
+
+  .top-actions {
+    gap: 8px;
+  }
+
+  .header-skyline {
+    height: 68px;
+
+    opacity: 0.65;
+  }
+}
+
+@media (max-width: 700px) {
+
+  .topbar {
+    height: 92px;
+
+    padding:
+      10px
+      14px
+      0;
+  }
+
+  .header-skyline {
+    height: 60px;
+
+    opacity: 0.55;
+  }
+
+  .brand {
+    gap: 8px;
+  }
+
+  .brand-logo {
+    width: 35px;
+    height: 35px;
+
+    flex-basis: 35px;
+  }
+
+  .brand-copy strong {
+    font-size: 12px;
+  }
+
+  .brand-copy small {
+    display: none;
+  }
+
+  .top-actions {
+    gap: 5px;
+  }
+
+  .regenerate {
+    width: 34px;
+
+    padding: 0;
+
+    font-size: 0;
+  }
+
+  .regenerate .material-symbols-rounded {
+    margin: 0;
+
+    font-size: 16px;
+  }
+
+  .language-picker {
+    padding: 0 5px;
+  }
+
+  .language-picker select {
+    width: 33px;
+  }
+
+  .notification {
+    display: none;
+  }
+
+  .icon-control {
+    width: 29px;
+    height: 29px;
+  }
+}
+
+@media (max-width: 480px) {
+
+  .topbar {
+    height: 82px;
+  }
+
+  .header-skyline {
+    height: 52px;
+
+    opacity: 0.48;
+  }
+
+  .brand-copy strong {
+    font-size: 10px;
+  }
+}

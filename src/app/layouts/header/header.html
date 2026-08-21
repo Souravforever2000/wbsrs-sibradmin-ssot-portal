@@ -1,24 +1,177 @@
 <header class="topbar">
-  <a class="brand" routerLink="/" aria-label="WBSSOT home">
-    <img src="assets/brand/akLogoRR.png" alt="WBSSOT" class="brand-logo" />
-    <span class="brand-copy"><strong>SINGLE SOURCE OF TRUTH - GOVT OF WEST BENGAL</strong><small>Social Registry Data Matching &amp; Scheme Entitlement Audit System</small></span>
-    <span class="version">v2.5 Match &amp; Fuzzy Engine</span>
+
+  <!-- Decorative West Bengal / Kolkata skyline -->
+  <img
+    src="assets/images/kolkata.png"
+    alt=""
+    aria-hidden="true"
+    class="header-skyline"
+  />
+
+  <!-- Header content -->
+  <a
+    class="brand"
+    routerLink="/"
+    aria-label="WBSSOT home"
+  >
+    <img
+      src="assets/brand/akLogoRR.png"
+      alt="WBSSOT"
+      class="brand-logo"
+    />
+
+    <span class="brand-copy">
+      <strong>
+        SINGLE SOURCE OF TRUTH - GOVT OF WEST BENGAL
+      </strong>
+
+      <small>
+        Social Registry Data Matching &amp; Scheme Entitlement Audit System
+      </small>
+    </span>
+
+    <span class="version">
+      v2.5 Match &amp; Fuzzy Engine
+    </span>
   </a>
 
   <div class="top-actions">
-    <div class="header-status" aria-label="Current date and session status">
-      <span><span class="material-symbols-rounded">calendar_today</span>{{ dateLabel() }}</span>
-      <span><span class="material-symbols-rounded">schedule</span>{{ timeLabel() }} IST</span>
-      <span class="session"><span class="material-symbols-rounded">timer</span>{{ labels().session }} {{ sessionLabel() }}</span>
+
+    <div
+      class="header-status"
+      aria-label="Current date and session status"
+    >
+      <span>
+        <span class="material-symbols-rounded">
+          calendar_today
+        </span>
+
+        {{ dateLabel() }}
+      </span>
+
+      <span>
+        <span class="material-symbols-rounded">
+          schedule
+        </span>
+
+        {{ timeLabel() }} IST
+      </span>
+
+      <span class="session">
+        <span class="material-symbols-rounded">
+          timer
+        </span>
+
+        {{ labels().session }}
+        {{ sessionLabel() }}
+      </span>
     </div>
-    <button type="button" class="regenerate" [disabled]="regenerating()" (click)="regenerateEngineData()"><span class="material-symbols-rounded" [class.spin]="regenerating()">sync</span> {{ regenerating() ? labels().refreshing : labels().refresh }}</button>
-    <div class="schema"><span>{{ labels().dbSchema }}: <b>sibradmin</b></span><small>{{ labels().masterDb }}</small></div>
+
+    <button
+      type="button"
+      class="regenerate"
+      [disabled]="regenerating()"
+      (click)="regenerateEngineData()"
+    >
+      <span
+        class="material-symbols-rounded"
+        [class.spin]="regenerating()"
+      >
+        sync
+      </span>
+
+      {{ regenerating()
+        ? labels().refreshing
+        : labels().refresh
+      }}
+    </button>
+
+    <div class="schema">
+      <span>
+        {{ labels().dbSchema }}:
+        <b>sibradmin</b>
+      </span>
+
+      <small>
+        {{ labels().masterDb }}
+      </small>
+    </div>
+
     <div class="header-controls">
-      <label class="language-picker" [attr.aria-label]="labels().language"><span class="material-symbols-rounded">language</span><select [value]="language()" (change)="changeLanguage($any($event.target).value)"><option value="en">EN</option><option value="bn">বাংলা</option><option value="hi">हिन्दी</option></select></label>
-      <button type="button" class="icon-control" [class.active]="darkMode()" [attr.aria-label]="darkMode() ? labels().lightMode : labels().darkMode" [title]="darkMode() ? labels().lightMode : labels().darkMode" (click)="toggleDarkMode()"><span class="material-symbols-rounded">{{ darkMode() ? 'light_mode' : 'dark_mode' }}</span></button>
-      <button type="button" class="icon-control" [class.active]="highContrast()" [attr.aria-label]="labels().accessibility" [title]="labels().accessibility" (click)="toggleAccessibility()"><span class="material-symbols-rounded">accessibility_new</span></button>
+
+      <label
+        class="language-picker"
+        [attr.aria-label]="labels().language"
+      >
+        <span class="material-symbols-rounded">
+          language
+        </span>
+
+        <select
+          [value]="language()"
+          (change)="changeLanguage($any($event.target).value)"
+        >
+          <option value="en">EN</option>
+          <option value="bn">বাংলা</option>
+          <option value="hi">हिन्दी</option>
+        </select>
+      </label>
+
+      <button
+        type="button"
+        class="icon-control"
+        [class.active]="darkMode()"
+        [attr.aria-label]="
+          darkMode()
+            ? labels().lightMode
+            : labels().darkMode
+        "
+        [title]="
+          darkMode()
+            ? labels().lightMode
+            : labels().darkMode
+        "
+        (click)="toggleDarkMode()"
+      >
+        <span class="material-symbols-rounded">
+          {{ darkMode() ? 'light_mode' : 'dark_mode' }}
+        </span>
+      </button>
+
+      <button
+        type="button"
+        class="icon-control"
+        [class.active]="highContrast()"
+        [attr.aria-label]="labels().accessibility"
+        [title]="labels().accessibility"
+        (click)="toggleAccessibility()"
+      >
+        <span class="material-symbols-rounded">
+          accessibility_new
+        </span>
+      </button>
+
     </div>
-    <button type="button" class="notification" [attr.aria-label]="labels().notifications"><span class="notification-dot"></span><span class="material-symbols-rounded">notifications</span></button>
-    <div class="avatar" aria-label="Signed in user">AS</div>
+
+    <button
+      type="button"
+      class="notification"
+      [attr.aria-label]="labels().notifications"
+    >
+      <span class="notification-dot"></span>
+
+      <span class="material-symbols-rounded">
+        notifications
+      </span>
+    </button>
+
+    <div
+      class="avatar"
+      aria-label="Signed in user"
+    >
+      AS
+    </div>
+
   </div>
+
 </header>

@@ -1,317 +1,58 @@
-﻿<app-page-heading title="Executive Overview"
-  description="A state-wide view of member coverage, scheme matching and data quality."></app-page-heading>
-<app-global-filters></app-global-filters>
+<app-page-heading
+  title="Executive Overview"
+  description="A state-wide view of member coverage, scheme matching and data quality."
+/>
 
-
+<app-global-filters />
 
 @if (dashboard$ | async; as dashboard) {
-<section class="kpi-grid">
-  <app-kpi-card label="Total unique members" [value]="dashboard.summary.totalUniqueMembers.toString()"
-    detail="Unlogged SRS_master" trend="Baseline" icon="group"></app-kpi-card>
-  <app-kpi-card label="Scheme matches checked" [value]="dashboard.summary.schemeMatchesChecked.toString()"
-    detail="3.0 schemes / member" trend="Active" tone="blue" icon="compare_arrows"></app-kpi-card>
-  <app-kpi-card label="High match rate (>85%)" [value]="dashboard.summary.highMatchRate + '%'"
-    detail="137 matching records" trend="Strong" tone="green" icon="check_circle"></app-kpi-card>
-  <app-kpi-card label="Critical discrepancies" [value]="dashboard.summary.criticalDiscrepancies.toString()"
-    detail="13.2% requires audit" trend="Review" tone="red" icon="warning"></app-kpi-card>
-</section>
+  <section class="kpi-grid">
+    <app-kpi-card
+      label="Total unique members"
+      [value]="dashboard.summary.totalUniqueMembers.toString()"
+      detail="Unlogged SRS_master"
+      trend="Baseline"
+      icon="group"
+    />
 
-<app-dashboard-charts [gradeDistribution]="dashboard.gradeDistribution" [statusBreakdown]="dashboard.statusBreakdown"
-  [discrepancyFrequency]="dashboard.discrepancyFrequency"
-  [confidenceSpectrum]="dashboard.confidenceSpectrum"></app-dashboard-charts>
+    <app-kpi-card
+      label="Scheme matches checked"
+      [value]="dashboard.summary.schemeMatchesChecked.toString()"
+      detail="3.0 schemes / member"
+      trend="Active"
+      tone="blue"
+      icon="compare_arrows"
+    />
+
+    <app-kpi-card
+      label="High match rate (>85%)"
+      [value]="dashboard.summary.highMatchRate + '%'"
+      detail="137 matching records"
+      trend="Strong"
+      tone="green"
+      icon="check_circle"
+    />
+
+    <app-kpi-card
+      label="Critical discrepancies"
+      [value]="dashboard.summary.criticalDiscrepancies.toString()"
+      detail="13.2% requires audit"
+      trend="Review"
+      tone="red"
+      icon="warning"
+    />
+  </section>
+
+  <app-dashboard-charts
+    [gradeDistribution]="dashboard.gradeDistribution"
+    [statusBreakdown]="dashboard.statusBreakdown"
+    [discrepancyFrequency]="dashboard.discrepancyFrequency"
+    [confidenceSpectrum]="dashboard.confidenceSpectrum"
+  />
 }
 
-<section class="insight-section">
-  <div class="section-title">
-    <div>
-      <span>INTELLIGENCE FEED</span>
-      <h2>Key highlights</h2>
-    </div>
-    <small>Generated from the current SRS master aggregate</small>
-  </div>
-  <div class="insight-grid">
-    @for (insight of (insights$ | async); track insight.title) {
-    <article class="insight" [class]="'insight ' + insight.severity">
-      <strong>{{ insight.title }}</strong>
-      <p>{{ insight.text }}</p>
-      <small>Open analytical detail <span class="material-symbols-rounded">arrow_forward</span></small>
-    </article>
-    }
-  </div>
-</section>
+<app-dashboard-insights [insights]="insights$ | async" />
 
-<section class="table-card">
-  <div class="card-title">
-    <div>
-      <h2>District performance snapshot</h2>
-      <p>Top and bottom coverage signals from the latest materialized view</p>
-    </div>
-    <button class="outline-button">Open district analytics <span
-        class="material-symbols-rounded">arrow_forward</span></button>
-  </div>
-  <div class="table-wrap">
-    <table>
-      <thead>
-        <tr>
-          <th>Rank</th>
-          <th>District</th>
-          <th>Beneficiaries</th>
-          <th>Coverage</th>
-          <th>YoY growth</th>
-          <th>Signal</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (row of (performance$ | async); track row.district) {
-        <tr>
-          <td><span class="rank">{{ row.rank }}</span></td>
-          <td><strong>{{ row.district }}</strong></td>
-          <td>{{ row.beneficiaries }}</td>
-          <td>
-            <div class="coverage">
-              <i [style.width.%]="row.coverage"></i>
-              <b>{{ row.coverage }}%</b>
-            </div>
-          </td>
-          <td [class.good]="row.growth > 0" [class.bad]="row.growth < 0">{{ row.growth > 0 ? '+' : '' }}{{ row.growth
-            }}%</td>
-          <td><span class="signal" [class.down]="row.growth < 0">{{ row.growth > 0 ? 'Improving' : 'Declining' }}</span>
-          </td>
-        </tr>
-        }
-      </tbody>
-    </table>
-  </div>
-</section>
+<app-district-performance [rows]="performance$ | async" />
 
-<section class="state-overview-shell" aria-label="State overview map and district analytics">
-  <div class="state-overview-title">
-    <div>
-      <span class="title-accent">STATE OVERVIEW</span>
-      <span class="title-subtitle">District coverage & citizen intelligence</span>
-    </div>
-  </div>
-
-  <div class="state-overview-grid">
-
-    <!-- ========================= -->
-    <!-- INTERACTIVE MAP -->
-    <!-- ========================= -->
-
-    <div class="map-card">
-      <div class="map-heading">
-        <div>
-          <div class="panel-label">
-            <span class="dot"></span>
-            INTERACTIVE MAP
-          </div>
-          <p class="map-description">
-            Select a district to inspect its live analytics.
-          </p>
-        </div>
-      </div>
-
-      <div class="map-stage">
-        <svg viewBox="0 0 700 520" class="wb-map" role="img"
-          aria-label="Interactive GeoJSON district map of West Bengal">
-
-          @if (projectedDistricts().length === 0) {
-          <text x="350" y="260" text-anchor="middle" class="map-loading">
-            Loading West Bengal map...
-          </text>
-          } @else {
-
-          @for (
-          item of projectedDistricts();
-          track getDistrictName(item.feature)
-          ) {
-
-          <g class="district-group" [class.is-hovered]="getDistrictName(item.feature) === hoveredDistrict()"
-            [attr.data-district]="getDistrictName(item.feature)"
-            (mouseenter)="setHoveredDistrict(getDistrictName(item.feature))"
-            (click)="selectDistrict(getDistrictName(item.feature))">
-
-            @for (
-            path of item.paths;
-            track path
-            ) {
-            <path class="district" [class.is-selected]="isDistrictSelected(getDistrictName(item.feature))"
-              [class.is-hovered]="getDistrictName(item.feature) === hoveredDistrict()" [attr.d]="path"
-              [attr.data-district]="getDistrictName(item.feature)" [attr.aria-label]="getDistrictName(item.feature)" />
-            }
-
-          </g>
-
-          }
-
-          }
-        </svg>
-
-        <div class="map-footer">
-          <span><i class="map-legend-dot"></i> Active district</span>
-          <span>Click any district to update analytics</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- ========================= -->
-    <!-- DISTRICT ANALYTICS -->
-    <!-- ========================= -->
-
-    <aside class="district-card">
-
-      <div class="analytics-header">
-        <div>
-          <span class="card-kicker">DISTRICT ANALYTICS</span>
-          <h2>{{ activeDistrict().name }}</h2>
-          <p>Live district-level coverage and beneficiary profile</p>
-        </div>
-
-        <span class="live-pill">
-          <span class="live-dot"></span>
-          LIVE STATS
-        </span>
-      </div>
-
-      <!-- Compact identity / reference information -->
-      <div class="district-meta" aria-label="District reference information">
-        <div class="meta-item">
-          <span>LGD District Code</span>
-          <strong>{{ activeDistrict().lgdDistrictCode }}</strong>
-        </div>
-        <div class="meta-divider"></div>
-        <div class="meta-item">
-          <span>Unique UID</span>
-          <strong>{{ activeDistrict().uniqueUid }}</strong>
-        </div>
-        <div class="meta-divider"></div>
-        <div class="meta-item">
-          <span>Total Citizens</span>
-          <strong>{{ activeDistrict().totalCitizens | number }}</strong>
-        </div>
-      </div>
-
-      <!-- Coverage overview -->
-      <section class="analytics-section">
-        <div class="analytics-section-heading">
-          <span>01</span>
-          <h3>Coverage overview</h3>
-        </div>
-
-        <div class="metric-row metric-row-three">
-          <div class="metric">
-            <span class="label">Active valid ration card</span>
-            <strong>{{ activeDistrict().activeValidRationCardPercentage }}%</strong>
-          </div>
-
-          <div class="metric">
-            <span class="label">Match rate</span>
-            <strong class="metric-positive">{{ activeDistrict().matchRate }}%</strong>
-          </div>
-
-          <div class="metric">
-            <span class="label">Avg schemes / citizen</span>
-            <strong>{{ activeDistrict().avgSchemesPerCitizen }}</strong>
-          </div>
-        </div>
-      </section>
-
-      <!-- Beneficiary and scheme profile -->
-      <section class="analytics-section">
-        <div class="analytics-section-heading">
-          <span>02</span>
-          <h3>Beneficiary & scheme profile</h3>
-        </div>
-
-        <div class="analytics-two-column">
-          <div class="feature-metric">
-            <span class="label">Highest beneficiary scheme</span>
-            <strong>{{ activeDistrict().highestBeneficiaryScheme }}</strong>
-            <small>
-              {{ activeDistrict().highestBeneficiaryCount | number }} beneficiaries
-            </small>
-          </div>
-
-          <div class="feature-metric">
-            <span class="label">Citizens with zero schemes</span>
-            <strong>{{ activeDistrict().zeroSchemePercent }}%</strong>
-            <small>Require scheme coverage attention</small>
-          </div>
-        </div>
-
-        <div class="scheme-list-wrap">
-          <span class="label">Top 5 schemes by enrollment</span>
-          <div class="scheme-list">
-            @for (
-            scheme of activeDistrict().topSchemes;
-            track scheme.label
-            ) {
-            <div>
-              <span>{{ scheme.label }}</span>
-              <b>{{ scheme.value }}</b>
-            </div>
-            }
-          </div>
-        </div>
-      </section>
-
-      <!-- Demographic profile -->
-      <section class="analytics-section">
-        <div class="analytics-section-heading">
-          <span>03</span>
-          <h3>Demographic profile</h3>
-        </div>
-
-        <div class="demographic-row">
-          <div class="demographic-block">
-            <span class="label">Gender split</span>
-            <strong>
-              Male {{ activeDistrict().malePercentage }}%
-              <span>/</span>
-              Female {{ activeDistrict().femalePercentage }}%
-            </strong>
-          </div>
-
-          <div class="age-block">
-            <span class="label">Age-band distribution</span>
-            <div class="age-list">
-              @for (
-              band of activeDistrict().ageBands;
-              track band.label
-              ) {
-              <span>
-                <b>{{ band.label }}</b> {{ band.value }}
-              </span>
-              }
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Data quality -->
-      <section class="analytics-section analytics-section-last">
-        <div class="analytics-section-heading">
-          <span>04</span>
-          <h3>Data quality</h3>
-        </div>
-
-        <div class="quality-row">
-          <div>
-            <span class="label">JM status flag count</span>
-            <strong>
-              Alive {{ activeDistrict().aliveFlag | number }}
-              <span>/</span>
-              Death {{ activeDistrict().deathFlag | number }}
-            </strong>
-          </div>
-
-          <div class="quality-status">
-            <span>Alive {{ activeDistrict().alivePercentage }}%</span>
-            <span>Death {{ activeDistrict().deathPercentage }}%</span>
-          </div>
-        </div>
-      </section>
-
-    </aside>
-  </div>
-</section>
+<app-state-overview />

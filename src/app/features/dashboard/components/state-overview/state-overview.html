@@ -1,0 +1,31 @@
+<section class="state-overview-shell" aria-label="State overview map and district analytics">
+  <div class="state-overview-title">
+    <div>
+      <span class="title-accent">STATE OVERVIEW</span>
+      <span class="title-subtitle">District coverage & citizen intelligence</span>
+    </div>
+  </div>
+
+  <div class="state-overview-grid">
+    <div class="map-card">
+      <div class="map-heading">
+        <div>
+          <div class="panel-label">
+            <span class="dot"></span>
+            INTERACTIVE MAP OF WEST BENGAL
+          </div>
+          <p class="map-description">
+            Select a district to inspect its live analytics.
+          </p>
+        </div>
+      </div>
+
+      <app-district-map
+        [selectedDistrict]="selectedDistrict()"
+        (districtSelected)="onDistrictSelected($event)"
+      />
+    </div>
+
+    <app-district-analytics [district]="activeDistrict()" />
+  </div>
+</section>
