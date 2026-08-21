@@ -11,10 +11,6 @@
 .topbar {
   position: relative;
 
-  /*
-   * Slightly increased height to accommodate
-   * the skyline without covering the content.
-   */
   height: 90px;
 
   display: flex;
@@ -57,18 +53,15 @@
   height: 74px;
 
   /*
-   * IMPORTANT:
-   * Do NOT use object-fit: cover.
-   *
-   * The original PNG is a panoramic skyline.
-   * `cover` would crop the top of the buildings.
+   * Keep the complete panoramic image visible.
+   * Do NOT use object-fit: cover because it crops
+   * the upper part of the skyline.
    */
   object-fit: fill;
-
   object-position: center bottom;
 
   /*
-   * Clearly visible.
+   * Light mode visibility.
    */
   opacity: 0.72;
 
@@ -78,14 +71,20 @@
   pointer-events: none;
 
   /*
-   * Keep it behind header controls.
+   * Keep skyline behind header content.
    */
   z-index: 1;
+
+  /*
+   * Smooth transition between light and dark mode.
+   */
+  transition:
+    opacity 0.25s ease,
+    filter 0.25s ease;
 }
 
 /*
- * Very subtle white fade at the top of
- * the skyline so header text remains clear.
+ * Light-mode fade.
  */
 .topbar::after {
   content: '';
@@ -157,6 +156,7 @@
   color: #1f2937;
 
   font-size: 16px;
+
   font-weight: 900;
 
   letter-spacing: 0.02em;
@@ -367,7 +367,8 @@
 
   padding: 0 7px;
 
-  border: 1px solid rgba(249, 115, 22, 0.35);
+  border:
+    1px solid rgba(249, 115, 22, 0.35);
 
   border-radius: 7px;
 
@@ -510,18 +511,260 @@
 }
 
 /* =========================================================
+   DARK MODE
+   ========================================================= */
+
+/*
+ * UiPreferencesService applies:
+ *
+ * <html class="dark-theme">
+ *
+ * Because this is an Angular component stylesheet,
+ * use :host-context() to detect the global theme.
+ */
+
+/* ---------------------------------------------------------
+   MAIN HEADER
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .topbar {
+  color: #e5e7eb;
+
+  background:
+    linear-gradient(
+      90deg,
+      #111827 0%,
+      #1f2937 100%
+    );
+
+  border-bottom-color: #f97316;
+
+  box-shadow:
+    0 5px 18px rgba(0, 0, 0, 0.45);
+}
+
+/* ---------------------------------------------------------
+   SKYLINE
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .header-skyline {
+  opacity: 0.62;
+
+  filter:
+    brightness(0.95)
+    contrast(1.12)
+    saturate(1.05);
+}
+
+/*
+ * Change the white fade to a dark fade.
+ */
+:host-context(html.dark-theme) .topbar::after {
+  background:
+    linear-gradient(
+      to bottom,
+      rgba(17, 24, 39, 0),
+      rgba(17, 24, 39, 0.08)
+    );
+}
+
+/* ---------------------------------------------------------
+   BRAND
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .brand-copy strong {
+  color: #f9fafb;
+}
+
+:host-context(html.dark-theme) .brand-copy small {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .version {
+  border-color:
+    rgba(249, 115, 22, 0.65);
+
+  color: #fdba74;
+
+  background:
+    rgba(124, 45, 18, 0.35);
+}
+
+/* ---------------------------------------------------------
+   HEADER STATUS
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .header-status {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme)
+.header-status .material-symbols-rounded {
+  color: #fb923c;
+}
+
+:host-context(html.dark-theme) .header-status .session {
+  border-left-color:
+    rgba(249, 115, 22, 0.35);
+
+  color: #e5e7eb;
+}
+
+:host-context(html.dark-theme)
+.header-status .session .material-symbols-rounded {
+  color: #fdba74;
+}
+
+/* ---------------------------------------------------------
+   REGENERATE BUTTON
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .regenerate {
+  border-color:
+    rgba(249, 115, 22, 0.65);
+
+  color: #fed7aa;
+
+  background:
+    rgba(124, 45, 18, 0.30);
+}
+
+:host-context(html.dark-theme) .regenerate:hover {
+  border-color: #f97316;
+
+  background:
+    rgba(124, 45, 18, 0.50);
+
+  box-shadow:
+    0 7px 18px rgba(249, 115, 22, 0.18);
+}
+
+:host-context(html.dark-theme)
+.regenerate .material-symbols-rounded {
+  color: #fb923c;
+}
+
+/* ---------------------------------------------------------
+   DATABASE SCHEMA
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .schema {
+  color: #cbd5e1;
+}
+
+:host-context(html.dark-theme) .schema b {
+  color: #fb923c;
+}
+
+:host-context(html.dark-theme) .schema small {
+  color: #c4a484;
+}
+
+/* ---------------------------------------------------------
+   LANGUAGE PICKER
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .language-picker {
+  border-color:
+    rgba(249, 115, 22, 0.45);
+
+  color: #e5e7eb;
+
+  background: #1f2937;
+}
+
+:host-context(html.dark-theme)
+.language-picker .material-symbols-rounded {
+  color: #fb923c;
+}
+
+:host-context(html.dark-theme)
+.language-picker select {
+  color: #e5e7eb;
+
+  background: transparent;
+}
+
+:host-context(html.dark-theme)
+.language-picker option {
+  color: #e5e7eb;
+
+  background: #1f2937;
+}
+
+/* ---------------------------------------------------------
+   ICON CONTROLS
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .icon-control,
+:host-context(html.dark-theme) .notification {
+  border-color:
+    rgba(249, 115, 22, 0.40);
+
+  color: #d1d5db;
+
+  background: #1f2937;
+}
+
+:host-context(html.dark-theme) .icon-control:hover,
+:host-context(html.dark-theme) .icon-control.active,
+:host-context(html.dark-theme) .notification:hover {
+  border-color: #f97316;
+
+  color: #fdba74;
+
+  background: #3a2518;
+}
+
+:host-context(html.dark-theme)
+.icon-control .material-symbols-rounded,
+
+:host-context(html.dark-theme)
+.notification .material-symbols-rounded {
+  color: #d1d5db;
+}
+
+/* ---------------------------------------------------------
+   NOTIFICATION
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .notification-dot {
+  background: #fb923c;
+
+  box-shadow:
+    0 0 0 2px #1f2937;
+}
+
+/* ---------------------------------------------------------
+   AVATAR
+   --------------------------------------------------------- */
+
+:host-context(html.dark-theme) .avatar {
+  border-color:
+    rgba(249, 115, 22, 0.55);
+
+  color: #fed7aa;
+
+  background: #3a2518;
+}
+
+:host-context(html.dark-theme) .avatar:hover {
+  border-color: #f97316;
+
+  background: #4a2a18;
+}
+
+/* =========================================================
    RESPONSIVE
    ========================================================= */
 
 @media (max-width: 1280px) {
-
   .header-status {
     display: none;
   }
 }
 
 @media (max-width: 1080px) {
-
   .topbar {
     padding-left: 18px;
     padding-right: 18px;
@@ -541,10 +784,13 @@
 
     opacity: 0.65;
   }
+
+  :host-context(html.dark-theme) .header-skyline {
+    opacity: 0.44;
+  }
 }
 
 @media (max-width: 700px) {
-
   .topbar {
     height: 92px;
 
@@ -558,6 +804,10 @@
     height: 60px;
 
     opacity: 0.55;
+  }
+
+  :host-context(html.dark-theme) .header-skyline {
+    opacity: 0.40;
   }
 
   .brand {
@@ -616,7 +866,6 @@
 }
 
 @media (max-width: 480px) {
-
   .topbar {
     height: 82px;
   }
@@ -625,6 +874,10 @@
     height: 52px;
 
     opacity: 0.48;
+  }
+
+  :host-context(html.dark-theme) .header-skyline {
+    opacity: 0.36;
   }
 
   .brand-copy strong {
