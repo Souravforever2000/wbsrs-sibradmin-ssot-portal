@@ -3,11 +3,11 @@ import { Observable, of } from 'rxjs';
 import { CitizenRecord, PageResponse } from '../../../core/models/api.models';
 
 const records: CitizenRecord[] = [
-  { uid: 'WB-762817016466', name: 'Ramesh Tripathy', gender: 'Female', dateOfBirth: '1987-06-25', district: 'North 24 Parganas', block: 'Halisahar', maskedAadhaar: 'XXXX XXXX 9466', schemeCount: 2, status: 'Active', lastUpdated: '18 Aug 2026' },
-  { uid: 'WB-753839170623', name: 'Rajesh Pradhan', gender: 'Male', dateOfBirth: '1977-12-25', district: 'North 24 Parganas', block: 'Barasat I', maskedAadhaar: 'XXXX XXXX 0623', schemeCount: 4, status: 'Active', lastUpdated: '18 Aug 2026' },
-  { uid: 'WB-773056507131', name: 'Amit Behera', gender: 'Female', dateOfBirth: '1984-05-23', district: 'South 24 Parganas', block: 'Bishnupur I', maskedAadhaar: 'XXXX XXXX 7131', schemeCount: 2, status: 'Active', lastUpdated: '17 Aug 2026' },
-  { uid: 'WB-704134596171', name: 'Deepak Patra', gender: 'Female', dateOfBirth: '1967-08-01', district: 'South 24 Parganas', block: 'Canning I', maskedAadhaar: 'XXXX XXXX 6171', schemeCount: 4, status: 'Active', lastUpdated: '17 Aug 2026' },
-  { uid: 'WB-763658568564', name: 'Ramesh Pradhan', gender: 'Female', dateOfBirth: '1969-09-18', district: 'Purba Bardhaman', block: 'Kalna I', maskedAadhaar: 'XXXX XXXX 8564', schemeCount: 2, status: 'Inactive', lastUpdated: '16 Aug 2026' },
+  { uid: 'WB-762817016466', name: 'Ramesh Tripathy', gender: 'Female', dateOfBirth: '1987-06-25', district: 'North 24 Parganas', block: 'Halisahar', maskedAadhaar: 'XXXX XXXX 9466', schemeCount: 2, schemeIds: ['S043', 'S212'], dataGrade: 1, status: 'Active', lastUpdated: '18 Aug 2026' },
+  { uid: 'WB-753839170623', name: 'Rajesh Pradhan', gender: 'Male', dateOfBirth: '1977-12-25', district: 'North 24 Parganas', block: 'Barasat I', maskedAadhaar: 'XXXX XXXX 0623', schemeCount: 4, schemeIds: ['S043', 'S055', 'S118', 'S212'], dataGrade: 1, status: 'Active', lastUpdated: '18 Aug 2026' },
+  { uid: 'WB-773056507131', name: 'Amit Behera', gender: 'Female', dateOfBirth: '1984-05-23', district: 'South 24 Parganas', block: 'Bishnupur I', maskedAadhaar: 'XXXX XXXX 7131', schemeCount: 2, schemeIds: ['S055', 'S118'], dataGrade: 2, status: 'Active', lastUpdated: '17 Aug 2026' },
+  { uid: 'WB-704134596171', name: 'Deepak Patra', gender: 'Female', dateOfBirth: '1967-08-01', district: 'South 24 Parganas', block: 'Canning I', maskedAadhaar: 'XXXX XXXX 6171', schemeCount: 4, schemeIds: ['S043', 'S055', 'S212', 'S301'], dataGrade: 1, status: 'Active', lastUpdated: '17 Aug 2026' },
+  { uid: 'WB-763658568564', name: 'Ramesh Pradhan', gender: 'Female', dateOfBirth: '1969-09-18', district: 'Purba Bardhaman', block: 'Kalna I', maskedAadhaar: 'XXXX XXXX 8564', schemeCount: 2, schemeIds: ['S118', 'S301'], dataGrade: 3, status: 'Inactive', lastUpdated: '16 Aug 2026' },
 ];
 
 @Injectable({ providedIn: 'root' })

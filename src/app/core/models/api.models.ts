@@ -26,6 +26,8 @@ export interface CitizenRecord {
   block: string;
   maskedAadhaar: string;
   schemeCount: number;
+  schemeIds: string[];   // add this
+  dataGrade: number;     // add this
   status: 'Active' | 'Inactive';
   lastUpdated: string;
 }

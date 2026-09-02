@@ -1,1 +1,12 @@
-<section class="hero"><div><span class="tag">FUZZY LAB V2.5</span><h1>Multi-Algorithm Phonetic &amp; Fuzzy String Matching Engine</h1><p>Test Jaro-Winkler, Levenshtein Distance, Token Sort Ratio, and Soundex Phonetic algorithms on arbitrary name pairs or inspect fuzzy similarity across dataset schemes.</p></div><div class="controls"><label>Matching Threshold<strong>{{ threshold() }}% Similarity</strong><input type="range" min="0" max="100" [value]="threshold()" (input)="thresholdChange.emit(+$any($event.target).value)" /></label><button type="button" (click)="regenerate.emit()" [disabled]="regenerating()">{{ regenerating() ? 'Regenerating…' : 'Regenerate data' }}</button></div></section>
+<section class="hero">
+    <div><span class="tag">FUZZY LAB V2.5</span>
+        <h1>Multi-Algorithm Phonetic &amp; Fuzzy String Matching Engine</h1>
+        <p>Test Jaro-Winkler, Levenshtein Distance, Token Sort Ratio, and Soundex Phonetic algorithms on arbitrary name
+            pairs or inspect fuzzy similarity across dataset schemes.</p>
+    </div>
+    <div class="controls"><label>Matching Threshold<strong>{{ threshold() }}% Similarity</strong><input type="range"
+                min="0" max="100" [value]="threshold()"
+                (input)="thresholdChange.emit(+$any($event.target).value)" /></label><button type="button"
+            (click)="regenerate.emit()" [disabled]="regenerating()">{{ regenerating() ? 'Regenerating…' : 'Regenerate
+            data' }}</button></div>
+</section>

@@ -1,0 +1,111 @@
+:host {
+    display: block;
+}
+
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: grid;
+    place-items: center;
+    padding: 24px;
+    background: rgba(16, 28, 51, 0.45);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    animation: fade-in .15s ease-out;
+}
+
+.modal-card {
+    position: relative;
+    width: 100%;
+    max-width: 640px;
+    max-height: 85vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border: 1px solid #d9e3ef;
+    border-radius: 12px;
+    background: #fff;
+    box-shadow: 0 20px 50px rgba(16, 40, 78, 0.25);
+    animation: rise-in .18s ease-out;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #0f2440;
+    flex-shrink: 0;
+}
+
+.modal-header-title {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+}
+
+.modal-icon {
+    flex-shrink: 0;
+    font-size: 18px;
+    color: #7fa8f5;
+}
+
+.modal-header h2 {
+    margin: 0;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.modal-close {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: grid;
+    place-items: center;
+    border: none;
+    border-radius: 50%;
+    color: #cdd8ea;
+    background: transparent;
+}
+
+.modal-close:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.modal-close .material-symbols-rounded {
+    font-size: 18px;
+}
+
+.modal-body {
+    padding: 22px 24px;
+    overflow-y: auto;
+    color: #213652;
+    font-size: 12px;
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes rise-in {
+    from { opacity: 0; transform: translateY(8px) scale(.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@media (max-width: 600px) {
+    .modal-header {
+        padding: 14px 16px;
+    }
+    .modal-body {
+        padding: 18px 16px;
+    }
+}

@@ -1,1 +1,23 @@
-<p>modal works!</p>
+<div class="modal-backdrop" (click)="onBackdropClick($event)">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-header-title">
+        @if (icon) {
+          <span class="material-symbols-rounded modal-icon">{{ icon }}</span>
+        }
+        @if (title) {
+          <h2>{{ title }}</h2>
+        }
+      </div>
+      <button class="modal-close" aria-label="Close" (click)="closed.emit()">
+        <span class="material-symbols-rounded">close</span>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <ng-content></ng-content>
+    </div>
+
+    <ng-content select="[modal-footer]"></ng-content>
+  </div>
+</div>

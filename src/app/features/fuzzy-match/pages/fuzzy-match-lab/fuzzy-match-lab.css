@@ -1,1 +1,69 @@
-:host{display:block}.fuzzy-lab{max-width:1140px;margin:0 auto;padding:22px 24px 40px;color:#10284e}.lab-grid{display:grid;grid-template-columns:.83fr 1.17fr;gap:22px;margin:23px 0}.tester-card,.spectrum-card{padding:0 0 18px;border:1px solid #dbe4f0;border-radius:10px;background:#fff;box-shadow:0 2px 5px #25446c0a}.tester-card app-match-score-cards{display:block;padding:0 17px}.spectrum-card{padding-bottom:0}.error{height:0;margin:0;overflow:hidden;color:#be314b;font-size:11px}.error.visible{height:auto;margin:10px 0}@media(max-width:820px){.fuzzy-lab{padding:18px}.lab-grid{grid-template-columns:1fr;gap:16px}}@media(max-width:520px){.fuzzy-lab{padding:12px}.tester-card app-match-score-cards{padding:0 14px}}
+:host {
+    display: block
+}
+
+.fuzzy-lab {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 22px 24px 40px;
+    color: #10284e
+}
+
+.lab-grid {
+    display: grid;
+    grid-template-columns: .83fr 1.17fr;
+    gap: 22px;
+    margin: 23px 0
+}
+
+.tester-card,
+.spectrum-card {
+    padding: 0 0 18px;
+    border: 1px solid #dbe4f0;
+    border-radius: 10px;
+    background: #fff;
+    box-shadow: 0 2px 5px #25446c0a
+}
+
+.tester-card app-match-score-cards {
+    display: block;
+    padding: 0 17px
+}
+
+.spectrum-card {
+    padding-bottom: 0
+}
+
+.error {
+    height: 0;
+    margin: 0;
+    overflow: hidden;
+    color: #be314b;
+    font-size: 11px
+}
+
+.error.visible {
+    height: auto;
+    margin: 10px 0
+}
+
+@media(max-width:820px) {
+    .fuzzy-lab {
+        padding: 18px
+    }
+
+    .lab-grid {
+        grid-template-columns: 1fr;
+        gap: 16px
+    }
+}
+
+@media(max-width:520px) {
+    .fuzzy-lab {
+        padding: 12px
+    }
+
+    .tester-card app-match-score-cards {
+        padding: 0 14px
+    }
+}
