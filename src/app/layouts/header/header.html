@@ -165,11 +165,48 @@
       </span>
     </button>
 
-    <div
+    <!-- <div
       class="avatar"
       aria-label="Signed in user"
     >
       AS
+    </div> -->
+
+      <div class="avatar-wrapper">
+      <button
+        class="avatar"
+        [attr.aria-label]="labels().profile"
+        aria-haspopup="true"
+        [attr.aria-expanded]="showProfile()"
+        (click)="toggleProfile()"
+      >
+        {{ profile().initials }}
+      </button>
+
+      @if (showProfile()) {
+        <div class="profile-panel">
+          <div class="profile-header">
+            <div class="avatar avatar--large">{{ profile().initials }}</div>
+            <div>
+              <strong>{{ profile().name }}</strong>
+              <span class="profile-email">{{ profile().email }}</span>
+            </div>
+          </div>
+
+          <hr />
+
+          <ul class="profile-meta">
+            <li><span>Role</span><b>{{ profile().role }}</b></li>
+            <li><span>Department</span><b>{{ profile().department }}</b></li>
+            <li><span>Last login</span><b>{{ profile().lastLogin }}</b></li>
+          </ul>
+
+          <hr />
+
+          <button class="profile-action" (click)="closeProfile()">{{ labels().accountSettings }}</button>
+          <button class="profile-action profile-action--danger" (click)="signOut()">{{ labels().signOut }}</button>
+        </div>
+      }
     </div>
 
   </div>
