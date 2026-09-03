@@ -8,38 +8,122 @@
    TOP HEADER
    ========================================================= */
 
+   
+
 .topbar {
   position: relative;
 
-  /*
-   * Slightly increased height to accommodate
-   * the skyline without covering the content.
-   */
   height: 90px;
 
   display: flex;
   align-items: flex-start;
-  justify-content: space-between;
+ justify-content: space-between; 
 
-  gap: 18px;
+  gap: 24px;
 
-  padding: 14px 28px 0;
+  padding: 12px 28px 0;
 
-  color: #1f2937;
+  color: #172033;
+
+  /*
+   * Main blue/orange background
+   */
+  background:
+    linear-gradient(
+      105deg,
+      #ffffff 0%,
+      #f7fbff 48%,
+      #eef6ff 100%
+    );
+
+  border-bottom: 3px solid #f97316;
+
+  box-shadow:
+    0 4px 18px rgba(15, 52, 96, 0.10),
+    0 2px 8px rgba(249, 115, 22, 0.08);
+
+  overflow: hidden;
+}
+
+.topbar > .top-actions {
+  flex: 1 1 auto;     /* was 0 0 auto — now grows to fill the leftover width */
+  transform: none;    /* remove the old -8px nudge, no longer needed */
+  margin-left: 40px;  /* controls how far left it sits, tweak as needed */
+  justify-content: space-between; /* spreads its children evenly across the space */
+  gap: 18px;          /* was 7px — bigger breathing room between groups */
+  padding: 8px 14px;  /* was 5px 6px — taller/wider container */
+}
+
+
+/* =========================================================
+   TOP BLUE ACCENT
+   ========================================================= */
+
+.topbar::before {
+  content: '';
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+  right: 0;
+
+  height: 4px;
 
   background:
     linear-gradient(
       90deg,
-      #fafafa 0%,
-      #fef6e9 100%
+      #0f3b68 0%,
+      #1769aa 30%,
+      #2563eb 55%,
+      #f97316 80%,
+      #ea580c 100%
     );
 
-  border-bottom: 2px solid #f97316;
+  z-index: 10;
+}
 
-  box-shadow:
-    0 5px 18px rgba(249, 115, 22, 0.12);
+/* =========================================================
+   SUBTLE HEADER GLOW
+   ========================================================= */
 
-  overflow: hidden;
+.topbar::after {
+  content: '';
+
+  position: absolute;
+
+  right: -80px;
+  top: -110px;
+
+  width: 300px;
+  height: 300px;
+
+  border-radius: 50%;
+
+  background:
+    radial-gradient(
+      circle,
+      rgba(37, 99, 235, 0.08) 0%,
+      rgba(37, 99, 235, 0.03) 45%,
+      transparent 72%
+    );
+
+  pointer-events: none;
+
+  z-index: 1;
+}
+
+/* =========================================================
+   CONTENT VERTICAL POSITION
+   ========================================================= */
+
+.topbar > .brand,
+.topbar > .top-actions {
+  position: relative;
+
+  top: 10px;
+
+  z-index: 5;
 }
 
 /* =========================================================
@@ -56,59 +140,15 @@
   width: 100%;
   height: 74px;
 
-  /*
-   * IMPORTANT:
-   * Do NOT use object-fit: cover.
-   *
-   * The original PNG is a panoramic skyline.
-   * `cover` would crop the top of the buildings.
-   */
   object-fit: fill;
 
   object-position: center bottom;
 
-  /*
-   * Clearly visible.
-   */
-  opacity: 0.72;
+  opacity: 0.30;
 
-  /*
-   * Decorative image only.
-   */
   pointer-events: none;
 
-  /*
-   * Keep it behind header controls.
-   */
   z-index: 1;
-}
-
-/*
- * Very subtle white fade at the top of
- * the skyline so header text remains clear.
- */
-.topbar::after {
-  content: '';
-
-  position: absolute;
-
-  left: 0;
-  right: 0;
-  bottom: 0;
-
-  height: 42px;
-
-  background:
-    linear-gradient(
-      to bottom,
-      rgba(255, 255, 255, 0),
-      rgba(255, 255, 255, 0.18)
-      
-    );
-
-  pointer-events: none;
-
-  z-index: 2;
 }
 
 /* =========================================================
@@ -117,36 +157,67 @@
 
 .brand {
   position: relative;
-  z-index: 4;
+  z-index: 5;
 
   display: flex;
   align-items: center;
 
-  gap: 12px;
+  gap: 13px;
 
   min-width: 0;
+
+  padding: 5px 10px 5px 5px;
 
   color: inherit;
 
   text-decoration: none;
-}
-
-.brand-logo {
-  width: 40px;
-  height: 40px;
-
-  flex: 0 0 40px;
 
   border-radius: 10px;
 
-  box-shadow:
-    0 5px 15px rgba(249, 115, 22, 0.18);
+  transition:
+    background 0.2s ease,
+    transform 0.2s ease;
 }
+
+.brand:hover {
+  background:
+    rgba(37, 99, 235, 0.045);
+
+  transform: translateX(2px);
+}
+
+/* =========================================================
+   BRAND LOGO
+   ========================================================= */
+
+.brand-logo {
+  width: 46px;
+  height: 46px;
+
+  flex: 0 0 46px;
+
+  object-fit: contain;
+
+  border-radius: 10px;
+
+  background: #ffffff;
+
+  border: 2px solid rgba(37, 99, 235, 0.18);
+
+  box-shadow:
+    0 4px 12px rgba(15, 59, 104, 0.14),
+    0 2px 5px rgba(249, 115, 22, 0.10);
+}
+
+/* =========================================================
+   BRAND TEXT
+   ========================================================= */
 
 .brand-copy {
   min-width: 0;
 
   display: flex;
+
   flex-direction: column;
 
   gap: 4px;
@@ -155,12 +226,13 @@
 .brand-copy strong {
   overflow: hidden;
 
-  color: #1f2937;
+  color: #12365d;
 
-  font-size: 16px;
+  font-size: 15px;
+
   font-weight: 900;
 
-  letter-spacing: 0.02em;
+  letter-spacing: 0.035em;
 
   text-transform: uppercase;
 
@@ -170,29 +242,59 @@
 }
 
 .brand-copy small {
-  color: #6b4a2f;
+  color: #526b84;
 
   font-size: 9px;
+
+  font-weight: 500;
+
+  letter-spacing: 0.01em;
 
   white-space: nowrap;
 }
 
+/* =========================================================
+   VERSION BADGE
+   ========================================================= */
+
 .version {
-  padding: 4px 7px;
+  width: 68px;
 
-  border: 1px solid #f97316;
+  min-height: 40px;
 
-  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
-  color: #9a4a0d;
+  padding: 5px 6px;
 
-  background: #fef6e9;
+  border: 1px solid rgba(249, 115, 22, 0.55);
 
-  font-size: 9px;
+  border-radius: 6px;
 
-  font-weight: 700;
+  color: #c2410c;
 
-  white-space: nowrap;
+  background:
+    linear-gradient(
+      135deg,
+      #fff7ed,
+      #ffedd5
+    );
+
+  font-size: 8px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.02em;
+
+  line-height: 1.25;
+
+  white-space: normal;
+
+  text-align: center;
+
+  box-shadow:
+    0 2px 7px rgba(249, 115, 22, 0.10);
 }
 
 /* =========================================================
@@ -201,55 +303,82 @@
 
 .top-actions {
   position: relative;
-  z-index: 4;
+  z-index: 5;
 
   display: flex;
+
   align-items: center;
 
-  gap: 11px;
+  gap: 10px;
 
   min-width: 0;
+
+  padding: 5px 6px;
+
+  border-radius: 11px;
+
+  background:
+    rgba(255, 255, 255, 0.72);
+
+  border: 1px solid rgba(37, 99, 235, 0.08);
+
+  box-shadow:
+    0 2px 10px rgba(15, 52, 96, 0.045);
 }
+
+/* =========================================================
+   DATE / TIME / SESSION
+   ========================================================= */
 
 .header-status {
   display: flex;
+
   align-items: center;
 
-  gap: 9px;
+  gap: 16px;
 
-  color: #5f6b7a;
+  padding: 8px 16px;
 
-  font-size: 9px;
+  color: #526b84;
+
+  font-size: 12px;
 
   white-space: nowrap;
+
+  border-right:
+    1px solid rgba(37, 99, 235, 0.16);
 }
 
 .header-status > span {
   display: inline-flex;
+
   align-items: center;
 
   gap: 4px;
 }
 
 .header-status .material-symbols-rounded {
-  color: #f97316;
+  color: #2563eb;
 
-  font-size: 15px;
+  font-size: 19px;
 }
 
 .header-status .session {
-  padding-left: 9px;
+  padding-left: 14px;
 
   border-left:
-    1px solid rgba(249, 115, 22, 0.28);
+    1px solid rgba(249, 115, 22, 0.30);
 
-  color: #374151;
+  color: #334155;
+
+  font-weight: 700;
 
   font-variant-numeric: tabular-nums;
 }
 
 .header-status .session .material-symbols-rounded {
-  color: #d97706;
+  color: #f97316;
+  font-size: 19px;
 }
 
 /* =========================================================
@@ -257,23 +386,40 @@
    ========================================================= */
 
 .regenerate {
-  height: 37px;
+  width: 70px;
 
-  padding: 0 12px;
+  min-height: 46px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 3px;
+
+  padding: 6px 4px;
 
   border: 1px solid #f97316;
 
   border-radius: 7px;
 
-  color: #7c2d12;
+  color: #9a3412;
 
-  background: #fff7ed;
+  background:
+    linear-gradient(
+      135deg,
+      #fff7ed 0%,
+      #ffedd5 100%
+    );
 
-  font-size: 10px;
+  font-size: 8px;
 
-  font-weight: 700;
+  font-weight: 800;
 
   cursor: pointer;
+
+  box-shadow:
+    0 3px 8px rgba(249, 115, 22, 0.10);
 
   transition:
     transform 0.2s ease,
@@ -282,35 +428,62 @@
     border-color 0.2s ease;
 }
 
+.regenerate-text {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  line-height: 1.25;
+
+  white-space: normal;
+
+  text-align: center;
+}
+
+.regenerate-text span {
+  display: block;
+}
+
 .regenerate:disabled {
   cursor: wait;
 
-  opacity: 0.8;
+  opacity: 0.70;
 }
 
-.regenerate:hover {
+.regenerate:hover:not(:disabled) {
   transform: translateY(-2px);
 
   border-color: #ea580c;
 
-  background: #ffedd5;
+  background:
+    linear-gradient(
+      135deg,
+      #ffedd5 0%,
+      #fed7aa 100%
+    );
 
   box-shadow:
-    0 7px 18px rgba(249, 115, 22, 0.14);
+    0 7px 16px rgba(249, 115, 22, 0.18);
 }
 
 .regenerate .material-symbols-rounded {
-  margin-right: 5px;
+  margin-right: 0;
 
   color: #f97316;
 
-  font-size: 16px;
+  font-size: 15px;
 }
+
+/* =========================================================
+   SPIN ANIMATION
+   ========================================================= */
 
 .spin {
   display: inline-block;
 
-  animation: spin 0.8s linear infinite;
+  animation:
+    spin 0.8s linear infinite;
 }
 
 @keyframes spin {
@@ -325,24 +498,33 @@
 
 .schema {
   display: flex;
+
   flex-direction: column;
+
   align-items: flex-end;
 
   gap: 3px;
 
-  color: #4b5563;
+  padding: 5px 10px;
 
-  font-size: 10px;
+  color: #526b84;
+
+  font-size: 9px;
 
   white-space: nowrap;
+
+  border-left:
+    1px solid rgba(37, 99, 235, 0.16);
 }
 
 .schema b {
-  color: #f97316;
+  color: #2563eb;
+
+  font-weight: 900;
 }
 
 .schema small {
-  color: #7c5d42;
+  color: #71859a;
 
   font-size: 8px;
 }
@@ -353,32 +535,58 @@
 
 .header-controls {
   display: flex;
+
   align-items: center;
 
   gap: 5px;
+
+  padding-left: 2px;
 }
 
+/* =========================================================
+   LANGUAGE PICKER
+   ========================================================= */
+
 .language-picker {
-  height: 31px;
+  height: 32px;
 
   display: flex;
+
   align-items: center;
 
   gap: 4px;
 
   padding: 0 7px;
 
-  border: 1px solid rgba(249, 115, 22, 0.35);
+  border:
+    1px solid rgba(37, 99, 235, 0.24);
 
   border-radius: 7px;
 
-  color: #374151;
+  color: #334155;
 
-  background: #fff;
+  background: #ffffff;
+
+  box-shadow:
+    0 2px 6px rgba(15, 52, 96, 0.05);
+
+  transition:
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.language-picker:hover {
+  border-color: #2563eb;
+
+  background: #eff6ff;
+
+  box-shadow:
+    0 4px 10px rgba(37, 99, 235, 0.10);
 }
 
 .language-picker .material-symbols-rounded {
-  color: #f97316;
+  color: #2563eb;
 
   font-size: 16px;
 }
@@ -392,19 +600,21 @@
 
   outline: 0;
 
-  color: #374151;
+  color: #334155;
 
   background: transparent;
 
   font-size: 9px;
 
   font-weight: 800;
+
+  cursor: pointer;
 }
 
 .language-picker option {
-  color: #1f2937;
+  color: #172033;
 
-  background: #fff;
+  background: #ffffff;
 }
 
 /* =========================================================
@@ -413,40 +623,49 @@
 
 .icon-control,
 .notification {
-  width: 31px;
-  height: 31px;
+  width: 32px;
+
+  height: 32px;
 
   display: grid;
+
   place-items: center;
 
   border:
-    1px solid rgba(249, 115, 22, 0.28);
+    1px solid rgba(37, 99, 235, 0.20);
 
   border-radius: 8px;
 
-  color: #4b5563;
+  color: #526b84;
 
-  background: #fff;
+  background: #ffffff;
 
   cursor: pointer;
+
+  box-shadow:
+    0 2px 6px rgba(15, 52, 96, 0.045);
 
   transition:
     color 0.18s ease,
     border-color 0.18s ease,
     background 0.18s ease,
-    transform 0.18s ease;
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .icon-control:hover,
 .icon-control.active,
 .notification:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 
-  border-color: #f97316;
+  border-color: #2563eb;
 
-  color: #9a4a0d;
+  color: #1d4ed8;
 
-  background: #fff7ed;
+  background: #eff6ff;
+
+  box-shadow:
+    0 5px 12px rgba(37, 99, 235, 0.13);
 }
 
 .icon-control .material-symbols-rounded,
@@ -466,17 +685,22 @@
   position: absolute;
 
   top: 5px;
+
   right: 5px;
 
-  width: 5px;
-  height: 5px;
+  width: 6px;
+
+  height: 6px;
 
   border-radius: 50%;
 
   background: #f97316;
 
+  border:
+    1px solid #ffffff;
+
   box-shadow:
-    0 0 0 2px #fff;
+    0 0 0 1px rgba(249, 115, 22, 0.15);
 }
 
 /* =========================================================
@@ -484,30 +708,46 @@
    ========================================================= */
 
 .avatar {
-  width: 34px;
-  height: 34px;
+  width: 35px;
+
+  height: 35px;
 
   display: grid;
+
   place-items: center;
 
   border:
-    1px solid rgba(249, 115, 22, 0.4);
+    2px solid rgba(37, 99, 235, 0.25);
 
   border-radius: 50%;
 
-  color: #7c2d12;
+  color: #ffffff;
 
-  background: #fef6e9;
+  background:
+    linear-gradient(
+      135deg,
+      #0f3b68 0%,
+      #2563eb 65%,
+      #f97316 100%
+    );
 
   font-size: 10px;
 
-  font-weight: 800;
+  font-weight: 900;
+
+  box-shadow:
+    0 4px 10px rgba(15, 59, 104, 0.18);
+
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .avatar:hover {
-  border-color: #f97316;
+  transform: translateY(-2px);
 
-  background: #ffedd5;
+  box-shadow:
+    0 7px 15px rgba(15, 59, 104, 0.24);
 }
 
 /* =========================================================
@@ -525,7 +765,10 @@
 
   .topbar {
     padding-left: 18px;
+
     padding-right: 18px;
+
+    gap: 12px;
   }
 
   .version,
@@ -540,7 +783,7 @@
   .header-skyline {
     height: 68px;
 
-    opacity: 0.65;
+    opacity: 0.25;
   }
 }
 
@@ -558,7 +801,7 @@
   .header-skyline {
     height: 60px;
 
-    opacity: 0.55;
+    opacity: 0.20;
   }
 
   .brand {
@@ -567,6 +810,7 @@
 
   .brand-logo {
     width: 35px;
+
     height: 35px;
 
     flex-basis: 35px;
@@ -582,14 +826,24 @@
 
   .top-actions {
     gap: 5px;
+
+    padding: 3px;
   }
 
   .regenerate {
+    min-width: 34px;
+
     width: 34px;
+
+    height: 34px;
 
     padding: 0;
 
     font-size: 0;
+  }
+
+  .regenerate-text {
+    display: none;
   }
 
   .regenerate .material-symbols-rounded {
@@ -612,7 +866,14 @@
 
   .icon-control {
     width: 29px;
+
     height: 29px;
+  }
+
+  .avatar {
+    width: 31px;
+
+    height: 31px;
   }
 }
 
@@ -620,15 +881,49 @@
 
   .topbar {
     height: 82px;
+
+    padding:
+      9px
+      10px
+      0;
   }
 
   .header-skyline {
     height: 52px;
 
-    opacity: 0.48;
+    opacity: 0.16;
   }
 
   .brand-copy strong {
     font-size: 10px;
   }
+
+  .top-actions {
+    gap: 3px;
+  }
+
+  .brand-logo {
+    width: 32px;
+
+    height: 32px;
+
+    flex-basis: 32px;
+  }
+}
+
+.topbar {
+  gap: 12px;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.topbar > .brand {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.topbar > .top-actions {
+  flex: 0 0 auto;
+  gap: 7px;
+  transform: translateX(-8px);
 }
