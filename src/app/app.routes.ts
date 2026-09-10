@@ -1,26 +1,36 @@
 import { Routes } from '@angular/router';
 
+import { LoginPage } from './core/auth/components/login/login';
+import { DashboardOverviewPage } from './features/dashboard/pages/dashboard-overview/dashboard-overview';
+import { OperationalWorkspacePage } from './shared/components/operational-workspace/operational-workspace';
+import { MatchWorkbenchPage } from './features/match-workbench/pages/match-workbench/match-workbench';
+import { FuzzyMatchLabPage } from './features/fuzzy-match/pages/fuzzy-match-lab/fuzzy-match-lab';
+import { DataGradeAuditPage } from './features/data-grade-audit/pages/data-grade-audit/data-grade-audit';
+import { CitizenListPage } from './features/citizens/pages/citizen-list/citizen-list';
+import { Citizen360Page } from './features/citizens/pages/citizen-360/citizen-360';
+import { GapAnalysisPage } from './features/gap-analysis/pages/gap-analysis/gap-analysis';
+
 export const routes: Routes = [
-  { path: 'login', loadComponent: () => import('./core/auth/components/login/login').then((m) => m.LoginPage) },
-  { path: 'dashboard', loadComponent: () => import('./features/dashboard/pages/dashboard-overview/dashboard-overview').then((m) => m.DashboardOverviewPage) },
-  { path: 'analytics', data: { workspace: 'analytics' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'analytics/growth', data: { workspace: 'growth' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'analytics/trends', data: { workspace: 'trends' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'geography', data: { workspace: 'geography' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'schemes', data: { workspace: 'schemes' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'schemes/compare', data: { workspace: 'schemes' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'match-workbench', loadComponent: () => import('./features/match-workbench/pages/match-workbench/match-workbench').then((m) => m.MatchWorkbenchPage) },
-  { path: 'fuzzy-match', loadComponent: () => import('./features/fuzzy-match/pages/fuzzy-match-lab/fuzzy-match-lab').then((m) => m.FuzzyMatchLabPage) },
-  { path: 'data-audit', loadComponent: () => import('./features/data-grade-audit/pages/data-grade-audit/data-grade-audit').then((m) => m.DataGradeAuditPage) },
-  { path: 'citizens', loadComponent: () => import('./features/citizens/pages/citizen-list/citizen-list').then((m) => m.CitizenListPage) },
+  { path: 'login', component: LoginPage },
+  { path: 'dashboard', component: DashboardOverviewPage },
+  { path: 'analytics', data: { workspace: 'analytics' }, component: OperationalWorkspacePage },
+  { path: 'analytics/growth', data: { workspace: 'growth' }, component: OperationalWorkspacePage },
+  { path: 'analytics/trends', data: { workspace: 'trends' }, component: OperationalWorkspacePage },
+  { path: 'geography', data: { workspace: 'geography' }, component: OperationalWorkspacePage },
+  { path: 'schemes', data: { workspace: 'schemes' }, component: OperationalWorkspacePage },
+  { path: 'schemes/compare', data: { workspace: 'schemes' }, component: OperationalWorkspacePage },
+  { path: 'match-workbench', component: MatchWorkbenchPage },
+  { path: 'fuzzy-match', component: FuzzyMatchLabPage },
+  { path: 'data-audit', component: DataGradeAuditPage },
+  { path: 'citizens', component: CitizenListPage },
   { path: 'directory', redirectTo: 'citizens', pathMatch: 'full' },
-  { path: 'citizens/:uid', loadComponent: () => import('./features/citizens/pages/citizen-360/citizen-360').then((m) => m.Citizen360Page) },
-  { path: 'gap-analysis', loadComponent: () => import('./features/gap-analysis/pages/gap-analysis/gap-analysis').then((m) => m.GapAnalysisPage) },
-  { path: 'reports', data: { workspace: 'reports' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'alerts', data: { workspace: 'alerts' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'administration', data: { roles: ['SUPER_ADMIN', 'STATE_ADMIN', 'DEPARTMENT_ADMIN'], workspace: 'administration' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'administration/audit', data: { roles: ['SUPER_ADMIN', 'STATE_ADMIN', 'DEPARTMENT_ADMIN'], workspace: 'administration' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: 'assistant', data: { workspace: 'assistant' }, loadComponent: () => import('./shared/components/operational-workspace/operational-workspace').then((m) => m.OperationalWorkspacePage) },
-  { path: '', pathMatch: 'full', redirectTo: 'dashboard' },
+  { path: 'citizens/:uid', component: Citizen360Page },
+  { path: 'gap-analysis', component: GapAnalysisPage },
+  { path: 'reports', data: { workspace: 'reports' }, component: OperationalWorkspacePage },
+  { path: 'alerts', data: { workspace: 'alerts' }, component: OperationalWorkspacePage },
+  { path: 'administration', data: { roles: ['SUPER_ADMIN', 'STATE_ADMIN', 'DEPARTMENT_ADMIN'], workspace: 'administration' }, component: OperationalWorkspacePage },
+  { path: 'administration/audit', data: { roles: ['SUPER_ADMIN', 'STATE_ADMIN', 'DEPARTMENT_ADMIN'], workspace: 'administration' }, component: OperationalWorkspacePage },
+  { path: 'assistant', data: { workspace: 'assistant' }, component: OperationalWorkspacePage },
+  { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', redirectTo: '/' },
 ];

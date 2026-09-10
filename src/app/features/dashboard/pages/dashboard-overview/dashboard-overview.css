@@ -8,6 +8,45 @@
 
 .app-global-filters { display: block; margin-bottom: 20px; }
 
+.primary-button {
+    align-self: center;
+    height: 32px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    margin: 0 11px;
+    padding: 0 12px;
+    border: 1px solid #1e62da;
+    border-radius: 5px;
+    color: #fff;
+    background: #246be8;
+    font-size: 10px;
+    font-weight: 700;
+    white-space: nowrap;
+    margin: 0;
+}
+
+   .summary-strip .primary-button {
+        grid-column: span 2;
+    }
+
+        .summary-strip .primary-button {
+        grid-column: span 3;
+        margin: 10px;
+    }
+
+.primary-button .material-symbols-rounded {
+    font-size: 15px;
+}
+
+.page-actions {
+  padding-top: 24px;
+  display: flex;
+  justify-content: flex-end;
+  margin: 0 0 20px; /* one line of space before the KPI grid */
+}
+
 .kpi-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);

@@ -13,7 +13,7 @@ export class LoginPage {
   private readonly router = inject(Router);
   username = '';
   password = '';
-  login(): void { this.router.navigateByUrl('/'); }
+  login(): void { this.router.navigateByUrl('/dashboard'); }
 }
 
 // Keep the generated test and downstream imports compatible while the routed page uses a descriptive name.

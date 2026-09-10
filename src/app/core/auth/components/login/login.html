@@ -1,1 +1,38 @@
-<main class="login-page"><section class="login-card"><div class="login-mark">▤</div><p class="eyebrow">GOVERNMENT OF WEST BENGAL</p><h1>SIBRADADMIN SRS</h1><p class="subtitle">Social Registry Analytics &amp; Scheme Entitlement Audit System</p><form (ngSubmit)="login()"><label>Official email<input name="username" [(ngModel)]="username" type="email" placeholder="name@wb.gov.in" required></label><label>Password<input name="password" [(ngModel)]="password" type="password" placeholder="Enter your password" required></label><button type="submit">Sign in securely →</button></form><p class="security">🔒 Access is protected by role-based controls and audit logging.</p><p class="demo">Demo mode · No production credentials are stored in this frontend.</p></section></main>
+<!-- <header class="site-header">
+  <div class="brand-mark">SSOT</div>
+  <div class="brand-text">
+    <strong>SSOT</strong>
+    <span>GOVERNMENT OF WEST BENGAL</span>
+  </div>
+</header> -->
+
+<header class="site-header">
+  <div class="brand-text">
+    <strong>SSOT</strong>
+    <span>GOVERNMENT OF WEST BENGAL</span>
+  </div>
+  <div class="header-actions"></div>
+</header>
+
+<main class="login-page">
+  <section class="login-card">
+    <div class="login-banner">
+      <span class="banner-tag">WBSSOT · SOCIAL REGISTRY</span>
+      <h1>Sign in to SSOT</h1>
+      <p>Social Registry Analytics &amp; Scheme Entitlement Audit System</p>
+    </div>
+
+    <form (ngSubmit)="login()" class="login-form">
+      <label>Official email
+        <input name="username" [(ngModel)]="username" type="email" placeholder="name@wb.gov.in" required>
+      </label>
+      <label>Password
+        <input name="password" [(ngModel)]="password" type="password" placeholder="Enter your password" required>
+      </label>
+      <button type="submit" class="primary-button">Sign in securely →</button>
+    </form>
+
+    <p class="security">🔒 Access is protected by role-based controls and audit logging.</p>
+    <p class="demo">Demo mode · No production credentials are stored in this frontend.</p>
+  </section>
+</main>

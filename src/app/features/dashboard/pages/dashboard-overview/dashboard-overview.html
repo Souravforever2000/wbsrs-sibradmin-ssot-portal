@@ -5,6 +5,12 @@
 
 <app-global-filters />
 
+<div class="page-actions">
+  <button class="primary-button">
+    <span class="material-symbols-rounded">download</span> Export view
+  </button>
+  </div>
+
 @if (dashboard$ | async; as dashboard) {
   <section class="kpi-grid">
     <app-kpi-card
