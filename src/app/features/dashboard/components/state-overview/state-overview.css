@@ -102,7 +102,7 @@
   min-height: 650px;
 }
 
-.map-card {
+/* .map-card {
   min-width: 0;
   padding: 22px 24px;
   background: #ffffff;
@@ -118,7 +118,32 @@
   display: block;
   flex: 1 1 auto;
   min-height: 0;
+   width: 100%;
+  transform: scale(1.35) translateY(10px);
+  transform-origin: center;
+} */
+
+.map-card {
+  min-width: 0;
+  padding: 22px 24px;
+  background: #ffffff;
+  border: 1px solid #e8ecf1;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.06), 0 1px 2px rgba(16, 24, 40, 0.04);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.map-card app-district-map {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
   width: 100%;
+  transform: scale(1.35) translateY(10px);
+  transform-origin: center;
 }
 
 app-district-analytics {

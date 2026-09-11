@@ -1,17 +1,17 @@
 <aside class="sidebar" [class.collapsed]="collapsed()">
-  <!-- <div class="side-head"><span class="section-caption">{{ workspaceLabel }}</span><button type="button" class="hamburger" (click)="toggle()" [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'"><span class="material-symbols-rounded">menu</span></button></div> -->
-  <button type="button" class="dashboard-toggle" [class.active]="dashboardOpen()" (click)="toggleDashboard()"><span class="material-symbols-rounded menu-icon">dashboard</span><span class="menu-label">{{ dashboardLabel }}</span><span class="material-symbols-rounded chevron">{{ dashboardOpen() ? 'expand_less' : 'expand_more' }}</span></button>
+  <!-- <div class="side-head"><span class="section-caption">{{ workspaceLabel() }}</span><button type="button" class="hamburger" (click)="toggle()" [attr.aria-label]="collapsed() ? 'Expand sidebar' : 'Collapse sidebar'"><span class="material-symbols-rounded">menu</span></button></div> -->
+  <button type="button" class="dashboard-toggle" [class.active]="dashboardOpen()" (click)="toggleDashboard()"><span class="material-symbols-rounded menu-icon">dashboard</span><span class="menu-label">{{ dashboardLabel() }}</span><span class="material-symbols-rounded chevron">{{ dashboardOpen() ? 'expand_less' : 'expand_more' }}</span></button>
   @if (dashboardOpen()) {
     <nav class="dashboard-links" aria-label="Dashboard modules">
-      @for (item of dashboardItems; track item.link) {
+      @for (item of dashboardItems(); track item.link) {
         <a [routerLink]="item.link" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: item.link === '/dashboard' }" [attr.title]="collapsed() ? item.label : null"><span class="material-symbols-rounded item-icon">{{ item.icon }}</span><span class="item-label">{{ item.label }}</span>@if (item.count) { <span class="item-count">{{ item.count }}</span> }</a>
       }
     </nav>
   }
   <div class="side-divider"></div>
-  <!-- <span class="section-caption utility-caption">{{ operationsLabel }}</span> -->
+  <!-- <span class="section-caption utility-caption">{{ operationsLabel() }}</span> -->
   <nav class="utility-links" aria-label="Operations">
-    @for (item of utilityItems; track item.link) { <a [routerLink]="item.link" routerLinkActive="active" [attr.title]="collapsed() ? item.label : null"><span class="material-symbols-rounded item-icon">{{ item.icon }}</span><span class="item-label">{{ item.label }}</span></a> }
+    @for (item of utilityItems(); track item.link) { <a [routerLink]="item.link" routerLinkActive="active" [attr.title]="collapsed() ? item.label : null"><span class="material-symbols-rounded item-icon">{{ item.icon }}</span><span class="item-label">{{ item.label }}</span></a> }
   </nav>
   <!-- <div class="side-bottom"><span class="health-dot"></span><span class="item-label"><b>Data pipeline healthy</b><small>Last sync 10:42 IST</small></span></div> -->
 </aside>
