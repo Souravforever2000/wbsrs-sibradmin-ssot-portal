@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 
 import { FilterStateService } from '../../../../shared/services/filter-state.service';
+import { downloadCsv } from '../../../../shared/utils/csv-export.util';
 import { DISTRICT_PROFILES } from '../../data/district-profiles';
 import type { DistrictAnalytics } from '../../models/district.models';
 import { DistrictAnalyticsComponent } from '../district-analytics/district-analytics';
@@ -28,6 +29,32 @@ export class StateOverviewComponent {
     const normalizedName = this.normalizeDistrictName(name);
     this.selectedDistrict.set(normalizedName);
     this.state.update({ district: normalizedName, block: 'All blocks' });
+  }
+
+  // --- CSV export ---
+
+  exportDistrictsCsv(): void {
+    const rows = Object.values(DISTRICT_PROFILES).map((d) => ({
+      District: d.name,
+      'LGD district code': d.lgdDistrictCode,
+      'Unique UID count': d.uniqueUid,
+      'Total citizens': d.totalCitizens,
+      'Male %': d.malePercentage,
+      'Female %': d.femalePercentage,
+      'Alive %': d.alivePercentage,
+      'Death %': d.deathPercentage,
+      'Active valid ration card %': d.activeValidRationCardPercentage,
+      'Avg schemes / citizen': d.avgSchemesPerCitizen,
+      'Zero scheme %': d.zeroSchemePercent,
+      'Match rate %': d.matchRate,
+      'Highest beneficiary scheme': d.highestBeneficiaryScheme,
+      'Highest beneficiary count': d.highestBeneficiaryCount,
+      'Top schemes': d.topSchemes?.map((s: any) => `${s.name ?? s.label} (${s.count ?? s.value})`).join('; ') ?? '',
+      'Age bands': d.ageBands?.map((b: any) => `${b.label}: ${b.value}`).join('; ') ?? '',
+      Status: d.tone,
+    }));
+
+    downloadCsv(`district-analytics-${new Date().toISOString().slice(0, 10)}.csv`, rows);
   }
 
   private getActiveDistrictName(): string {

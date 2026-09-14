@@ -20,7 +20,7 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
     dashboardItems: [
       { label: 'Executive Overview', icon: 'dashboard', link: '/dashboard' },
       { label: 'Member Master Directory', icon: 'group', link: '/citizens', count: 50 },
-      { label: 'Analytics & Trends', icon: 'analytics', link: '/analytics' },
+      // { label: 'Analytics & Trends', icon: 'analytics', link: '/analytics' },
       { label: 'District & Block', icon: 'map', link: '/geography' },
       { label: 'Scheme Performance', icon: 'account_balance', link: '/schemes', count: 31 },
       { label: 'Match Workbench', icon: 'hub', link: '/match-workbench', count: 154 },

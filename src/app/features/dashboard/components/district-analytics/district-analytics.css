@@ -323,3 +323,31 @@
   .age-list { grid-template-columns: repeat(2, 1fr); }
   .quality-row { align-items: flex-start; flex-direction: column; }
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.export-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #2563eb;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.export-button:hover {
+  background: #dbeafe;
+}
+
+.export-button .material-symbols-rounded {
+  font-size: 16px;
+}

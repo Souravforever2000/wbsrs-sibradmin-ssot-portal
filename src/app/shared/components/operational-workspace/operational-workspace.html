@@ -9,6 +9,13 @@
   <div><strong>99.2%</strong><span>aggregate freshness</span></div><button class="primary-button"><span
       class="material-symbols-rounded">download</span> Export view</button>
 </section>
+
+
+@if (showStateOverview()) {
+<app-state-overview />
+}
+
+
 <section class="workspace-grid">
   <article class="table-card">
     <div class="card-head">
@@ -22,10 +29,25 @@
         <thead>
           <tr>@for (column of page.columns; track column) { <th>{{ column }}</th> }</tr>
         </thead>
-        <tbody>@for (row of page.rows; track $index) { <tr>@for (cell of row; track $index) { <td
+        <!-- <tbody>@for (row of page.rows; track $index) { <tr>@for (cell of row; track $index) { <td
               [class.strong]="$index === 0"><span
                 [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell
-                }}</span></td> }</tr> }</tbody>
+                }}</span></td> }</tr> }</tbody> -->
+
+        <tbody>
+          @for (row of page.rows; track $index) {
+          <tr [class.row-selected]="row[1] === selectedDistrictName()">
+            @for (cell of row; track $index) {
+            <td [class.strong]="$index === 0">
+              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{
+                cell }}</span>
+            </td>
+            }
+          </tr>
+          }
+        </tbody>
+
+
       </table>
     </div>
   </article>

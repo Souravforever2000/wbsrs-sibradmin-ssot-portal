@@ -284,7 +284,7 @@ td:nth-child(5) {
     font-size: 12px
 }
 
-.modal-backdrop {
+/* .modal-backdrop {
     position: fixed;
     z-index: 20;
     inset: 0;
@@ -295,327 +295,360 @@ td:nth-child(5) {
     background: #101b2db8;
     backdrop-filter: blur(8px);
     animation: fade-in .2s ease both
+} */
+
+/* =========================
+   GAP ANALYSIS MODAL
+   ========================= */
+
+.modal-backdrop {
+    position: fixed;
+    z-index: 20;
+    inset: 0;
+
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    padding: 20px;
+
+    box-sizing: border-box;
+
+    background: #0b1428a8;
+    backdrop-filter: blur(3px);
+
+    animation: fade-in .2s ease both;
 }
 
+
+/* Modal */
 .resolve-modal {
     width: min(760px, 100%);
-    max-height: calc(100dvh - 32px);
+
+    margin: auto 0;
+
     overflow: hidden;
-    display: flex;
-    flex-direction: column;
+
     border: 1px solid #d6e0e8;
-    border-radius: 15px;
+    border-radius: 10px;
+
     background: #fff;
-    box-shadow: 0 24px 70px #07152566;
-    animation: modal-rise .3s ease both
+
+    box-shadow: 0 18px 50px #07152566;
+
+    animation: modal-rise .3s ease both;
+
+    flex-shrink: 0;
 }
 
-.resolve-modal>header {
+
+/* Header */
+.resolve-modal > header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 17px 20px;
+
+    padding: 14px 16px;
+
     color: #fff;
-    background: linear-gradient(115deg, #17243d, #23495a)
+    background: linear-gradient(115deg, #17243d, #23495a);
 }
 
 .resolve-modal h2 {
     display: flex;
     align-items: center;
     gap: 8px;
+
     margin: 0;
-    font-size: 14px
+
+    font-size: 14px;
 }
 
 .resolve-modal h2 span {
     color: #62d2c5;
-    font-size: 17px
+    font-size: 17px;
 }
 
-.resolve-modal>header button {
+.resolve-modal > header button {
     border: 0;
+
     color: #b8d1d5;
     background: transparent;
+
     font-size: 25px;
     line-height: 1;
-    cursor: pointer
+
+    cursor: pointer;
 }
 
+
+/* Confidence */
 .confidence-panel {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     margin: 20px;
-    padding: 17px;
-    border: 1px solid #28495a;
-    border-radius: 11px;
+    padding: 15px;
+
+    border-radius: 9px;
+
     color: #fff;
     background: #172d3c;
-    box-shadow: inset 0 1px #ffffff12
 }
 
 .confidence-panel small,
 .confidence-panel strong,
 .confidence-panel b {
-    display: block
+    display: block;
 }
 
 .confidence-panel small {
     color: #a9bec8;
     font-size: 9px;
-    letter-spacing: .08em
+    letter-spacing: .08em;
 }
 
 .confidence-panel strong {
     margin-top: 4px;
+
     color: #52d3b9;
-    font-size: 20px
+    font-size: 20px;
 }
 
-.confidence-panel>div:last-child {
-    text-align: right
+.confidence-panel > div:last-child {
+    text-align: right;
 }
 
 .confidence-panel b {
     margin-top: 5px;
+
     color: #e1edf0;
-    font-size: 10px
+    font-size: 10px;
 }
 
+
+/* Records */
 .record-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 14px;
-    padding: 0 20px 20px
-}
 
-.resolve-modal .record-grid {
-    min-height: 0;
-    overflow-y: auto;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    padding: 0 20px 20px;
 }
 
 .record-grid article {
-    min-height: 255px;
+    min-height: 280px;
+
     border: 1px solid #d9e5e8;
-    border-radius: 11px;
-    background: #fbfdfd
+    border-radius: 9px;
+
+    background: #fbfdfd;
 }
 
-.record-grid article>header {
+.record-grid article > header {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px;
+
+    padding: 13px;
+
     color: #204c58;
+
     border-bottom: 1px solid #e1ecec;
-    font-size: 10px
+
+    font-size: 10px;
 }
 
-.record-grid article>header span {
-    padding: 4px 7px;
-    border-radius: 5px;
+.record-grid article > header span {
+    padding: 3px 6px;
+
+    border-radius: 4px;
+
     color: #fff;
     background: var(--teal);
-    font-size: 9px
+
+    font-size: 9px;
 }
 
-.record-grid article:nth-child(2)>header span {
-    background: #d4871c
+.record-grid article:nth-child(2) > header span {
+    background: #d4871c;
 }
 
 .record-grid dl {
     margin: 0;
-    padding: 0 14px
+    padding: 0 13px;
 }
 
 .record-grid dt {
-    margin-top: 16px;
+    margin-top: 15px;
+
     color: #81919d;
+
     font-size: 8px;
-    letter-spacing: .05em
+    letter-spacing: .05em;
 }
 
 .record-grid dd {
     margin: 4px 0 0;
+
     color: #263a55;
-    font-size: 11px
+
+    font-size: 11px;
 }
 
 .record-grid dd small {
     display: block;
+
     margin-top: 3px;
+
     color: #8c9da5;
-    font-size: 8px
+
+    font-size: 8px;
 }
 
 .record-grid dd .match {
     color: #07856f;
-    font-weight: 700
+    font-weight: 700;
 }
 
 .record-grid dd .variance {
-    color: #dc5361
+    color: #dc5361;
 }
 
-.resolve-modal>footer {
+
+/* Footer */
+.resolve-modal > footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
+
     gap: 14px;
-    padding: 15px 20px;
-    background: #f4f8f8
+
+    padding: 14px 20px;
+
+    background: #f4f8f8;
 }
 
-.resolve-modal>footer p {
+.resolve-modal > footer p {
     display: flex;
     align-items: center;
+
     gap: 5px;
+
     margin: 0;
+
     color: #6d858e;
-    font-size: 9px
+
+    font-size: 9px;
 }
 
-.resolve-modal>footer p span {
+.resolve-modal > footer p span {
     color: var(--teal);
-    font-size: 13px
+    font-size: 13px;
 }
 
-.resolve-modal>footer button {
-    padding: 8px 16px;
+.resolve-modal > footer button {
+    padding: 7px 15px;
+
     border: 0;
-    border-radius: 7px;
+    border-radius: 6px;
+
     color: #fff;
-    background: var(--ink);
+    background: #18253d;
+
     font-size: 10px;
-    font-weight: 750;
+    font-weight: 700;
+
     cursor: pointer;
-    transition: transform .2s ease, background .2s ease
 }
 
-.resolve-modal>footer button:hover {
+.resolve-modal > footer button:hover {
     background: var(--teal);
-    transform: translateY(-2px)
 }
 
-@keyframes page-rise {
-    from {
-        opacity: 0;
-        transform: translateY(8px)
+
+/* =========================
+   MOBILE
+   ========================= */
+
+@media (max-width: 760px) {
+
+    .modal-backdrop {
+        align-items: flex-start;
+
+        padding: 14px;
     }
 
-    to {
-        opacity: 1;
-        transform: none
-    }
-}
+    .resolve-modal {
+        width: 100%;
 
-@keyframes fade-up {
-    from {
-        opacity: 0;
-        transform: translateY(10px)
-    }
-
-    to {
-        opacity: 1;
-        transform: none
-    }
-}
-
-@keyframes fade-in {
-    from {
-        opacity: 0
-    }
-
-    to {
-        opacity: 1
-    }
-}
-
-@keyframes modal-rise {
-    from {
-        opacity: 0;
-        transform: translateY(14px) scale(.98)
-    }
-
-    to {
-        opacity: 1;
-        transform: none
-    }
-}
-
-@media(max-width:760px) {
-    .gap-page {
-        padding: 18px 14px 34px
-    }
-
-    .kpi-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr))
-    }
-
-    .tabs {
-        overflow: auto
-    }
-
-    .tabs button {
-        flex: none
+        margin: 0;
     }
 
     .record-grid {
-        grid-template-columns: 1fr
+        grid-template-columns: 1fr;
     }
 
     .record-grid article {
-        min-height: 0
+        min-height: 0;
     }
 
     .confidence-panel {
-        margin: 14px
+        margin: 14px;
     }
 
-    .resolve-modal>footer {
+    .resolve-modal > footer {
         align-items: flex-start;
-        flex-direction: column
+        flex-direction: column;
     }
 
-    .resolve-modal>footer button {
-        align-self: flex-end
+    .resolve-modal > footer button {
+        align-self: flex-end;
     }
 }
 
-@media(max-width:460px) {
-    .warning-banner {
-        padding: 14px
+
+/* =========================
+   SMALL MOBILE
+   ========================= */
+
+@media (max-width: 460px) {
+
+    .modal-backdrop {
+        padding: 8px;
     }
 
-    .kpi-grid {
-        grid-template-columns: 1fr
-    }
-
-    .warning-banner p {
-        font-size: 9px
-    }
-
-    .resolve-modal>header {
-        padding: 14px
+    .resolve-modal > header {
+        padding: 12px 14px;
     }
 
     .resolve-modal h2 {
-        font-size: 12px
+        font-size: 12px;
     }
 
     .confidence-panel {
         align-items: flex-start;
+
         gap: 16px;
-        flex-direction: column
+
+        flex-direction: column;
     }
 
-    .confidence-panel>div:last-child {
-        text-align: left
+    .confidence-panel > div:last-child {
+        text-align: left;
     }
-}
 
-@keyframes spin {
-    to {
-        transform: rotate(360deg)
+    .record-grid {
+        padding: 0 14px 14px;
+    }
+
+    .resolve-modal > footer {
+        padding: 12px 14px;
     }
 }

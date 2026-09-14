@@ -335,3 +335,10 @@
         padding: 13px;
     }
 }
+
+tbody tr.row-selected {
+  background: rgba(37, 99, 235, 0.08);
+}
+tbody tr.row-selected td:first-child {
+  border-left: 3px solid #2563eb;
+}

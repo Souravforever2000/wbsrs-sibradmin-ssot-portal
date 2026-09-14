@@ -3,6 +3,10 @@ import { Component, computed, inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalFiltersComponent } from '../global-filters/global-filters';
 import { PageHeadingComponent } from '../page-heading/page-heading';
+import { StateOverviewComponent } from '../../../features/dashboard/components/state-overview/state-overview';
+import { DISTRICT_PROFILES } from '../../../features/dashboard/data/district-profiles';
+import { DistrictAnalytics } from '../../../features/dashboard/models/district.models';
+import { FilterStateService } from '../../services/filter-state.service';
 
 interface WorkspaceConfig {
   title: string;
@@ -37,11 +41,98 @@ configs['audit'] = { ...configs['administration'], title: 'Data Grade Audit', ey
 @Component({
   selector: 'app-operational-workspace',
   standalone: true,
-  imports: [CommonModule, GlobalFiltersComponent, PageHeadingComponent],
+  imports: [CommonModule, GlobalFiltersComponent, PageHeadingComponent, StateOverviewComponent],
   templateUrl: './operational-workspace.html',
   styleUrl: './operational-workspace.css',
 })
 export class OperationalWorkspacePage {
   private readonly route = inject(ActivatedRoute);
-  readonly config = computed(() => configs[this.route.snapshot.data['workspace'] ?? 'analytics'] ?? configs['analytics']);
+   private readonly filterState = inject(FilterStateService);
+
+  // Growth has no home in DistrictAnalytics yet, so it stays a static
+  // lookup keyed by district name until a real growth metric exists.
+  private readonly geographyGrowthByDistrict: Record<string, string> = {
+    Kolkata: '+12.1%',
+    Nadia: '+9.8%',
+    Hooghly: '+7.4%',
+    Malda: '-3.4%',
+    Purulia: '-5.8%',
+  };
+
+  readonly workspaceKey = computed(() => this.route.snapshot.data['workspace'] ?? 'analytics');
+
+  // Live rows for the District & Block table, ranked by matchRate desc.
+  readonly geographyRows = computed<string[][]>(() => {
+    const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
+    return [...districts]
+      .sort((a, b) => b.matchRate - a.matchRate)
+      .map((d, index) => [
+        String(index + 1),
+        d.name,
+        this.formatCount(d.totalCitizens),
+        `${d.matchRate.toFixed(1)}%`,
+        this.geographyGrowthByDistrict[d.name] ?? 'N/A',
+      ]);
+  });
+
+  readonly geographyBars = computed<{ label: string; value: number; tone: string }[]>(() => {
+  const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
+  return [...districts]
+    .sort((a, b) => b.matchRate - a.matchRate)
+    .map((d, index) => ({
+      label: d.name,
+      value: Math.round(d.matchRate),
+      // Leader gets a highlight color; everyone else follows their
+      // measured status so the bar color means something, not just rank.
+      tone: index === 0 ? 'blue' : this.toneToColor(d.tone),
+    }));
+});
+
+private toneToColor(tone: DistrictAnalytics['tone']): string {
+  switch (tone) {
+    case 'good':
+      return 'green';
+    case 'watch':
+      return 'amber';
+    case 'risk':
+      return 'red';
+    default:
+      return 'blue';
+  }
+}
+
+  // readonly config = computed(() => {
+  //   const base = configs[this.workspaceKey()] ?? configs['analytics'];
+  //   if (this.workspaceKey() === 'geography') {
+  //     return { ...base, rows: this.geographyRows() };
+  //   }
+  //   return base;
+  // });
+
+  readonly config = computed<WorkspaceConfig>(() => {
+  const base = configs[this.workspaceKey()] ?? configs['analytics'];
+  if (this.workspaceKey() === 'geography') {
+    const merged: WorkspaceConfig = {
+      ...base,
+      rows: this.geographyRows(),
+      bars: this.geographyBars(),
+    };
+    return merged;
+  }
+  return base;
+});
+
+ readonly selectedDistrictName = computed<string | null>(() => {
+    const district = this.filterState.filters().district;
+    return district && district !== 'All districts' ? district : null;
+  });
+
+  readonly showStateOverview = computed(() => this.workspaceKey() === 'geography');
+
+  private formatCount(value: number): string {
+    if (!value) return '0';
+    if (value >= 1_00_00_000) return `${(value / 1_00_00_000).toFixed(2)} Cr`;
+    if (value >= 1_00_000) return `${(value / 1_00_000).toFixed(1)} L`;
+    return value.toLocaleString('en-IN');
+  }
 }
