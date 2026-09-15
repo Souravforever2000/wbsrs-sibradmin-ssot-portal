@@ -4,9 +4,14 @@
 <section class="summary-strip">
   <div class="summary-main" [class]="'summary-main ' + page.accent"><strong>{{ page.primaryMetric }}</strong><span>{{
       page.primaryLabel }}</span></div>
-  <div><strong>19</strong><span>districts indexed</span></div>
+  <!-- <div><strong>19</strong><span>districts indexed</span></div>
   <div><strong>31</strong><span>schemes monitored</span></div>
-  <div><strong>99.2%</strong><span>aggregate freshness</span></div><button class="primary-button"><span
+  <div><strong>99.2%</strong><span>aggregate freshness</span></div> -->
+
+  <div><strong>{{ districtsIndexedCount() }}</strong><span>districts indexed</span></div>
+<div><strong>{{ schemesMonitoredCount() }}</strong><span>schemes monitored</span></div>
+<div><strong>99.2%</strong><span>aggregate freshness</span></div>
+  <button class="primary-button"><span
       class="material-symbols-rounded">download</span> Export view</button>
 </section>
 
@@ -63,11 +68,11 @@
       </div> }</div>
   </article>
 </section>
-<section class="method-card">
+<!-- <section class="method-card">
   <div><span class="eyebrow">DEFINITION &amp; GOVERNANCE</span>
     <h2>How to interpret this workspace</h2>
   </div>
   <div class="notes">@for (note of page.notes; track note) { <p><span
         class="material-symbols-rounded">check_circle</span>{{ note }}</p> }</div>
-</section>
+</section> -->
 }

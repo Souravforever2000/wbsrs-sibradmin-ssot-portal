@@ -30,9 +30,9 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
       { label: 'Reports', icon: 'description', link: '/reports' },
     ],
     utilityItems: [
-      { label: 'Alerts & Exceptions', icon: 'notifications', link: '/alerts' },
-      { label: 'Analytics Assistant', icon: 'smart_toy', link: '/assistant' },
-      { label: 'Administration', icon: 'admin_panel_settings', link: '/administration' },
+      // { label: 'Alerts & Exceptions', icon: 'notifications', link: '/alerts' },
+      // { label: 'Analytics Assistant', icon: 'smart_toy', link: '/assistant' },
+      // { label: 'Administration', icon: 'admin_panel_settings', link: '/administration' },
     ],
   },
   bn: {
@@ -42,7 +42,7 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
     dashboardItems: [
       { label: 'কার্যনির্বাহী সংক্ষিপ্তসার', icon: 'dashboard', link: '/dashboard' },
       { label: 'সদস্য মাস্টার ডিরেক্টরি', icon: 'group', link: '/citizens', count: 50 },
-      { label: 'বিশ্লেষণ ও প্রবণতা', icon: 'analytics', link: '/analytics' },
+      // { label: 'বিশ্লেষণ ও প্রবণতা', icon: 'analytics', link: '/analytics' },
       { label: 'জেলা ও ব্লক', icon: 'map', link: '/geography' },
       { label: 'স্কিম কার্যকারিতা', icon: 'account_balance', link: '/schemes', count: 31 },
       { label: 'ম্যাচ ওয়ার্কবেঞ্চ', icon: 'hub', link: '/match-workbench', count: 154 },
@@ -52,9 +52,9 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
       { label: 'রিপোর্ট', icon: 'description', link: '/reports' },
     ],
     utilityItems: [
-      { label: 'সতর্কতা ও ব্যতিক্রম', icon: 'notifications', link: '/alerts' },
-      { label: 'অ্যানালিটিক্স সহকারী', icon: 'smart_toy', link: '/assistant' },
-      { label: 'প্রশাসন', icon: 'admin_panel_settings', link: '/administration' },
+      // { label: 'সতর্কতা ও ব্যতিক্রম', icon: 'notifications', link: '/alerts' },
+      // { label: 'অ্যানালিটিক্স সহকারী', icon: 'smart_toy', link: '/assistant' },
+      // { label: 'প্রশাসন', icon: 'admin_panel_settings', link: '/administration' },
     ],
   },
   hi: {
@@ -64,7 +64,7 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
     dashboardItems: [
       { label: 'कार्यकारी अवलोकन', icon: 'dashboard', link: '/dashboard' },
       { label: 'सदस्य मास्टर डायरेक्टरी', icon: 'group', link: '/citizens', count: 50 },
-      { label: 'विश्लेषण और रुझान', icon: 'analytics', link: '/analytics' },
+      // { label: 'विश्लेषण और रुझान', icon: 'analytics', link: '/analytics' },
       { label: 'जिला और ब्लॉक', icon: 'map', link: '/geography' },
       { label: 'योजना प्रदर्शन', icon: 'account_balance', link: '/schemes', count: 31 },
       { label: 'मैच वर्कबेंच', icon: 'hub', link: '/match-workbench', count: 154 },
@@ -74,9 +74,9 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
       { label: 'रिपोर्ट', icon: 'description', link: '/reports' },
     ],
     utilityItems: [
-      { label: 'अलर्ट और अपवाद', icon: 'notifications', link: '/alerts' },
-      { label: 'एनालिटिक्स सहायक', icon: 'smart_toy', link: '/assistant' },
-      { label: 'प्रशासन', icon: 'admin_panel_settings', link: '/administration' },
+      // { label: 'अलर्ट और अपवाद', icon: 'notifications', link: '/alerts' },
+      // { label: 'एनालिटिक्स सहायक', icon: 'smart_toy', link: '/assistant' },
+      // { label: 'प्रशासन', icon: 'admin_panel_settings', link: '/administration' },
     ],
   },
 };

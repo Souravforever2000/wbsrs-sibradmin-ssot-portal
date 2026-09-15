@@ -109,8 +109,26 @@ private toneToColor(tone: DistrictAnalytics['tone']): string {
   //   return base;
   // });
 
-  readonly config = computed<WorkspaceConfig>(() => {
+//   readonly config = computed<WorkspaceConfig>(() => {
+//   const base = configs[this.workspaceKey()] ?? configs['analytics'];
+//   if (this.workspaceKey() === 'geography') {
+//     const merged: WorkspaceConfig = {
+//       ...base,
+//       rows: this.geographyRows(),
+//       bars: this.geographyBars(),
+//     };
+//     return merged;
+//   }
+
+  
+//   return base;
+// });
+
+
+
+readonly config = computed<WorkspaceConfig>(() => {
   const base = configs[this.workspaceKey()] ?? configs['analytics'];
+
   if (this.workspaceKey() === 'geography') {
     const merged: WorkspaceConfig = {
       ...base,
@@ -119,6 +137,18 @@ private toneToColor(tone: DistrictAnalytics['tone']): string {
     };
     return merged;
   }
+
+  // if (this.workspaceKey() === 'schemes') {
+  //   const merged: WorkspaceConfig = {
+  //     ...base,
+  //     rows: this.schemesRows(),
+  //     bars: this.schemesBars(),
+  //   };
+  //   return merged;
+  // }
+
+ 
+
   return base;
 });
 
@@ -128,6 +158,38 @@ private toneToColor(tone: DistrictAnalytics['tone']): string {
   });
 
   readonly showStateOverview = computed(() => this.workspaceKey() === 'geography');
+
+  readonly districtsIndexedCount = computed<number>(() => Object.keys(DISTRICT_PROFILES).length);
+
+readonly schemesMonitoredCount = computed<number>(() => {
+  const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
+  const schemeNames = new Set<string>();
+  for (const d of districts) {
+    for (const scheme of d.topSchemes ?? []) {
+      schemeNames.add(scheme.label);
+    }
+  }
+  return schemeNames.size;
+});
+
+readonly selectedScheme = computed<string | null>(() => {
+  const scheme = this.filterState.filters().scheme;
+  return scheme && scheme !== 'All schemes' ? scheme : null;
+});
+
+readonly schemesRows = computed<string[][]>(() => {
+  const base = configs['schemes'].rows;
+  const scheme = this.selectedScheme();
+  return scheme ? base.filter((row) => row[0] === scheme) : base;
+});
+
+readonly schemesBars = computed<{ label: string; value: number; tone: string }[]>(() => {
+  const base = configs['schemes'].bars;
+  const scheme = this.selectedScheme();
+  return scheme ? base.filter((bar) => bar.label === scheme) : base;
+});
+
+
 
   private formatCount(value: number): string {
     if (!value) return '0';

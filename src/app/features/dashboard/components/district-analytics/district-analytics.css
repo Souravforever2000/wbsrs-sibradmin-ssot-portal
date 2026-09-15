@@ -333,14 +333,14 @@
 .export-button {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
-  padding: 6px 12px;
-  font-size: 12px;
+  gap: 4px;
+  padding: 4px 8px;
+  font-size: 10px;
   font-weight: 600;
   color: #2563eb;
   background: #eff6ff;
   border: 1px solid #bfdbfe;
-  border-radius: 8px;
+  border-radius: 6px;
   cursor: pointer;
 }
 
@@ -349,5 +349,5 @@
 }
 
 .export-button .material-symbols-rounded {
-  font-size: 16px;
+  font-size: 13px;
 }

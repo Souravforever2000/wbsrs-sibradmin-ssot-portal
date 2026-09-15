@@ -174,7 +174,7 @@
       AS
     </div> -->
 
-      <div class="avatar-wrapper">
+      <!-- <div class="avatar-wrapper">
       <button
         class="avatar"
         [attr.aria-label]="labels().profile"
@@ -209,8 +209,62 @@
           <button class="profile-action profile-action--danger" (click)="signOut()">{{ labels().signOut }}</button>
         </div>
       }
-    </div>
+    </div> -->
+    <div class="avatar-wrapper">
+  <button
+    class="avatar"
+    [attr.aria-label]="labels().profile"
+    aria-haspopup="true"
+    [attr.aria-expanded]="showProfile()"
+    (click)="toggleProfile()"
+  >
+    {{ profile().initials }}
+  </button>
 
+  @if (showProfile()) {
+    <div class="profile-panel">
+      <div class="profile-header">
+        <div class="avatar avatar--large">
+          {{ profile().initials }}
+          <span class="status-dot" aria-hidden="true"></span>
+        </div>
+        <div class="profile-identity">
+          <strong>{{ profile().name }}</strong>
+          <span class="profile-email">{{ profile().email }}</span>
+          <span class="role-badge">{{ profile().role }}</span>
+        </div>
+      </div>
+
+      <div class="profile-meta">
+        <div class="meta-row">
+          <span class="meta-icon material-symbols-rounded">apartment</span>
+          <div class="meta-text">
+            <small>Department</small>
+            <b>{{ profile().department }}</b>
+          </div>
+        </div>
+        <div class="meta-row">
+          <span class="meta-icon material-symbols-rounded">schedule</span>
+          <div class="meta-text">
+            <small>Last login</small>
+            <b>{{ profile().lastLogin }}</b>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="profile-action" (click)="closeProfile()">
+          <span class="material-symbols-rounded">settings</span>
+          {{ labels().accountSettings }}
+        </button>
+        <button class="profile-action profile-action--danger" (click)="signOut()">
+          <span class="material-symbols-rounded">logout</span>
+          {{ labels().signOut }}
+        </button>
+      </div>
+    </div>
+  }
+</div>
   </div>
 
 </header>
