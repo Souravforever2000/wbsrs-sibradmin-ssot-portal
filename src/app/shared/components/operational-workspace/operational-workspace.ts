@@ -138,14 +138,14 @@ readonly config = computed<WorkspaceConfig>(() => {
     return merged;
   }
 
-  // if (this.workspaceKey() === 'schemes') {
-  //   const merged: WorkspaceConfig = {
-  //     ...base,
-  //     rows: this.schemesRows(),
-  //     bars: this.schemesBars(),
-  //   };
-  //   return merged;
-  // }
+  if (this.workspaceKey() === 'schemes') {
+    const merged: WorkspaceConfig = {
+      ...base,
+      rows: this.schemesRows(),
+      bars: this.schemesBars(),
+    };
+    return merged;
+  }
 
  
 

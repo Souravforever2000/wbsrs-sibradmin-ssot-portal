@@ -102,25 +102,25 @@
     box-shadow: 0 2px 9px rgba(27, 65, 114, .04);
 }
 
-.card-head {
+/* .card-head {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
-}
+} */
 
-.card-head h2,
+/* .card-head h2,
 .method-card h2 {
     margin: 0;
     color: #283e5c;
     font-size: 13px;
-}
+} */
 
-.card-head p {
+/* .card-head p {
     margin-top: 5px;
     color: #8998ac;
     font-size: 9px;
-}
+} */
 
 .live {
     display: inline-flex;
@@ -138,12 +138,29 @@
     background: #11b987;
 }
 
+/* .card-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+} */
+
 .card-head {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: flex-start;
     gap: 12px;
+}
+
+.card-head > div:first-child {
+    min-width: 0;
+    flex: 1 1 auto;
+}
+
+.live {
+    flex-shrink: 0;
 }
 
 .chart-tag {
