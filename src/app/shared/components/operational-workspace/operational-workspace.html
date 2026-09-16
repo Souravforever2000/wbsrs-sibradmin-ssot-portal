@@ -4,29 +4,88 @@
 <section class="summary-strip">
   <div class="summary-main" [class]="'summary-main ' + page.accent"><strong>{{ page.primaryMetric }}</strong><span>{{
       page.primaryLabel }}</span></div>
-  <!-- <div><strong>19</strong><span>districts indexed</span></div>
-  <div><strong>31</strong><span>schemes monitored</span></div>
-  <div><strong>99.2%</strong><span>aggregate freshness</span></div> -->
 
   <div><strong>{{ districtsIndexedCount() }}</strong><span>districts indexed</span></div>
-<div><strong>{{ schemesMonitoredCount() }}</strong><span>schemes monitored</span></div>
-<div><strong>99.2%</strong><span>aggregate freshness</span></div>
-  <button class="primary-button"><span
-      class="material-symbols-rounded">download</span> Export view</button>
+  <div><strong>{{ schemesMonitoredCount() }}</strong><span>schemes monitored</span></div>
+  <div><strong>99.2%</strong><span>aggregate freshness</span></div>
+  <button class="primary-button"><span class="material-symbols-rounded">download</span> Export view</button>
 </section>
-
 
 @if (showStateOverview()) {
 <app-state-overview />
 }
 
+<!-- Scheme drill-down modal: only rendered when a scheme row is expanded -->
+@if (workspaceKey() === 'schemes' && expandedScheme() && schemeAggregate(); as agg) {
+<app-modal [icon]="'insights'" [title]="agg.schemeId" (closed)="closeSchemeDetail()">
+
+  <div class="kv-banner">
+    <span><b>{{ agg.totalBeneficiaries | number:'1.0-0' }}</b> total beneficiaries</span>
+    <span><b>{{ (agg.dataQuality.avgConfidenceScore * 100) | number:'1.0-0' }}%</b> avg match confidence</span>
+  </div>
+
+  <div class="citizen-detail-grid">
+
+    <div class="detail-block">
+      <h4>Data quality</h4>
+      <div class="kv"><span>With mobile</span><b>{{ pct(agg.dataQuality.withMobile, agg.totalBeneficiaries) }}%</b></div>
+      <div class="kv"><span>With PAN</span><b>{{ pct(agg.dataQuality.withPan, agg.totalBeneficiaries) }}%</b></div>
+      <div class="kv"><span>With EPIC</span><b>{{ pct(agg.dataQuality.withEpic, agg.totalBeneficiaries) }}%</b></div>
+      <div class="kv"><span>DOB mismatch (Aadhaar)</span><b>{{ pct(agg.dataQuality.dobMismatchCount, agg.totalBeneficiaries) }}%</b></div>
+    </div>
+
+    <div class="detail-block detail-block-wide">
+      <h4>District breakdown</h4>
+      @for (d of agg.districtBreakdown; track d.lgdDistrictCode) {
+      <div class="district-row">
+        <span class="district-name">{{ d.districtName ?? ('LGD ' + d.lgdDistrictCode) }}</span>
+        <div class="district-bar"><i [style.width.%]="pct(d.count, agg.totalBeneficiaries)"></i></div>
+        <span class="district-coverage">{{ d.count | number:'1.0-0' }}</span>
+        <span class="district-coverage">{{ pct(d.count, agg.totalBeneficiaries) }}%</span>
+      </div>
+      }
+    </div>
+
+    <div class="detail-block">
+      <h4>Gender</h4>
+      @for (g of agg.genderBreakdown; track g.gender) {
+      <div class="kv"><span>{{ g.gender ?? 'Unspecified' }}</span><b>{{ pct(g.count, agg.totalBeneficiaries) }}%</b></div>
+      }
+    </div>
+
+    <div class="detail-block">
+      <h4>Caste</h4>
+      @for (c of agg.casteBreakdown; track c.caste) {
+      <div class="kv"><span>{{ c.caste ?? 'Unspecified' }}</span><b>{{ pct(c.count, agg.totalBeneficiaries) }}%</b></div>
+      }
+    </div>
+
+    <div class="detail-block">
+      <h4>Ration card type</h4>
+      @for (r of agg.rationCardTypeBreakdown; track r.code) {
+      <div class="kv"><span>{{ r.code ?? 'Unspecified' }}</span><b>{{ r.count | number:'1.0-0' }}</b></div>
+      }
+    </div>
+
+    <div class="detail-block">
+      <h4>Data grade</h4>
+      @for (g of agg.dataGradeBreakdown; track g.grade) {
+      <div class="kv"><span>Grade {{ g.grade ?? 'N/A' }}</span><b>{{ g.count | number:'1.0-0' }}</b></div>
+      }
+    </div>
+  </div>
+
+  <div modal-footer>
+    <button class="secondary-button" (click)="closeSchemeDetail()">Close</button>
+  </div>
+</app-modal>
+}
 
 <section class="workspace-grid">
   <article class="table-card">
     <div class="card-head">
       <div>
         <h2>{{ page.title }} data</h2>
-        <!-- <p>Latest API-backed aggregate result for the selected filters</p> -->
       </div><span class="live"><i></i> Live view</span>
     </div>
     <div class="table-wrap">
@@ -34,33 +93,31 @@
         <thead>
           <tr>@for (column of page.columns; track column) { <th>{{ column }}</th> }</tr>
         </thead>
-        <!-- <tbody>@for (row of page.rows; track $index) { <tr>@for (cell of row; track $index) { <td
-              [class.strong]="$index === 0"><span
-                [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell
-                }}</span></td> }</tr> }</tbody> -->
 
         <tbody>
           @for (row of page.rows; track $index) {
-          <tr [class.row-selected]="row[1] === selectedDistrictName()">
+          <tr
+            [class.row-selected]="row[1] === selectedDistrictName()"
+            [class.row-expandable]="workspaceKey() === 'schemes'"
+            [class.row-expanded]="expandedScheme() === row[0]"
+            (click)="toggleSchemeRow(row[0])"
+          >
             @for (cell of row; track $index) {
             <td [class.strong]="$index === 0">
-              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{
-                cell }}</span>
+              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
             </td>
             }
           </tr>
           }
         </tbody>
-
-
       </table>
     </div>
   </article>
+
   <article class="chart-card">
     <div class="card-head">
       <div>
         <h2>Distribution</h2>
-        <!-- <p>Relative comparison across the current scope</p> -->
       </div><span class="chart-tag">{{ page.primaryLabel }}</span>
     </div>
     <div class="bars">@for (bar of page.bars; track bar.label) { <div class="bar-row"><span>{{ bar.label }}</span>
@@ -68,11 +125,4 @@
       </div> }</div>
   </article>
 </section>
-<!-- <section class="method-card">
-  <div><span class="eyebrow">DEFINITION &amp; GOVERNANCE</span>
-    <h2>How to interpret this workspace</h2>
-  </div>
-  <div class="notes">@for (note of page.notes; track note) { <p><span
-        class="material-symbols-rounded">check_circle</span>{{ note }}</p> }</div>
-</section> -->
 }

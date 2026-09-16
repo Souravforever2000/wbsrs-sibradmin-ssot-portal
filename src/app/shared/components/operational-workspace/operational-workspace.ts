@@ -1,11 +1,14 @@
 import { CommonModule } from '@angular/common';
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { GlobalFiltersComponent } from '../global-filters/global-filters';
 import { PageHeadingComponent } from '../page-heading/page-heading';
 import { StateOverviewComponent } from '../../../features/dashboard/components/state-overview/state-overview';
+import { ModalComponent } from '../../../shared/components/modal/modal';
 import { DISTRICT_PROFILES } from '../../../features/dashboard/data/district-profiles';
 import { DistrictAnalytics } from '../../../features/dashboard/models/district.models';
+import { SchemeMasterAggregate } from '../../../features/dashboard/models/scheme.models';
+import { SCHEME_AGGREGATES } from '../../../features/dashboard/models/scheme-aggregates-data';
 import { FilterStateService } from '../../services/filter-state.service';
 
 interface WorkspaceConfig {
@@ -41,13 +44,23 @@ configs['audit'] = { ...configs['administration'], title: 'Data Grade Audit', ey
 @Component({
   selector: 'app-operational-workspace',
   standalone: true,
-  imports: [CommonModule, GlobalFiltersComponent, PageHeadingComponent, StateOverviewComponent],
+  imports: [CommonModule, GlobalFiltersComponent, PageHeadingComponent, StateOverviewComponent, ModalComponent],
   templateUrl: './operational-workspace.html',
   styleUrl: './operational-workspace.css',
 })
 export class OperationalWorkspacePage {
   private readonly route = inject(ActivatedRoute);
-   private readonly filterState = inject(FilterStateService);
+  private readonly filterState = inject(FilterStateService);
+
+  constructor() {
+    // Collapse any expanded scheme drill-down whenever the workspace tab
+    // changes or the global scheme filter changes underneath it.
+    effect(() => {
+      this.workspaceKey();
+      this.selectedScheme();
+      this.expandedScheme.set(null);
+    });
+  }
 
   // Growth has no home in DistrictAnalytics yet, so it stays a static
   // lookup keyed by district name until a real growth metric exists.
@@ -76,83 +89,56 @@ export class OperationalWorkspacePage {
   });
 
   readonly geographyBars = computed<{ label: string; value: number; tone: string }[]>(() => {
-  const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
-  return [...districts]
-    .sort((a, b) => b.matchRate - a.matchRate)
-    .map((d, index) => ({
-      label: d.name,
-      value: Math.round(d.matchRate),
-      // Leader gets a highlight color; everyone else follows their
-      // measured status so the bar color means something, not just rank.
-      tone: index === 0 ? 'blue' : this.toneToColor(d.tone),
-    }));
-});
+    const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
+    return [...districts]
+      .sort((a, b) => b.matchRate - a.matchRate)
+      .map((d, index) => ({
+        label: d.name,
+        value: Math.round(d.matchRate),
+        // Leader gets a highlight color; everyone else follows their
+        // measured status so the bar color means something, not just rank.
+        tone: index === 0 ? 'blue' : this.toneToColor(d.tone),
+      }));
+  });
 
-private toneToColor(tone: DistrictAnalytics['tone']): string {
-  switch (tone) {
-    case 'good':
-      return 'green';
-    case 'watch':
-      return 'amber';
-    case 'risk':
-      return 'red';
-    default:
-      return 'blue';
-  }
-}
-
-  // readonly config = computed(() => {
-  //   const base = configs[this.workspaceKey()] ?? configs['analytics'];
-  //   if (this.workspaceKey() === 'geography') {
-  //     return { ...base, rows: this.geographyRows() };
-  //   }
-  //   return base;
-  // });
-
-//   readonly config = computed<WorkspaceConfig>(() => {
-//   const base = configs[this.workspaceKey()] ?? configs['analytics'];
-//   if (this.workspaceKey() === 'geography') {
-//     const merged: WorkspaceConfig = {
-//       ...base,
-//       rows: this.geographyRows(),
-//       bars: this.geographyBars(),
-//     };
-//     return merged;
-//   }
-
-  
-//   return base;
-// });
-
-
-
-readonly config = computed<WorkspaceConfig>(() => {
-  const base = configs[this.workspaceKey()] ?? configs['analytics'];
-
-  if (this.workspaceKey() === 'geography') {
-    const merged: WorkspaceConfig = {
-      ...base,
-      rows: this.geographyRows(),
-      bars: this.geographyBars(),
-    };
-    return merged;
+  private toneToColor(tone: DistrictAnalytics['tone']): string {
+    switch (tone) {
+      case 'good':
+        return 'green';
+      case 'watch':
+        return 'amber';
+      case 'risk':
+        return 'red';
+      default:
+        return 'blue';
+    }
   }
 
-  if (this.workspaceKey() === 'schemes') {
-    const merged: WorkspaceConfig = {
-      ...base,
-      rows: this.schemesRows(),
-      bars: this.schemesBars(),
-    };
-    return merged;
-  }
+  readonly config = computed<WorkspaceConfig>(() => {
+    const base = configs[this.workspaceKey()] ?? configs['analytics'];
 
- 
+    if (this.workspaceKey() === 'geography') {
+      const merged: WorkspaceConfig = {
+        ...base,
+        rows: this.geographyRows(),
+        bars: this.geographyBars(),
+      };
+      return merged;
+    }
 
-  return base;
-});
+    if (this.workspaceKey() === 'schemes') {
+      const merged: WorkspaceConfig = {
+        ...base,
+        rows: this.schemesRows(),
+        bars: this.schemesBars(),
+      };
+      return merged;
+    }
 
- readonly selectedDistrictName = computed<string | null>(() => {
+    return base;
+  });
+
+  readonly selectedDistrictName = computed<string | null>(() => {
     const district = this.filterState.filters().district;
     return district && district !== 'All districts' ? district : null;
   });
@@ -161,35 +147,59 @@ readonly config = computed<WorkspaceConfig>(() => {
 
   readonly districtsIndexedCount = computed<number>(() => Object.keys(DISTRICT_PROFILES).length);
 
-readonly schemesMonitoredCount = computed<number>(() => {
-  const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
-  const schemeNames = new Set<string>();
-  for (const d of districts) {
-    for (const scheme of d.topSchemes ?? []) {
-      schemeNames.add(scheme.label);
+  readonly schemesMonitoredCount = computed<number>(() => {
+    const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
+    const schemeNames = new Set<string>();
+    for (const d of districts) {
+      for (const scheme of d.topSchemes ?? []) {
+        schemeNames.add(scheme.label);
+      }
     }
+    return schemeNames.size;
+  });
+
+  readonly selectedScheme = computed<string | null>(() => {
+    const scheme = this.filterState.filters().scheme;
+    return scheme && scheme !== 'All schemes' ? scheme : null;
+  });
+
+  readonly schemesRows = computed<string[][]>(() => {
+    const base = configs['schemes'].rows;
+    const scheme = this.selectedScheme();
+    return scheme ? base.filter((row) => row[0] === scheme) : base;
+  });
+
+  readonly schemesBars = computed<{ label: string; value: number; tone: string }[]>(() => {
+    const base = configs['schemes'].bars;
+    const scheme = this.selectedScheme();
+    return scheme ? base.filter((bar) => bar.label === scheme) : base;
+  });
+
+  // --- Scheme drill-down state (modal-based) ---
+  // Which scheme row is currently expanded / driving the modal.
+  readonly expandedScheme = signal<string | null>(null);
+
+  toggleSchemeRow(schemeName: string): void {
+    if (this.workspaceKey() !== 'schemes') return;
+    this.expandedScheme.update((current) => (current === schemeName ? null : schemeName));
   }
-  return schemeNames.size;
-});
 
-readonly selectedScheme = computed<string | null>(() => {
-  const scheme = this.filterState.filters().scheme;
-  return scheme && scheme !== 'All schemes' ? scheme : null;
-});
+  closeSchemeDetail(): void {
+    this.expandedScheme.set(null);
+  }
 
-readonly schemesRows = computed<string[][]>(() => {
-  const base = configs['schemes'].rows;
-  const scheme = this.selectedScheme();
-  return scheme ? base.filter((row) => row[0] === scheme) : base;
-});
+  // Hardcoded for now — shaped exactly like the real srs_master aggregation
+  // response, so swapping this for a live SchemeAggregateService call later
+  // only requires replacing this computed's body.
+  readonly schemeAggregate = computed<SchemeMasterAggregate | null>(() => {
+    const key = this.expandedScheme();
+    return key ? SCHEME_AGGREGATES[key] ?? null : null;
+  });
 
-readonly schemesBars = computed<{ label: string; value: number; tone: string }[]>(() => {
-  const base = configs['schemes'].bars;
-  const scheme = this.selectedScheme();
-  return scheme ? base.filter((bar) => bar.label === scheme) : base;
-});
-
-
+  pct(part: number, total: number): number {
+    if (!total) return 0;
+    return Math.round((part / total) * 100);
+  }
 
   private formatCount(value: number): string {
     if (!value) return '0';

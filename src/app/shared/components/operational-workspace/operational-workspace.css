@@ -431,3 +431,173 @@ tbody tr.row-selected {
 tbody tr.row-selected td:first-child {
   border-left: 3px solid #2563eb;
 }
+
+/* .row-expandable { cursor: pointer; }
+.row-expanded { background: rgba(59, 130, 246, 0.06); }
+.detail-row td { padding: 0; border-top: none; }
+.scheme-detail-panel { padding: 20px 24px; background: #fafbfc; border-top: 1px solid #e5e7eb; }
+.detail-summary { margin: 0 0 16px; color: #4b5563; font-size: 13px; }
+.detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.detail-block-wide { grid-column: 1 / -1; }
+.detail-block h4 { margin: 0 0 10px; font-size: 12px; text-transform: uppercase; color: #6b7280; }
+.fund-row, .trend-row, .district-row { display: flex; align-items: center; gap: 8px; font-size: 13px; margin-bottom: 6px; }
+.fund-row span, .trend-row span { flex: 0 0 90px; color: #6b7280; }
+.trend-row em { margin-left: auto; font-style: normal; color: #16a34a; }
+.trend-row em.negative { color: #dc2626; }
+.fund-bar, .district-bar { flex: 1; height: 6px; background: #e5e7eb; border-radius: 4px; overflow: hidden; }
+.fund-bar i, .district-bar i { display: block; height: 100%; background: #3b82f6; }
+.district-name { flex: 0 0 80px; font-weight: 600; }
+.district-coverage { flex: 0 0 40px; text-align: right; color: #6b7280; }
+.district-status { flex: 0 0 70px; text-align: right; font-size: 12px; font-weight: 600; }
+.status-growing { color: #16a34a; }
+.status-stable { color: #2563eb; }
+.status-watch { color: #d97706; } */
+
+/* --- Scheme aggregate modal content --- */
+
+.kv-banner {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 12px 14px;
+  margin: 0 0 20px;
+  border: 1px solid #d9e3ef;
+  border-radius: 8px;
+  background: #eaf1ff;
+}
+
+.kv-banner span {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 5px;
+  padding: 5px 11px;
+  border: 1px solid #bcd2f7;
+  border-radius: 999px;
+  background: #fff;
+  color: #3e5470;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.kv-banner b {
+  color: #172033;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.citizen-detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 22px 28px;
+}
+
+.detail-block {
+  min-width: 0;
+}
+
+.detail-block-wide {
+  grid-column: 1 / -1;
+}
+
+.detail-block h4 {
+  margin: 0 0 8px;
+  padding-bottom: 7px;
+  border-bottom: 1px solid #edf1f6;
+  color: #7387a7;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: .07em;
+  text-transform: uppercase;
+}
+
+.kv {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 7px 0;
+  border-bottom: 1px solid #f4f6f9;
+  color: #687b96;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.kv:last-child {
+  border-bottom: none;
+}
+
+.kv b {
+  flex-shrink: 0;
+  color: #172033;
+  font-weight: 900;
+  font-size: 11px;
+  text-align: right;
+}
+
+.district-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 0;
+}
+
+.district-name {
+  flex: 0 0 78px;
+  color: #263c5b;
+  font-weight: 700;
+  font-size: 11px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.district-bar {
+  flex: 1;
+  height: 7px;
+  border-radius: 6px;
+  background: #edf2f7;
+  overflow: hidden;
+}
+
+.district-bar i {
+  display: block;
+  height: 100%;
+  border-radius: 6px;
+  background: #236ce4;
+}
+
+.district-coverage {
+  flex: 0 0 54px;
+  color: #687b96;
+  font-size: 10px;
+  font-weight: 700;
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+/* --- Table row states for the schemes drill-down trigger --- */
+
+.row-expandable {
+  cursor: pointer;
+}
+
+.row-expandable:hover {
+  background: #f8fafc;
+}
+
+.row-expanded {
+  background: rgba(37, 99, 235, .06);
+}
+
+@media (max-width: 640px) {
+  .citizen-detail-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .kv-banner {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+
