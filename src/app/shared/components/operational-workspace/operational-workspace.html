@@ -28,10 +28,12 @@
 
     <div class="detail-block">
       <h4>Data quality</h4>
-      <div class="kv"><span>With mobile</span><b>{{ pct(agg.dataQuality.withMobile, agg.totalBeneficiaries) }}%</b></div>
+      <div class="kv"><span>With mobile</span><b>{{ pct(agg.dataQuality.withMobile, agg.totalBeneficiaries) }}%</b>
+      </div>
       <div class="kv"><span>With PAN</span><b>{{ pct(agg.dataQuality.withPan, agg.totalBeneficiaries) }}%</b></div>
       <div class="kv"><span>With EPIC</span><b>{{ pct(agg.dataQuality.withEpic, agg.totalBeneficiaries) }}%</b></div>
-      <div class="kv"><span>DOB mismatch (Aadhaar)</span><b>{{ pct(agg.dataQuality.dobMismatchCount, agg.totalBeneficiaries) }}%</b></div>
+      <div class="kv"><span>DOB mismatch (Aadhaar)</span><b>{{ pct(agg.dataQuality.dobMismatchCount,
+          agg.totalBeneficiaries) }}%</b></div>
     </div>
 
     <div class="detail-block detail-block-wide">
@@ -49,14 +51,16 @@
     <div class="detail-block">
       <h4>Gender</h4>
       @for (g of agg.genderBreakdown; track g.gender) {
-      <div class="kv"><span>{{ g.gender ?? 'Unspecified' }}</span><b>{{ pct(g.count, agg.totalBeneficiaries) }}%</b></div>
+      <div class="kv"><span>{{ g.gender ?? 'Unspecified' }}</span><b>{{ pct(g.count, agg.totalBeneficiaries) }}%</b>
+      </div>
       }
     </div>
 
     <div class="detail-block">
       <h4>Caste</h4>
       @for (c of agg.casteBreakdown; track c.caste) {
-      <div class="kv"><span>{{ c.caste ?? 'Unspecified' }}</span><b>{{ pct(c.count, agg.totalBeneficiaries) }}%</b></div>
+      <div class="kv"><span>{{ c.caste ?? 'Unspecified' }}</span><b>{{ pct(c.count, agg.totalBeneficiaries) }}%</b>
+      </div>
       }
     </div>
 
@@ -75,9 +79,9 @@
     </div>
   </div>
 
-  <div modal-footer>
+  <!-- <div modal-footer>
     <button class="secondary-button" (click)="closeSchemeDetail()">Close</button>
-  </div>
+  </div> -->
 </app-modal>
 }
 
@@ -90,26 +94,59 @@
     </div>
     <div class="table-wrap">
       <table>
-        <thead>
+        <!-- <thead>
           <tr>@for (column of page.columns; track column) { <th>{{ column }}</th> }</tr>
+        </thead> -->
+
+        <thead>
+          <tr>
+            @for (column of page.columns; track column) { <th>{{ column }}</th> }
+            @if (workspaceKey() === 'schemes') { <th class="actions-col">SCHEME DETAILS</th> }
+          </tr>
         </thead>
 
-        <tbody>
+        <!-- <tbody>
           @for (row of page.rows; track $index) {
-          <tr
-            [class.row-selected]="row[1] === selectedDistrictName()"
-            [class.row-expandable]="workspaceKey() === 'schemes'"
-            [class.row-expanded]="expandedScheme() === row[0]"
-            (click)="toggleSchemeRow(row[0])"
-          >
+          <tr [class.row-selected]="row[1] === selectedDistrictName()"
+            [class.row-expandable]="workspaceKey() === 'schemes'" [class.row-expanded]="expandedScheme() === row[0]"
+            (click)="toggleSchemeRow(row[0])">
             @for (cell of row; track $index) {
             <td [class.strong]="$index === 0">
-              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
+              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{
+                cell }}</span>
             </td>
             }
           </tr>
           }
-        </tbody>
+        </tbody> -->
+      <tbody>
+  @for (row of page.rows; track $index) {
+  <tr
+    [class.row-selected]="row[1] === selectedDistrictName()"
+    [class.row-expandable]="workspaceKey() === 'schemes'"
+    [class.row-expanded]="expandedScheme() === row[0]"
+    (click)="toggleSchemeRow(row[0])"
+  >
+    @for (cell of row; track $index) {
+    <td [class.strong]="$index === 0">
+      <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
+    </td>
+    }
+    @if (workspaceKey() === 'schemes') {
+    <td class="actions-col">
+      <button
+        class="view-details-btn"
+        type="button"
+        (click)="$event.stopPropagation(); toggleSchemeRow(row[0])"
+      >
+        <span class="material-symbols-rounded">visibility</span>
+        View
+      </button>
+    </td>
+    }
+  </tr>
+  }
+</tbody>
       </table>
     </div>
   </article>

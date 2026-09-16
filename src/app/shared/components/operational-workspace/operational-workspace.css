@@ -600,4 +600,33 @@ tbody tr.row-selected td:first-child {
   }
 }
 
+.actions-col {
+  width: 90px;
+  text-align: right;
+}
+
+.view-details-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px 10px;
+  border: 1px solid #bcd2f7;
+  border-radius: 6px;
+  background: #eaf1ff;
+  color: #2563eb;
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.12s ease;
+}
+
+.view-details-btn:hover {
+  background: #dbe8ff;
+}
+
+.view-details-btn .material-symbols-rounded {
+  font-size: 13px;
+}
+
 
