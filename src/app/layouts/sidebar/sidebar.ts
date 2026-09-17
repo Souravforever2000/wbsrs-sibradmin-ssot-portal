@@ -20,7 +20,6 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
     dashboardItems: [
       { label: 'Executive Overview', icon: 'dashboard', link: '/dashboard' },
       { label: 'Member Master Directory', icon: 'group', link: '/citizens', count: 50 },
-      // { label: 'Analytics & Trends', icon: 'analytics', link: '/analytics' },
       { label: 'District & Block', icon: 'map', link: '/geography' },
       { label: 'Scheme Performance', icon: 'account_balance', link: '/schemes', count: 31 },
       { label: 'Match Workbench', icon: 'hub', link: '/match-workbench', count: 154 },
@@ -29,11 +28,7 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
       { label: 'Gap Analysis', icon: 'warning', link: '/gap-analysis' },
       { label: 'Reports', icon: 'description', link: '/reports' },
     ],
-    utilityItems: [
-      // { label: 'Alerts & Exceptions', icon: 'notifications', link: '/alerts' },
-      // { label: 'Analytics Assistant', icon: 'smart_toy', link: '/assistant' },
-      // { label: 'Administration', icon: 'admin_panel_settings', link: '/administration' },
-    ],
+    utilityItems: [],
   },
   bn: {
     workspace: 'ওয়ার্কস্পেস',
@@ -42,7 +37,6 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
     dashboardItems: [
       { label: 'কার্যনির্বাহী সংক্ষিপ্তসার', icon: 'dashboard', link: '/dashboard' },
       { label: 'সদস্য মাস্টার ডিরেক্টরি', icon: 'group', link: '/citizens', count: 50 },
-      // { label: 'বিশ্লেষণ ও প্রবণতা', icon: 'analytics', link: '/analytics' },
       { label: 'জেলা ও ব্লক', icon: 'map', link: '/geography' },
       { label: 'স্কিম কার্যকারিতা', icon: 'account_balance', link: '/schemes', count: 31 },
       { label: 'ম্যাচ ওয়ার্কবেঞ্চ', icon: 'hub', link: '/match-workbench', count: 154 },
@@ -51,11 +45,7 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
       { label: 'ফাঁক বিশ্লেষণ', icon: 'warning', link: '/gap-analysis' },
       { label: 'রিপোর্ট', icon: 'description', link: '/reports' },
     ],
-    utilityItems: [
-      // { label: 'সতর্কতা ও ব্যতিক্রম', icon: 'notifications', link: '/alerts' },
-      // { label: 'অ্যানালিটিক্স সহকারী', icon: 'smart_toy', link: '/assistant' },
-      // { label: 'প্রশাসন', icon: 'admin_panel_settings', link: '/administration' },
-    ],
+    utilityItems: [],
   },
   hi: {
     workspace: 'वर्कस्पेस',
@@ -64,7 +54,6 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
     dashboardItems: [
       { label: 'कार्यकारी अवलोकन', icon: 'dashboard', link: '/dashboard' },
       { label: 'सदस्य मास्टर डायरेक्टरी', icon: 'group', link: '/citizens', count: 50 },
-      // { label: 'विश्लेषण और रुझान', icon: 'analytics', link: '/analytics' },
       { label: 'जिला और ब्लॉक', icon: 'map', link: '/geography' },
       { label: 'योजना प्रदर्शन', icon: 'account_balance', link: '/schemes', count: 31 },
       { label: 'मैच वर्कबेंच', icon: 'hub', link: '/match-workbench', count: 154 },
@@ -73,11 +62,7 @@ const copy: Record<PortalLanguage, SidebarCopy> = {
       { label: 'गैप विश्लेषण', icon: 'warning', link: '/gap-analysis' },
       { label: 'रिपोर्ट', icon: 'description', link: '/reports' },
     ],
-    utilityItems: [
-      // { label: 'अलर्ट और अपवाद', icon: 'notifications', link: '/alerts' },
-      // { label: 'एनालिटिक्स सहायक', icon: 'smart_toy', link: '/assistant' },
-      // { label: 'प्रशासन', icon: 'admin_panel_settings', link: '/administration' },
-    ],
+    utilityItems: [],
   },
 };
 
@@ -93,7 +78,14 @@ export class Sidebar {
 
   @HostBinding('class.collapsed-host') get collapsedHost(): boolean { return this.collapsed(); }
 
+  // Width state: expanded (244px) vs icon-rail (72px). Controlled only by
+  // the hamburger button — this is independent of whether the "Dashboard"
+  // accordion section is open or closed.
   readonly collapsed = signal(false);
+
+  // Accordion state for the "Dashboard" section's link list. Only relevant
+  // when the sidebar is expanded — when collapsed to an icon rail, the nav
+  // is always shown regardless of this flag (see template).
   readonly dashboardOpen = signal(true);
 
   readonly labels = computed(() => copy[this.preferences.language()]);
@@ -105,6 +97,18 @@ export class Sidebar {
   readonly dashboardItems = computed(() => this.labels().dashboardItems);
   readonly utilityItems = computed(() => this.labels().utilityItems);
 
-  toggle(): void { this.collapsed.update((value) => !value); }
-  toggleDashboard(): void { if (this.collapsed()) this.collapsed.set(false); else this.dashboardOpen.update((value) => !value); }
+  toggle(): void {
+    this.collapsed.update((value) => !value);
+  }
+
+  toggleDashboard(): void {
+    // Clicking the "Dashboard" header while the rail is collapsed expands
+    // the whole sidebar back to full width (so labels become visible again)
+    // rather than toggling an accordion state that wouldn't be visible anyway.
+    if (this.collapsed()) {
+      this.collapsed.set(false);
+      return;
+    }
+    this.dashboardOpen.update((value) => !value);
+  }
 }

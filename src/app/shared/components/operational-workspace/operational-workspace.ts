@@ -24,6 +24,11 @@ interface WorkspaceConfig {
   notes: string[];
 }
 
+interface SortState {
+  columnIndex: number;
+  direction: 'asc' | 'desc';
+}
+
 const configs: Record<string, WorkspaceConfig> = {
   analytics: { title: 'Analytics Overview', eyebrow: 'ANALYTICS · TRENDS & COMPARISONS', description: 'Compare state, district and scheme performance using pre-aggregated analytical metrics.', primaryMetric: '8.4%', primaryLabel: 'Beneficiary growth YoY', accent: 'blue', columns: ['Metric', 'Current year', 'Previous year', 'Change'], rows: [['Total beneficiaries', '3.61 Cr', '3.33 Cr', '+8.4%'], ['Average schemes / citizen', '2.7', '2.4', '+12.5%'], ['Citizens with no scheme', '28.3%', '30.1%', '-1.8 pp'], ['Multi-scheme citizens', '42.6 L', '37.9 L', '+12.4%']], bars: [{ label: 'Kolkata', value: 98, tone: 'blue' }, { label: 'Nadia', value: 97, tone: 'green' }, { label: 'Hooghly', value: 95, tone: 'green' }, { label: 'Malda', value: 75, tone: 'amber' }, { label: 'Purulia', value: 71, tone: 'red' }], notes: ['District performance is ranked on coverage, growth and scheme diversity.', 'YoY metrics compare the same financial-year period.', 'Charts are sourced from the analytics aggregate layer.'] },
   growth: { title: 'Growth Analysis', eyebrow: 'ANALYTICS · GROWTH', description: 'Understand where beneficiary and enrollment growth is accelerating or declining.', primaryMetric: '+12.1%', primaryLabel: 'Highest district growth', accent: 'green', columns: ['Area', 'Beneficiaries', 'YoY growth', 'Trend'], rows: [['Kolkata', '4.8 L', '+12.1%', 'Accelerating'], ['Nadia', '8.1 L', '+9.8%', 'Healthy'], ['Hooghly', '7.3 L', '+7.4%', 'Stable'], ['Malda', '6.2 L', '-3.4%', 'Declining'], ['Purulia', '4.1 L', '-5.8%', 'Declining']], bars: [{ label: 'Kolkata', value: 92, tone: 'green' }, { label: 'Nadia', value: 80, tone: 'green' }, { label: 'Hooghly', value: 63, tone: 'blue' }, { label: 'Malda', value: 32, tone: 'amber' }, { label: 'Purulia', value: 25, tone: 'red' }], notes: ['Growth is calculated as (current period - previous period) / previous period × 100.', 'Declines are flagged when the change is below -2%.', 'Use the global filters to compare a scheme, district or department.'] },
@@ -53,12 +58,15 @@ export class OperationalWorkspacePage {
   private readonly filterState = inject(FilterStateService);
 
   constructor() {
-    // Collapse any expanded scheme drill-down whenever the workspace tab
-    // changes or the global scheme filter changes underneath it.
+    // Collapse any expanded scheme drill-down and clear the table's local
+    // sort/filter state whenever the workspace tab changes or the global
+    // scheme filter changes underneath it.
     effect(() => {
       this.workspaceKey();
       this.selectedScheme();
       this.expandedScheme.set(null);
+      this.statusFilter.set(null);
+      this.sortState.set(null);
     });
   }
 
@@ -163,16 +171,91 @@ export class OperationalWorkspacePage {
     return scheme && scheme !== 'All schemes' ? scheme : null;
   });
 
+  // --- Status quick-filter (schemes workspace only) ---
+  // Status column is index 4 in the 'schemes' config: ['Scheme','Beneficiaries','Active','Growth','Status']
+  private readonly SCHEME_STATUS_COLUMN_INDEX = 4;
+
+  readonly statusFilter = signal<string | null>(null); // null = "All"
+
+  readonly schemeStatuses = computed<string[]>(() => {
+    const base = configs['schemes'].rows;
+    return Array.from(new Set(base.map((row) => row[this.SCHEME_STATUS_COLUMN_INDEX])));
+  });
+
+  setStatusFilter(status: string | null): void {
+    this.statusFilter.set(status);
+  }
+
   readonly schemesRows = computed<string[][]>(() => {
     const base = configs['schemes'].rows;
     const scheme = this.selectedScheme();
-    return scheme ? base.filter((row) => row[0] === scheme) : base;
+    const status = this.statusFilter();
+
+    let rows = scheme ? base.filter((row) => row[0] === scheme) : base;
+    if (status) {
+      rows = rows.filter((row) => row[this.SCHEME_STATUS_COLUMN_INDEX] === status);
+    }
+    return rows;
   });
 
   readonly schemesBars = computed<{ label: string; value: number; tone: string }[]>(() => {
     const base = configs['schemes'].bars;
     const scheme = this.selectedScheme();
     return scheme ? base.filter((bar) => bar.label === scheme) : base;
+  });
+
+  // --- Sortable columns (applies to whichever table is currently shown) ---
+  readonly sortState = signal<SortState | null>(null);
+
+  toggleSort(columnIndex: number): void {
+    this.sortState.update((current) => {
+      if (!current || current.columnIndex !== columnIndex) {
+        return { columnIndex, direction: 'asc' };
+      }
+      if (current.direction === 'asc') {
+        return { columnIndex, direction: 'desc' };
+      }
+      return null; // third click clears sort, back to original order
+    });
+  }
+
+  // Parses a cell like "1.21 Cr", "68.1 L", "+9.8%", "-1.8%" into a number
+  // for correct numeric ordering; falls back to case-insensitive string
+  // comparison for plain text cells (scheme names, status labels, etc.).
+  private parseCellValue(cell: string): number | string {
+    const cleaned = (cell ?? '').trim();
+    const crMatch = cleaned.match(/^([+-]?\d+(\.\d+)?)\s*Cr$/i);
+    if (crMatch) return parseFloat(crMatch[1]) * 1_00_00_000;
+
+    const lMatch = cleaned.match(/^([+-]?\d+(\.\d+)?)\s*L$/i);
+    if (lMatch) return parseFloat(lMatch[1]) * 1_00_000;
+
+    const pctMatch = cleaned.match(/^([+-]?\d+(\.\d+)?)\s*%$/);
+    if (pctMatch) return parseFloat(pctMatch[1]);
+
+    const plainNum = cleaned.replace(/,/g, '');
+    if (plainNum !== '' && !isNaN(Number(plainNum))) return Number(plainNum);
+
+    return cleaned.toLowerCase();
+  }
+
+  readonly sortedRows = computed<string[][]>(() => {
+    const rows = this.config().rows;
+    const sort = this.sortState();
+    if (!sort) return rows;
+
+    const { columnIndex, direction } = sort;
+    return [...rows].sort((a, b) => {
+      const va = this.parseCellValue(a[columnIndex]);
+      const vb = this.parseCellValue(b[columnIndex]);
+
+      if (typeof va === 'number' && typeof vb === 'number') {
+        return direction === 'asc' ? va - vb : vb - va;
+      }
+      return direction === 'asc'
+        ? String(va).localeCompare(String(vb))
+        : String(vb).localeCompare(String(va));
+    });
   });
 
   // --- Scheme drill-down state (modal-based) ---
@@ -207,4 +290,61 @@ export class OperationalWorkspacePage {
     if (value >= 1_00_000) return `${(value / 1_00_000).toFixed(1)} L`;
     return value.toLocaleString('en-IN');
   }
+
+  // --- Export view ---
+readonly showExportMenu = signal(false);
+
+toggleExportMenu(): void {
+  this.showExportMenu.update((v) => !v);
+}
+
+closeExportMenu(): void {
+  this.showExportMenu.set(false);
+}
+
+private slugify(text: string): string {
+  return text.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+}
+
+private downloadBlob(content: string, filename: string, mimeType: string): void {
+  const blob = new Blob([content], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url;
+  link.download = filename;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
+// Exports exactly what's on screen right now: current workspace tab,
+// current status filter (schemes), and current column sort.
+exportCsv(): void {
+  const page = this.config();
+  const rows = this.sortedRows();
+
+  const escapeCell = (cell: string) => `"${(cell ?? '').replace(/"/g, '""')}"`;
+  const header = page.columns.map(escapeCell).join(',');
+  const body = rows.map((row) => row.map(escapeCell).join(',')).join('\n');
+  const csv = `${header}\n${body}`;
+
+  this.downloadBlob(csv, `${this.slugify(page.title)}.csv`, 'text/csv;charset=utf-8;');
+  this.closeExportMenu();
+}
+
+exportJson(): void {
+  const page = this.config();
+  const rows = this.sortedRows();
+  const data = rows.map((row) =>
+    Object.fromEntries(page.columns.map((col, i) => [col, row[i] ?? '']))
+  );
+
+  this.downloadBlob(JSON.stringify(data, null, 2), `${this.slugify(page.title)}.json`, 'application/json');
+  this.closeExportMenu();
+}
+
+printView(): void {
+  this.closeExportMenu();
+  // Let the menu close and repaint before the print dialog opens.
+  setTimeout(() => window.print(), 50);
+}
 }

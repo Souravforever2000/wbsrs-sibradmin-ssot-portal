@@ -8,7 +8,30 @@
   <div><strong>{{ districtsIndexedCount() }}</strong><span>districts indexed</span></div>
   <div><strong>{{ schemesMonitoredCount() }}</strong><span>schemes monitored</span></div>
   <div><strong>99.2%</strong><span>aggregate freshness</span></div>
-  <button class="primary-button"><span class="material-symbols-rounded">download</span> Export view</button>
+  <!-- <button class="primary-button"><span class="material-symbols-rounded">download</span> Export view</button> -->
+
+<div class="export-wrap">
+  <button class="primary-button" type="button" (click)="toggleExportMenu()">
+    <span class="material-symbols-rounded">download</span>
+    Export view
+    <span class="material-symbols-rounded export-caret">{{ showExportMenu() ? 'expand_less' : 'expand_more' }}</span>
+  </button>
+
+  @if (showExportMenu()) {
+  <div class="export-backdrop" (click)="closeExportMenu()"></div>
+  <div class="export-menu" (click)="$event.stopPropagation()">
+    <button type="button" (click)="exportCsv()">
+      <span class="material-symbols-rounded">table_view</span> CSV (.csv)
+    </button>
+    <button type="button" (click)="exportJson()">
+      <span class="material-symbols-rounded">data_object</span> JSON (.json)
+    </button>
+    <button type="button" (click)="printView()">
+      <span class="material-symbols-rounded">print</span> Print / Save as PDF
+    </button>
+  </div>
+  }
+</div>
 </section>
 
 @if (showStateOverview()) {
@@ -78,10 +101,6 @@
       }
     </div>
   </div>
-
-  <!-- <div modal-footer>
-    <button class="secondary-button" (click)="closeSchemeDetail()">Close</button>
-  </div> -->
 </app-modal>
 }
 
@@ -92,40 +111,85 @@
         <h2>{{ page.title }} data</h2>
       </div><span class="live"><i></i> Live view</span>
     </div>
+
+    <!-- Status quick filters — schemes workspace only -->
+    @if (workspaceKey() === 'schemes') {
+    <div class="status-filter-bar">
+      <button
+        class="status-chip"
+        [class.active]="statusFilter() === null"
+        (click)="setStatusFilter(null)"
+        type="button"
+      >All</button>
+      @for (status of schemeStatuses(); track status) {
+      <button
+        class="status-chip"
+        [class.active]="statusFilter() === status"
+        (click)="setStatusFilter(status)"
+        type="button"
+      >{{ status }}</button>
+      }
+    </div>
+    }
+
     <div class="table-wrap">
       <table>
-        <!-- <thead>
-          <tr>@for (column of page.columns; track column) { <th>{{ column }}</th> }</tr>
-        </thead> -->
-
         <thead>
           <tr>
-            @for (column of page.columns; track column) { <th>{{ column }}</th> }
+            @for (column of page.columns; track column; let i = $index) {
+            <th (click)="toggleSort(i)" class="sortable-th">
+              <span class="th-label">
+                {{ column }}
+                <span class="material-symbols-rounded sort-icon" [class.sort-icon-active]="sortState()?.columnIndex === i">
+                  {{ sortState()?.columnIndex === i && sortState()?.direction === 'desc' ? 'arrow_downward' : 'arrow_upward' }}
+                </span>
+              </span>
+            </th>
+            }
             @if (workspaceKey() === 'schemes') { <th class="actions-col">SCHEME DETAILS</th> }
           </tr>
         </thead>
 
         <!-- <tbody>
-          @for (row of page.rows; track $index) {
-          <tr [class.row-selected]="row[1] === selectedDistrictName()"
-            [class.row-expandable]="workspaceKey() === 'schemes'" [class.row-expanded]="expandedScheme() === row[0]"
-            (click)="toggleSchemeRow(row[0])">
+          @for (row of sortedRows(); track $index) {
+          <tr
+            [class.row-selected]="row[1] === selectedDistrictName()"
+            [class.row-expandable]="workspaceKey() === 'schemes'"
+            [class.row-expanded]="expandedScheme() === row[0]"
+            (click)="toggleSchemeRow(row[0])"
+          >
             @for (cell of row; track $index) {
             <td [class.strong]="$index === 0">
-              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{
-                cell }}</span>
+              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
+            </td>
+            }
+            @if (workspaceKey() === 'schemes') {
+            <td class="actions-col">
+              <button
+                class="view-details-btn"
+                type="button"
+                (click)="$event.stopPropagation(); toggleSchemeRow(row[0])"
+              >
+                <span class="material-symbols-rounded">visibility</span>
+                View
+              </button>
             </td>
             }
           </tr>
           }
+          @if (sortedRows().length === 0) {
+          <tr>
+            <td [attr.colspan]="page.columns.length + (workspaceKey() === 'schemes' ? 1 : 0)" class="empty-state">
+              No results match the current filter.
+            </td>
+          </tr>
+          }
         </tbody> -->
-      <tbody>
-  @for (row of page.rows; track $index) {
+   <tbody>
+  @for (row of sortedRows(); track $index) {
   <tr
     [class.row-selected]="row[1] === selectedDistrictName()"
-    [class.row-expandable]="workspaceKey() === 'schemes'"
     [class.row-expanded]="expandedScheme() === row[0]"
-    (click)="toggleSchemeRow(row[0])"
   >
     @for (cell of row; track $index) {
     <td [class.strong]="$index === 0">
@@ -134,11 +198,7 @@
     }
     @if (workspaceKey() === 'schemes') {
     <td class="actions-col">
-      <button
-        class="view-details-btn"
-        type="button"
-        (click)="$event.stopPropagation(); toggleSchemeRow(row[0])"
-      >
+      <button class="view-details-btn" type="button" (click)="toggleSchemeRow(row[0])">
         <span class="material-symbols-rounded">visibility</span>
         View
       </button>
@@ -146,7 +206,15 @@
     }
   </tr>
   }
+  @if (sortedRows().length === 0) {
+  <tr>
+    <td [attr.colspan]="page.columns.length + (workspaceKey() === 'schemes' ? 1 : 0)" class="empty-state">
+      No results match the current filter.
+    </td>
+  </tr>
+  }
 </tbody>
+      
       </table>
     </div>
   </article>
