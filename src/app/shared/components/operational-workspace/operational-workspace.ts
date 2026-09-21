@@ -56,19 +56,107 @@ configs['audit'] = { ...configs['administration'], title: 'Data Grade Audit', ey
 export class OperationalWorkspacePage {
   private readonly route = inject(ActivatedRoute);
   private readonly filterState = inject(FilterStateService);
+  readonly displayBars = signal<{ label: string; value: number; tone: string }[]>([]);
 
-  constructor() {
-    // Collapse any expanded scheme drill-down and clear the table's local
-    // sort/filter state whenever the workspace tab changes or the global
-    // scheme filter changes underneath it.
-    effect(() => {
-      this.workspaceKey();
-      this.selectedScheme();
-      this.expandedScheme.set(null);
-      this.statusFilter.set(null);
-      this.sortState.set(null);
+   readonly pageSize = signal(5);
+  readonly currentPage = signal(1);
+
+  // constructor() {
+    
+  //   effect(() => {
+  //     this.workspaceKey();
+  //     this.selectedScheme();
+  //     this.expandedScheme.set(null);
+  //     this.statusFilter.set(null);
+  //     this.sortState.set(null);
+  //   });
+  // }
+
+  
+
+  private readonly barLabelColumnIndex: Record<string, number> = {
+  geography: 1, // ['Rank', 'District / block', ...]
+  schemes: 0,   // ['Scheme', 'Beneficiaries', ...]
+};
+
+readonly paginatedBars = computed<{ label: string; value: number; tone: string }[]>(() => {
+  const key = this.workspaceKey();
+  const allBars = this.config().bars;
+  const labelColumn = this.barLabelColumnIndex[key];
+
+  // Tabs with no defined mapping keep showing the full bar set unfiltered.
+  if (labelColumn === undefined) return allBars;
+
+  const visibleLabels = new Set(this.paginatedRows().map((row) => row[labelColumn]));
+  return allBars.filter((bar) => visibleLabels.has(bar.label));
+});
+
+ constructor() {
+  // Collapse any expanded scheme drill-down and clear the table's local
+  // sort/filter state whenever the workspace tab changes or the global
+  // scheme filter changes underneath it.
+  effect(() => {
+    this.workspaceKey();
+    this.selectedScheme();
+    this.expandedScheme.set(null);
+    this.statusFilter.set(null);
+    this.sortState.set(null);
+  }, { allowSignalWrites: true });
+
+  // Reset to page 1 any time the underlying row set changes shape.
+  effect(() => {
+    this.config();
+    this.sortState();
+    this.currentPage.set(1);
+  }, { allowSignalWrites: true });
+
+  // Animate the Distribution bars to match whichever rows are currently
+  // visible on the active page — fires on tab switch, filter, sort,
+  // AND pagination since paginatedBars() depends on all of them.
+  effect(() => {
+    const bars = this.paginatedBars();
+    this.displayBars.set(bars.map((bar) => ({ ...bar, value: 0 })));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.displayBars.set(bars);
+      });
     });
+  }, { allowSignalWrites: true });
+}
+
+ readonly totalPages = computed(() => {
+    const total = this.sortedRows().length;
+    return Math.max(1, Math.ceil(total / this.pageSize()));
+  });
+
+  readonly paginatedRows = computed<string[][]>(() => {
+    const rows = this.sortedRows();
+    const start = (this.currentPage() - 1) * this.pageSize();
+    return rows.slice(start, start + this.pageSize());
+  });
+
+  readonly pageRangeLabel = computed<string>(() => {
+    const total = this.sortedRows().length;
+    if (total === 0) return 'No results';
+    const start = (this.currentPage() - 1) * this.pageSize() + 1;
+    const end = Math.min(start + this.pageSize() - 1, total);
+    return `${start}–${end} of ${total}`;
+  });
+
+  goToPage(page: number): void {
+    this.currentPage.set(Math.min(Math.max(1, page), this.totalPages()));
   }
+
+  nextPage(): void {
+    this.goToPage(this.currentPage() + 1);
+  }
+
+  prevPage(): void {
+    this.goToPage(this.currentPage() - 1);
+  }
+
+
+  
 
   // Growth has no home in DistrictAnalytics yet, so it stays a static
   // lookup keyed by district name until a real growth metric exists.
@@ -79,9 +167,15 @@ export class OperationalWorkspacePage {
     Malda: '-3.4%',
     Purulia: '-5.8%',
   };
+    // Splits a "Label · Value" cell into its two halves so the value can be
+  // colored differently from the label in the template.
+  splitQualityCell(cell: string): { label: string; value: string } {
+    const parts = cell.split(' · ');
+    return { label: parts[0] ?? cell, value: parts[1] ?? '' };
+  }
 
   readonly workspaceKey = computed(() => this.route.snapshot.data['workspace'] ?? 'analytics');
-
+  private readonly SCHEME_QUALITY_COLUMNS = ['Gender', 'Caste', 'Ration Type', 'Data Grade'];
   // Live rows for the District & Block table, ranked by matchRate desc.
   readonly geographyRows = computed<string[][]>(() => {
     const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
@@ -135,8 +229,12 @@ export class OperationalWorkspacePage {
     }
 
     if (this.workspaceKey() === 'schemes') {
+      
       const merged: WorkspaceConfig = {
         ...base,
+
+        columns: [...base.columns, ...this.SCHEME_QUALITY_COLUMNS],
+        
         rows: this.schemesRows(),
         bars: this.schemesBars(),
       };
@@ -186,7 +284,19 @@ export class OperationalWorkspacePage {
     this.statusFilter.set(status);
   }
 
-  readonly schemesRows = computed<string[][]>(() => {
+  // readonly schemesRows = computed<string[][]>(() => {
+  //   const base = configs['schemes'].rows;
+  //   const scheme = this.selectedScheme();
+  //   const status = this.statusFilter();
+
+  //   let rows = scheme ? base.filter((row) => row[0] === scheme) : base;
+  //   if (status) {
+  //     rows = rows.filter((row) => row[this.SCHEME_STATUS_COLUMN_INDEX] === status);
+  //   }
+  //   return rows;
+  // });
+
+    readonly schemesRows = computed<string[][]>(() => {
     const base = configs['schemes'].rows;
     const scheme = this.selectedScheme();
     const status = this.statusFilter();
@@ -195,7 +305,7 @@ export class OperationalWorkspacePage {
     if (status) {
       rows = rows.filter((row) => row[this.SCHEME_STATUS_COLUMN_INDEX] === status);
     }
-    return rows;
+    return rows.map((row) => [...row, ...this.schemeQualityCells(row[0])]);
   });
 
   readonly schemesBars = computed<{ label: string; value: number; tone: string }[]>(() => {
@@ -203,6 +313,31 @@ export class OperationalWorkspacePage {
     const scheme = this.selectedScheme();
     return scheme ? base.filter((bar) => bar.label === scheme) : base;
   });
+
+    // NEW — pulls per-scheme data-quality figures from SCHEME_AGGREGATES and
+  // formats them as extra table cells, in the same order as SCHEME_QUALITY_COLUMNS.
+   // Shows the majority value in each breakdown, since a table cell can only
+  // hold one value while each breakdown array has several. Full breakdowns
+  // remain visible in the scheme detail modal via schemeAggregate().
+  private schemeQualityCells(schemeName: string): string[] {
+    const agg = SCHEME_AGGREGATES[schemeName];
+    if (!agg) {
+      return ['N/A', 'N/A', 'N/A', 'N/A'];
+    }
+    const total = agg.totalBeneficiaries;
+
+    const topGender = [...agg.genderBreakdown].sort((a, b) => b.count - a.count)[0];
+    const topCaste = [...agg.casteBreakdown].sort((a, b) => b.count - a.count)[0];
+    const topRation = [...agg.rationCardTypeBreakdown].sort((a, b) => b.count - a.count)[0];
+    const topGrade = [...agg.dataGradeBreakdown].sort((a, b) => b.count - a.count)[0];
+
+    return [
+      `${topGender.gender ?? 'Unspecified'} · ${this.pct(topGender.count, total)}%`,
+      `${topCaste.caste ?? 'Unspecified'} · ${this.pct(topCaste.count, total)}%`,
+      `${topRation.code ?? 'Unspecified'} · ${topRation.count.toLocaleString('en-IN')}`,
+      `${topGrade.grade != null ? 'Grade ' + topGrade.grade : 'N/A'} · ${topGrade.count.toLocaleString('en-IN')}`,
+    ];
+  }
 
   // --- Sortable columns (applies to whichever table is currently shown) ---
   readonly sortState = signal<SortState | null>(null);

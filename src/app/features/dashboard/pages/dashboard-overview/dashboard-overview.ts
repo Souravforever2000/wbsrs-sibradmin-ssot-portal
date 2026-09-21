@@ -23,6 +23,7 @@ import { DashboardService } from '../../services/dashboard.service';
     DashboardInsightsComponent,
     DistrictPerformanceComponent,
     StateOverviewComponent,
+    
   ],
   templateUrl: './dashboard-overview.html',
   styleUrl: './dashboard-overview.css',

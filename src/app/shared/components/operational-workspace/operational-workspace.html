@@ -8,7 +8,6 @@
   <div><strong>{{ districtsIndexedCount() }}</strong><span>districts indexed</span></div>
   <div><strong>{{ schemesMonitoredCount() }}</strong><span>schemes monitored</span></div>
   <div><strong>99.2%</strong><span>aggregate freshness</span></div>
-  <!-- <button class="primary-button"><span class="material-symbols-rounded">download</span> Export view</button> -->
 
 <div class="export-wrap">
   <button class="primary-button" type="button" (click)="toggleExportMenu()">
@@ -150,26 +149,28 @@
           </tr>
         </thead>
 
-        <!-- <tbody>
-          @for (row of sortedRows(); track $index) {
+        <tbody>
+          @for (row of paginatedRows(); track $index) {
           <tr
             [class.row-selected]="row[1] === selectedDistrictName()"
-            [class.row-expandable]="workspaceKey() === 'schemes'"
             [class.row-expanded]="expandedScheme() === row[0]"
-            (click)="toggleSchemeRow(row[0])"
           >
             @for (cell of row; track $index) {
             <td [class.strong]="$index === 0">
-              <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
+              @if (workspaceKey() === 'schemes' && $index >= 5 && $index <= 8) {
+                <span>{{ splitQualityCell(cell).label }} · </span><span
+                  [class.quality-blue]="$index === 5"
+                  [class.quality-orange]="$index === 6"
+                  [class.quality-black]="$index === 7 || $index === 8"
+                >{{ splitQualityCell(cell).value }}</span>
+              } @else {
+                <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
+              }
             </td>
             }
             @if (workspaceKey() === 'schemes') {
             <td class="actions-col">
-              <button
-                class="view-details-btn"
-                type="button"
-                (click)="$event.stopPropagation(); toggleSchemeRow(row[0])"
-              >
+              <button class="view-details-btn" type="button" (click)="toggleSchemeRow(row[0])">
                 <span class="material-symbols-rounded">visibility</span>
                 View
               </button>
@@ -184,39 +185,29 @@
             </td>
           </tr>
           }
-        </tbody> -->
-   <tbody>
-  @for (row of sortedRows(); track $index) {
-  <tr
-    [class.row-selected]="row[1] === selectedDistrictName()"
-    [class.row-expanded]="expandedScheme() === row[0]"
-  >
-    @for (cell of row; track $index) {
-    <td [class.strong]="$index === 0">
-      <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
-    </td>
-    }
-    @if (workspaceKey() === 'schemes') {
-    <td class="actions-col">
-      <button class="view-details-btn" type="button" (click)="toggleSchemeRow(row[0])">
-        <span class="material-symbols-rounded">visibility</span>
-        View
-      </button>
-    </td>
-    }
-  </tr>
-  }
-  @if (sortedRows().length === 0) {
-  <tr>
-    <td [attr.colspan]="page.columns.length + (workspaceKey() === 'schemes' ? 1 : 0)" class="empty-state">
-      No results match the current filter.
-    </td>
-  </tr>
-  }
-</tbody>
-      
+        </tbody>
       </table>
     </div>
+
+    @if (sortedRows().length > 0) {
+    <div class="pagination-bar">
+      <span class="pagination-range">{{ pageRangeLabel() }}</span>
+
+      <div class="pagination-controls">
+        <button class="page-btn" type="button" [disabled]="currentPage() === 1" (click)="prevPage()">
+          <span class="material-symbols-rounded">chevron_left</span>
+        </button>
+
+        @for (p of [].constructor(totalPages()); track $index) {
+          <button class="page-btn" [class.active]="currentPage() === $index + 1" type="button" (click)="goToPage($index + 1)">{{ $index + 1 }}</button>
+        }
+
+        <button class="page-btn" type="button" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
+          <span class="material-symbols-rounded">chevron_right</span>
+        </button>
+      </div>
+    </div>
+    }
   </article>
 
   <article class="chart-card">
@@ -225,7 +216,7 @@
         <h2>Distribution</h2>
       </div><span class="chart-tag">{{ page.primaryLabel }}</span>
     </div>
-    <div class="bars">@for (bar of page.bars; track bar.label) { <div class="bar-row"><span>{{ bar.label }}</span>
+    <div class="bars">@for (bar of displayBars(); track bar.label) { <div class="bar-row"><span>{{ bar.label }}</span>
         <div><i [class]="'bar ' + bar.tone" [style.width.%]="bar.value"></i></div><b>{{ bar.value }}%</b>
       </div> }</div>
   </article>
