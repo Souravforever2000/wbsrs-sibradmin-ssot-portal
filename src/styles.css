@@ -90,6 +90,59 @@ html.dark-theme .dashboard-toggle.active { color:#ffd19a; background:#26344b; }
 html.dark-theme .side-divider,
 html.dark-theme .side-bottom { border-color:#263a55; }
 html.dark-theme .language-picker option { color:#1b2b44; background:#fff; }
+
+/* --- Full-page scheme detail --- */
+html.dark-theme .fullpage-detail { background:#0b1424 !important; }
+html.dark-theme .fullpage-detail-header { background:#111f34 !important; border-color:#2d405b !important; }
+html.dark-theme .fullpage-detail-header h2 { color:#edf4ff !important; }
+html.dark-theme .fullpage-back-btn { background:#16263d !important; border-color:#3c5271 !important; color:#a5b7d0 !important; }
+html.dark-theme .fullpage-back-btn:hover { background:#1c2e48 !important; }
+
+/* --- Scheme aggregate content (kv-banner, detail grid, breakdown rows) --- */
+html.dark-theme .kv-banner { background:#111f34 !important; border-color:#2d405b !important; }
+html.dark-theme .kv-banner span { background:#16263d !important; border-color:#3c5271 !important; color:#a5b7d0 !important; }
+html.dark-theme .kv-banner b { color:#edf4ff !important; }
+
+html.dark-theme .detail-block h4 { color:#91a7c4 !important; border-color:#263a55 !important; }
+
+html.dark-theme .kv { border-color:#263a55 !important; color:#afc1d9 !important; }
+html.dark-theme .kv b { color:#e4edfb !important; }
+
+html.dark-theme .district-name { color:#dbe7f7 !important; }
+html.dark-theme .district-bar { background:#1c2e48 !important; }
+html.dark-theme .district-bar i { background:#3d7fea !important; }
+html.dark-theme .district-coverage { color:#91a7c4 !important; }
+
+/* --- Row action menu (3-dot) --- */
+html.dark-theme .row-menu-trigger { background:#16263d !important; border-color:#3c5271 !important; color:#a5b7d0 !important; }
+html.dark-theme .row-menu-trigger:hover { background:#1c2e48 !important; }
+html.dark-theme .export-menu { background:#111f34 !important; border-color:#2d405b !important; }
+html.dark-theme .export-menu button { color:#dbe7f7 !important; }
+html.dark-theme .export-menu button:hover { background:#1c2e48 !important; color:#ffd19a !important; }
+html.dark-theme .export-menu .material-symbols-rounded { color:#8096b5 !important; }
+html.dark-theme .export-menu button:hover .material-symbols-rounded { color:#ffd19a !important; }
+
+/* --- Pagination --- */
+html.dark-theme .pagination-bar { border-color:#263a55 !important; }
+html.dark-theme .pagination-range { color:#91a7c4 !important; }
+html.dark-theme .page-btn { background:#16263d !important; border-color:#3c5271 !important; color:#a5b7d0 !important; }
+html.dark-theme .page-btn:hover:not(:disabled) { background:#1c2e48 !important; }
+html.dark-theme .page-btn.active { background:#3d7fea !important; border-color:#3d7fea !important; color:#fff !important; }
+
+/* --- Status quick-filter chips --- */
+html.dark-theme .status-chip { background:#16263d !important; border-color:#3c5271 !important; color:#a5b7d0 !important; }
+html.dark-theme .status-chip:hover { border-color:#3d7fea !important; color:#ffd19a !important; }
+html.dark-theme .status-chip.active { background:#3d7fea !important; border-color:#3d7fea !important; color:#fff !important; }
+
+/* --- Quality columns (Gender/Caste/Ration/Grade values keep their accent
+     hues, but need to stay legible against the dark card background) --- */
+html.dark-theme .quality-blue { color:#6ea8ff !important; }
+html.dark-theme .quality-orange { color:#f0a94e !important; }
+html.dark-theme .quality-black { color:#e4edfb !important; }
+
+/* --- Empty state --- */
+html.dark-theme .empty-state { color:#8096b5 !important; }
+
 html.high-contrast .topbar { border-bottom-width:3px; }
 html.high-contrast .kpi-card,
 html.high-contrast .chart-card,

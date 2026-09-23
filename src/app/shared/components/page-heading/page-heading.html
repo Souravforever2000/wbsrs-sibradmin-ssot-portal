@@ -9,6 +9,7 @@
 
 <section class="page-hero">
   <div class="hero-main">
+    <ng-content select="[heading-actions]"></ng-content>
     <span class="hero-badge">{{ eyebrow() }}</span>
     <h1 class="hero-title">{{ title() }}</h1>
     <p class="hero-desc">{{ description() }}</p>

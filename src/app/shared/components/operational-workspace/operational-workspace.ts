@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { GlobalFiltersComponent } from '../global-filters/global-filters';
 import { PageHeadingComponent } from '../page-heading/page-heading';
 import { StateOverviewComponent } from '../../../features/dashboard/components/state-overview/state-overview';
-import { ModalComponent } from '../../../shared/components/modal/modal';
+
 import { DISTRICT_PROFILES } from '../../../features/dashboard/data/district-profiles';
 import { DistrictAnalytics } from '../../../features/dashboard/models/district.models';
 import { SchemeMasterAggregate } from '../../../features/dashboard/models/scheme.models';
@@ -49,7 +49,7 @@ configs['audit'] = { ...configs['administration'], title: 'Data Grade Audit', ey
 @Component({
   selector: 'app-operational-workspace',
   standalone: true,
-  imports: [CommonModule, GlobalFiltersComponent, PageHeadingComponent, StateOverviewComponent, ModalComponent],
+  imports: [CommonModule, GlobalFiltersComponent, PageHeadingComponent, StateOverviewComponent],
   templateUrl: './operational-workspace.html',
   styleUrl: './operational-workspace.css',
 })
@@ -60,6 +60,8 @@ export class OperationalWorkspacePage {
 
    readonly pageSize = signal(5);
   readonly currentPage = signal(1);
+
+    readonly districtDisplayWidths = signal<number[]>([]);
 
   // constructor() {
     
@@ -119,6 +121,24 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         this.displayBars.set(bars);
+      });
+    });
+  }, { allowSignalWrites: true });
+
+    // Animate district breakdown bars from 0 -> actual width whenever the
+  // scheme detail view opens or switches to a different scheme.
+  effect(() => {
+    const agg = this.schemeAggregate();
+    if (!agg) {
+      this.districtDisplayWidths.set([]);
+      return;
+    }
+    const targets = agg.districtBreakdown.map((d) => this.pct(d.count, agg.totalBeneficiaries));
+
+    this.districtDisplayWidths.set(targets.map(() => 0));
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        this.districtDisplayWidths.set(targets);
       });
     });
   }, { allowSignalWrites: true });
@@ -404,6 +424,23 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
 
   closeSchemeDetail(): void {
     this.expandedScheme.set(null);
+  }
+
+    // --- Scheme row action menu (3-dot, single action) ---
+  readonly openRowMenu = signal<string | null>(null);
+
+  toggleRowMenu(schemeName: string, event: Event): void {
+    event.stopPropagation();
+    this.openRowMenu.update((current) => (current === schemeName ? null : schemeName));
+  }
+
+  closeRowMenu(): void {
+    this.openRowMenu.set(null);
+  }
+
+  viewSchemeDetails(schemeName: string): void {
+    this.closeRowMenu();
+    this.toggleSchemeRow(schemeName);
   }
 
   // Hardcoded for now — shaped exactly like the real srs_master aggregation
