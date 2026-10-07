@@ -33,7 +33,28 @@ const configs: Record<string, WorkspaceConfig> = {
   analytics: { title: 'Analytics Overview', eyebrow: 'ANALYTICS · TRENDS & COMPARISONS', description: 'Compare state, district and scheme performance using pre-aggregated analytical metrics.', primaryMetric: '8.4%', primaryLabel: 'Beneficiary growth YoY', accent: 'blue', columns: ['Metric', 'Current year', 'Previous year', 'Change'], rows: [['Total beneficiaries', '3.61 Cr', '3.33 Cr', '+8.4%'], ['Average schemes / citizen', '2.7', '2.4', '+12.5%'], ['Citizens with no scheme', '28.3%', '30.1%', '-1.8 pp'], ['Multi-scheme citizens', '42.6 L', '37.9 L', '+12.4%']], bars: [{ label: 'Kolkata', value: 98, tone: 'blue' }, { label: 'Nadia', value: 97, tone: 'green' }, { label: 'Hooghly', value: 95, tone: 'green' }, { label: 'Malda', value: 75, tone: 'amber' }, { label: 'Purulia', value: 71, tone: 'red' }], notes: ['District performance is ranked on coverage, growth and scheme diversity.', 'YoY metrics compare the same financial-year period.', 'Charts are sourced from the analytics aggregate layer.'] },
   growth: { title: 'Growth Analysis', eyebrow: 'ANALYTICS · GROWTH', description: 'Understand where beneficiary and enrollment growth is accelerating or declining.', primaryMetric: '+12.1%', primaryLabel: 'Highest district growth', accent: 'green', columns: ['Area', 'Beneficiaries', 'YoY growth', 'Trend'], rows: [['Kolkata', '4.8 L', '+12.1%', 'Accelerating'], ['Nadia', '8.1 L', '+9.8%', 'Healthy'], ['Hooghly', '7.3 L', '+7.4%', 'Stable'], ['Malda', '6.2 L', '-3.4%', 'Declining'], ['Purulia', '4.1 L', '-5.8%', 'Declining']], bars: [{ label: 'Kolkata', value: 92, tone: 'green' }, { label: 'Nadia', value: 80, tone: 'green' }, { label: 'Hooghly', value: 63, tone: 'blue' }, { label: 'Malda', value: 32, tone: 'amber' }, { label: 'Purulia', value: 25, tone: 'red' }], notes: ['Growth is calculated as (current period - previous period) / previous period × 100.', 'Declines are flagged when the change is below -2%.', 'Use the global filters to compare a scheme, district or department.'] },
   trends: { title: 'Trend Analysis', eyebrow: 'ANALYTICS · TIME SERIES', description: 'Track monthly and yearly movement with anomaly-aware trend signals.', primaryMetric: '31', primaryLabel: 'Schemes monitored', accent: 'purple', columns: ['Period', 'Enrollments', 'Active', 'Coverage'], rows: [['Q1 FY25-26', '18.4 L', '16.8 L', '69.8%'], ['Q2 FY25-26', '19.1 L', '17.6 L', '70.6%'], ['Q3 FY25-26', '20.8 L', '19.3 L', '71.2%'], ['Q4 FY25-26', '21.4 L', '20.1 L', '71.7%']], bars: [{ label: 'Q1', value: 68, tone: 'purple' }, { label: 'Q2', value: 72, tone: 'purple' }, { label: 'Q3', value: 83, tone: 'blue' }, { label: 'Q4', value: 91, tone: 'green' }], notes: ['Month-over-month analysis is available when the source system provides monthly snapshots.', 'Sudden spikes and drops should be validated against source ingestion logs.', 'Historical snapshots are retained for year-over-year comparison.'] },
-  geography: { title: 'District & Block Analytics', eyebrow: 'GEOGRAPHY · PERFORMANCE', description: 'Rank districts and drill into blocks by coverage, growth and welfare gaps.', primaryMetric: '19', primaryLabel: 'Districts covered', accent: 'blue', columns: ['Rank', 'District / block', 'Citizens', 'Coverage', 'Growth'], rows: [['1', 'Kolkata', '4.9 L', '98.2%', '+12.1%'], ['2', 'Nadia', '8.4 L', '96.7%', '+9.8%'], ['3', 'Hooghly', '7.6 L', '94.8%', '+7.4%'], ['18', 'Malda', '6.5 L', '74.5%', '-3.4%'], ['19', 'Purulia', '4.3 L', '71.2%', '-5.8%']], bars: [{ label: 'Kolkata', value: 98, tone: 'blue' }, { label: 'Nadia', value: 97, tone: 'green' }, { label: 'Hooghly', value: 95, tone: 'green' }, { label: 'Malda', value: 75, tone: 'amber' }, { label: 'Purulia', value: 71, tone: 'red' }], notes: ['District Officer accounts are restricted to their assigned geography by the API.', 'Click a district in the production table to open its block drill-down.', 'Map visualization can be added after the approved geographic boundary source is available.'] },
+  geography: {
+    title: 'District & Block Analytics',
+    eyebrow: 'GEOGRAPHY · PERFORMANCE',
+    description: 'Rank districts and drill into blocks by coverage, growth and welfare gaps.',
+    primaryMetric: '19',
+    primaryLabel: 'Districts covered',
+    accent: 'blue',
+    columns: ['Rank', 'District / block', 'Citizens', 'Coverage', 'Growth', 'Status',
+              'LGD District Code', 'Blocks', 'Unique UIDs', 'Schemes'],
+    // Static fallback rows. The live rows come from geographyRows() below,
+    // which overrides these in the config computed.
+    rows: [
+      ['1', 'Kolkata',           '4.8 L', '97.8%', '+12.1%', 'Growing', '303', '15', '4,80,250', '24'],
+      ['2', 'Nadia',             '5.7 L', '96.7%', '+9.8%',  'Growing', '325', '17', '5,70,480', '22'],
+      ['3', 'Hooghly',           '6.0 L', '94.8%', '+7.4%',  'Stable',  '320', '18', '6,01,320', '21'],
+      ['4', 'North 24 Parganas', '6.4 L', '92.6%', 'N/A',    'Stable',  '328', '22', '6,40,915', '23'],
+      ['5', 'Malda',             '4.1 L', '74.5%', '-3.4%',  'Watch',   '322', '15', '4,10,760', '17'],
+      ['6', 'Purulia',           '4.3 L', '71.2%', '-5.8%',  'Watch',   '331', '20', '4,30,125', '15'],
+    ],
+    bars: [{ label: 'Kolkata', value: 98, tone: 'blue' }, { label: 'Nadia', value: 97, tone: 'green' }, { label: 'Hooghly', value: 95, tone: 'green' }, { label: 'Malda', value: 75, tone: 'amber' }, { label: 'Purulia', value: 71, tone: 'red' }],
+    notes: ['District Officer accounts are restricted to their assigned geography by the API.', 'Click a district in the production table to open its block drill-down.', 'Map visualization can be added after the approved geographic boundary source is available.'],
+  },
   schemes: { title: 'Scheme Performance', eyebrow: 'SCHEMES · ENROLLMENT & COVERAGE', description: 'Compare enrollment, active beneficiaries, growth and district distribution across schemes.', primaryMetric: '31', primaryLabel: 'Active schemes', accent: 'teal', columns: ['Scheme', 'Beneficiaries', 'Active', 'Growth', 'Status'], rows: [['PM-KISAN', '1.21 Cr', '1.16 Cr', '+9.8%', 'Growing'], ['NFSA', '1.84 Cr', '1.76 Cr', '+4.1%', 'Stable'], ['MGNREGA', '74.2 L', '68.1 L', '+11.4%', 'Growing'], ['NSAP', '32.7 L', '30.2 L', '-1.8%', 'Watch'], ['Swasthya Sathi', '2.06 Cr', '1.93 Cr', '+6.3%', 'Stable']], bars: [{ label: 'PM-KISAN', value: 88, tone: 'blue' }, { label: 'NFSA', value: 82, tone: 'green' }, { label: 'MGNREGA', value: 76, tone: 'purple' }, { label: 'NSAP', value: 68, tone: 'amber' }, { label: 'Health', value: 61, tone: 'teal' }], notes: ['Coverage is measured against the approved population denominator for the selected geography.', 'Eligibility is never inferred from a gap signal unless rules are present in the source data.', 'Scheme comparisons use the same financial-year and geography filters.'] },
   gaps: { title: 'Welfare Gap / Lack Analysis', eyebrow: 'GAP ANALYSIS · MEASURED SIGNALS', description: 'Find measured coverage gaps without making unsupported eligibility claims.', primaryMetric: '28.3%', primaryLabel: 'Citizens with no scheme', accent: 'red', columns: ['Severity', 'Signal', 'Area', 'Gap', 'Owner'], rows: [['CRITICAL', 'No scheme coverage', 'Purulia · Balarampur', '31.4%', 'District'], ['HIGH', 'Declining enrollment', 'Malda · Manikchak', '8.6%', 'District'], ['MEDIUM', 'Low scheme diversity', 'Bankura · 12 blocks', '17.2%', 'State'], ['LOW', 'Source freshness', '9 source feeds', '6.1%', 'Pipeline']], bars: [{ label: 'No scheme', value: 72, tone: 'red' }, { label: 'Low coverage', value: 56, tone: 'amber' }, { label: 'Declining', value: 34, tone: 'purple' }, { label: 'Freshness', value: 18, tone: 'blue' }], notes: ['Measured gap = observed absence or low coverage in the master and enrollment data.', 'Potential gap = analytical signal only; it must not be labelled eligibility.', 'Severity is assigned from configurable coverage and trend thresholds.'] },
   reports: { title: 'Reports & Exports', eyebrow: 'REPORTING · CONTROLLED OUTPUTS', description: 'Generate state, district, scheme, growth and gap reports with RBAC-controlled export.', primaryMetric: '7', primaryLabel: 'Report templates', accent: 'purple', columns: ['Report', 'Scope', 'Last generated', 'Owner', 'Action'], rows: [['State Performance', 'West Bengal', '18 Aug 2026 10:42', 'State Analytics', 'Preview'], ['District Performance', 'Nadia', '18 Aug 2026 09:18', 'District Office', 'Preview'], ['Scheme Performance', 'PM-KISAN', '17 Aug 2026 18:22', 'Agriculture', 'Preview'], ['Gap Analysis', 'Purulia', '17 Aug 2026 15:06', 'Welfare Cell', 'Preview']], bars: [{ label: 'PDF', value: 75, tone: 'red' }, { label: 'Excel', value: 58, tone: 'green' }, { label: 'CSV', value: 43, tone: 'blue' }], notes: ['Exports are logged with user, filters, row count and timestamp.', 'Sensitive fields are removed unless the user has the export permission.', 'Large reports should be generated asynchronously by the backend.'] },
@@ -56,95 +77,93 @@ configs['audit'] = { ...configs['administration'], title: 'Data Grade Audit', ey
 export class OperationalWorkspacePage {
   private readonly route = inject(ActivatedRoute);
   private readonly filterState = inject(FilterStateService);
-  readonly displayBars = signal<{ label: string; value: number; tone: string }[]>([]);
 
-   readonly pageSize = signal(5);
+  readonly displayBars = signal<{ label: string; value: number; tone: string }[]>([]);
+  readonly districtDisplayWidths = signal<number[]>([]);
+
+  // --- Pagination state ---
+  readonly pageSize = signal(5);
   readonly currentPage = signal(1);
 
-    readonly districtDisplayWidths = signal<number[]>([]);
+  // --- Which workspace tab is active ---
+  readonly workspaceKey = computed(() => this.route.snapshot.data['workspace'] ?? 'analytics');
 
-  // constructor() {
-    
-  //   effect(() => {
-  //     this.workspaceKey();
-  //     this.selectedScheme();
-  //     this.expandedScheme.set(null);
-  //     this.statusFilter.set(null);
-  //     this.sortState.set(null);
-  //   });
-  // }
+  private isGeo(): boolean {
+    return this.workspaceKey() === 'geography';
+  }
 
-  
-
+  // Column that holds the row label used to match Distribution bars to visible rows.
   private readonly barLabelColumnIndex: Record<string, number> = {
-  geography: 1, // ['Rank', 'District / block', ...]
-  schemes: 0,   // ['Scheme', 'Beneficiaries', ...]
-};
+    geography: 1, // ['Rank', 'District / block', ...]
+    schemes: 0,   // ['Scheme', 'Beneficiaries', ...]
+  };
 
-readonly paginatedBars = computed<{ label: string; value: number; tone: string }[]>(() => {
-  const key = this.workspaceKey();
-  const allBars = this.config().bars;
-  const labelColumn = this.barLabelColumnIndex[key];
+  readonly paginatedBars = computed<{ label: string; value: number; tone: string }[]>(() => {
+    const key = this.workspaceKey();
+    const allBars = this.config().bars;
+    const labelColumn = this.barLabelColumnIndex[key];
 
-  // Tabs with no defined mapping keep showing the full bar set unfiltered.
-  if (labelColumn === undefined) return allBars;
+    // Tabs with no defined mapping keep showing the full bar set unfiltered.
+    if (labelColumn === undefined) return allBars;
 
-  const visibleLabels = new Set(this.paginatedRows().map((row) => row[labelColumn]));
-  return allBars.filter((bar) => visibleLabels.has(bar.label));
-});
+    const visibleLabels = new Set(this.paginatedRows().map((row) => row[labelColumn]));
+    return allBars.filter((bar) => visibleLabels.has(bar.label));
+  });
 
- constructor() {
-  // Collapse any expanded scheme drill-down and clear the table's local
-  // sort/filter state whenever the workspace tab changes or the global
-  // scheme filter changes underneath it.
-  effect(() => {
-    this.workspaceKey();
-    this.selectedScheme();
-    this.expandedScheme.set(null);
-    this.statusFilter.set(null);
-    this.sortState.set(null);
-  }, { allowSignalWrites: true });
+  constructor() {
+    // Collapse any expanded drill-down and clear the table's local
+    // sort/filter state whenever the workspace tab changes or the global
+    // scheme filter changes underneath it.
+    effect(() => {
+      this.workspaceKey();
+      this.selectedScheme();
+      this.expandedScheme.set(null);
+      this.expandedDistrict.set(null);
+      this.statusFilter.set(null);
+      this.sortState.set(null);
+    }, { allowSignalWrites: true });
 
-  // Reset to page 1 any time the underlying row set changes shape.
-  effect(() => {
-    this.config();
-    this.sortState();
-    this.currentPage.set(1);
-  }, { allowSignalWrites: true });
+    // Reset to page 1 any time the underlying row set changes shape.
+    effect(() => {
+      this.config();
+      this.sortState();
+      this.currentPage.set(1);
+    }, { allowSignalWrites: true });
 
-  // Animate the Distribution bars to match whichever rows are currently
-  // visible on the active page — fires on tab switch, filter, sort,
-  // AND pagination since paginatedBars() depends on all of them.
-  effect(() => {
-    const bars = this.paginatedBars();
-    this.displayBars.set(bars.map((bar) => ({ ...bar, value: 0 })));
-    requestAnimationFrame(() => {
+    // Animate the Distribution bars to match whichever rows are currently
+    // visible on the active page — fires on tab switch, filter, sort,
+    // AND pagination since paginatedBars() depends on all of them.
+    effect(() => {
+      const bars = this.paginatedBars();
+      this.displayBars.set(bars.map((bar) => ({ ...bar, value: 0 })));
       requestAnimationFrame(() => {
-        this.displayBars.set(bars);
+        requestAnimationFrame(() => {
+          this.displayBars.set(bars);
+        });
       });
-    });
-  }, { allowSignalWrites: true });
+    }, { allowSignalWrites: true });
 
     // Animate district breakdown bars from 0 -> actual width whenever the
-  // scheme detail view opens or switches to a different scheme.
-  effect(() => {
-    const agg = this.schemeAggregate();
-    if (!agg) {
-      this.districtDisplayWidths.set([]);
-      return;
-    }
-    const targets = agg.districtBreakdown.map((d) => this.pct(d.count, agg.totalBeneficiaries));
+    // scheme detail view opens or switches to a different scheme.
+    effect(() => {
+      const agg = this.schemeAggregate();
+      if (!agg) {
+        this.districtDisplayWidths.set([]);
+        return;
+      }
+      const targets = agg.districtBreakdown.map((d) => this.pct(d.count, agg.totalBeneficiaries));
 
-    this.districtDisplayWidths.set(targets.map(() => 0));
-    requestAnimationFrame(() => {
+      this.districtDisplayWidths.set(targets.map(() => 0));
       requestAnimationFrame(() => {
-        this.districtDisplayWidths.set(targets);
+        requestAnimationFrame(() => {
+          this.districtDisplayWidths.set(targets);
+        });
       });
-    });
-  }, { allowSignalWrites: true });
-}
+    }, { allowSignalWrites: true });
+  }
 
- readonly totalPages = computed(() => {
+  // --- Pagination ---
+  readonly totalPages = computed(() => {
     const total = this.sortedRows().length;
     return Math.max(1, Math.ceil(total / this.pageSize()));
   });
@@ -175,8 +194,18 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     this.goToPage(this.currentPage() - 1);
   }
 
+  // Splits a "Label · Value" cell into its two halves so the value can be
+  // colored differently from the label in the template.
+  splitQualityCell(cell: string): { label: string; value: string } {
+    const parts = cell.split(' · ');
+    return { label: parts[0] ?? cell, value: parts[1] ?? '' };
+  }
 
-  
+  private readonly SCHEME_QUALITY_COLUMNS = ['Gender', 'Caste', 'Ration Type', 'Data Grade'];
+
+  // ============================================================
+  // GEOGRAPHY (District & Block) data
+  // ============================================================
 
   // Growth has no home in DistrictAnalytics yet, so it stays a static
   // lookup keyed by district name until a real growth metric exists.
@@ -187,27 +216,59 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     Malda: '-3.4%',
     Purulia: '-5.8%',
   };
-    // Splits a "Label · Value" cell into its two halves so the value can be
-  // colored differently from the label in the template.
-  splitQualityCell(cell: string): { label: string; value: string } {
-    const parts = cell.split(' · ');
-    return { label: parts[0] ?? cell, value: parts[1] ?? '' };
+
+  // Sample values. Replace with API data (lgd_district_code,
+  // COUNT(DISTINCT lgd_block_code), COUNT(DISTINCT uid), distinct scheme_id_list).
+  private readonly geographyMetaByDistrict: Record<
+    string,
+    { lgdCode: string; blocks: number; uniqueUids: number; schemes: number }
+  > = {
+    'Kolkata':           { lgdCode: '303', blocks: 15, uniqueUids: 480250, schemes: 24 },
+    'Nadia':             { lgdCode: '325', blocks: 17, uniqueUids: 570480, schemes: 22 },
+    'Hooghly':           { lgdCode: '320', blocks: 18, uniqueUids: 601320, schemes: 21 },
+    'North 24 Parganas': { lgdCode: '328', blocks: 22, uniqueUids: 640915, schemes: 23 },
+    'Malda':             { lgdCode: '322', blocks: 15, uniqueUids: 410760, schemes: 17 },
+    'Purulia':           { lgdCode: '331', blocks: 20, uniqueUids: 430125, schemes: 15 },
+  };
+
+  // Growing > 8%, Stable 0–8% (or no data), Watch < 0%.
+  private growthToStatus(growth: string): string {
+    const n = parseFloat(growth);
+    if (isNaN(n)) return 'Stable';
+    if (n > 8) return 'Growing';
+    if (n >= 0) return 'Stable';
+    return 'Watch';
   }
 
-  readonly workspaceKey = computed(() => this.route.snapshot.data['workspace'] ?? 'analytics');
-  private readonly SCHEME_QUALITY_COLUMNS = ['Gender', 'Caste', 'Ration Type', 'Data Grade'];
-  // Live rows for the District & Block table, ranked by matchRate desc.
-  readonly geographyRows = computed<string[][]>(() => {
+  // Unfiltered live rows. Rank is assigned here so it stays correct
+  // when a status chip filters the table.
+  readonly geographyBaseRows = computed<string[][]>(() => {
     const districts = Object.values(DISTRICT_PROFILES) as DistrictAnalytics[];
     return [...districts]
       .sort((a, b) => b.matchRate - a.matchRate)
-      .map((d, index) => [
-        String(index + 1),
-        d.name,
-        this.formatCount(d.totalCitizens),
-        `${d.matchRate.toFixed(1)}%`,
-        this.geographyGrowthByDistrict[d.name] ?? 'N/A',
-      ]);
+      .map((d, index) => {
+        const growth = this.geographyGrowthByDistrict[d.name] ?? 'N/A';
+        const meta = this.geographyMetaByDistrict[d.name];
+        return [
+          String(index + 1),                                              // 0 Rank
+          d.name,                                                         // 1 District / block
+          this.formatCount(d.totalCitizens),                              // 2 Citizens
+          `${d.matchRate.toFixed(1)}%`,                                   // 3 Coverage
+          growth,                                                         // 4 Growth
+          this.growthToStatus(growth),                                    // 5 Status
+          meta?.lgdCode ?? 'N/A',                                         // 6 LGD District Code
+          meta ? String(meta.blocks) : 'N/A',                             // 7 Blocks
+          (meta?.uniqueUids ?? d.totalCitizens).toLocaleString('en-IN'),  // 8 Unique UIDs
+          meta ? String(meta.schemes) : 'N/A',                            // 9 Schemes
+        ];
+      });
+  });
+
+  // Rows shown in the table, after the status chip filter.
+  readonly geographyRows = computed<string[][]>(() => {
+    const status = this.statusFilter();
+    const rows = this.geographyBaseRows();
+    return status ? rows.filter((r) => r[5] === status) : rows;
   });
 
   readonly geographyBars = computed<{ label: string; value: number; tone: string }[]>(() => {
@@ -236,25 +297,21 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     }
   }
 
+  // ============================================================
+  // Config (merges live data into the static config per tab)
+  // ============================================================
+
   readonly config = computed<WorkspaceConfig>(() => {
     const base = configs[this.workspaceKey()] ?? configs['analytics'];
 
-    if (this.workspaceKey() === 'geography') {
-      const merged: WorkspaceConfig = {
-        ...base,
-        rows: this.geographyRows(),
-        bars: this.geographyBars(),
-      };
-      return merged;
+    if (this.isGeo()) {
+      return { ...base, rows: this.geographyRows(), bars: this.geographyBars() };
     }
 
     if (this.workspaceKey() === 'schemes') {
-      
       const merged: WorkspaceConfig = {
         ...base,
-
         columns: [...base.columns, ...this.SCHEME_QUALITY_COLUMNS],
-        
         rows: this.schemesRows(),
         bars: this.schemesBars(),
       };
@@ -269,7 +326,7 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     return district && district !== 'All districts' ? district : null;
   });
 
-  readonly showStateOverview = computed(() => this.workspaceKey() === 'geography');
+  readonly showStateOverview = computed(() => this.isGeo());
 
   readonly districtsIndexedCount = computed<number>(() => Object.keys(DISTRICT_PROFILES).length);
 
@@ -289,41 +346,43 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     return scheme && scheme !== 'All schemes' ? scheme : null;
   });
 
-  // --- Status quick-filter (schemes workspace only) ---
-  // Status column is index 4 in the 'schemes' config: ['Scheme','Beneficiaries','Active','Growth','Status']
-  private readonly SCHEME_STATUS_COLUMN_INDEX = 4;
+  // ============================================================
+  // Status quick-filter (schemes + geography)
+  // ============================================================
+
+  // Position of the Status column per workspace.
+  private readonly STATUS_COLUMN: Record<string, number> = { schemes: 4, geography: 5 };
+
+  readonly statusColumnIndex = computed(() => this.STATUS_COLUMN[this.workspaceKey()] ?? -1);
+  readonly hasStatusFilter = computed(() => this.statusColumnIndex() >= 0);
 
   readonly statusFilter = signal<string | null>(null); // null = "All"
 
   readonly schemeStatuses = computed<string[]>(() => {
-    const base = configs['schemes'].rows;
-    return Array.from(new Set(base.map((row) => row[this.SCHEME_STATUS_COLUMN_INDEX])));
+    const idx = this.statusColumnIndex();
+    if (idx < 0) return [];
+    const rows = this.isGeo()
+      ? this.geographyBaseRows()
+      : configs[this.workspaceKey()].rows;
+    return Array.from(new Set(rows.map((r) => r[idx])));
   });
 
   setStatusFilter(status: string | null): void {
     this.statusFilter.set(status);
   }
 
-  // readonly schemesRows = computed<string[][]>(() => {
-  //   const base = configs['schemes'].rows;
-  //   const scheme = this.selectedScheme();
-  //   const status = this.statusFilter();
+  // ============================================================
+  // Schemes data
+  // ============================================================
 
-  //   let rows = scheme ? base.filter((row) => row[0] === scheme) : base;
-  //   if (status) {
-  //     rows = rows.filter((row) => row[this.SCHEME_STATUS_COLUMN_INDEX] === status);
-  //   }
-  //   return rows;
-  // });
-
-    readonly schemesRows = computed<string[][]>(() => {
+  readonly schemesRows = computed<string[][]>(() => {
     const base = configs['schemes'].rows;
     const scheme = this.selectedScheme();
     const status = this.statusFilter();
 
     let rows = scheme ? base.filter((row) => row[0] === scheme) : base;
     if (status) {
-      rows = rows.filter((row) => row[this.SCHEME_STATUS_COLUMN_INDEX] === status);
+      rows = rows.filter((row) => row[this.statusColumnIndex()] === status);
     }
     return rows.map((row) => [...row, ...this.schemeQualityCells(row[0])]);
   });
@@ -334,11 +393,11 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     return scheme ? base.filter((bar) => bar.label === scheme) : base;
   });
 
-    // NEW — pulls per-scheme data-quality figures from SCHEME_AGGREGATES and
+  // Pulls per-scheme data-quality figures from SCHEME_AGGREGATES and
   // formats them as extra table cells, in the same order as SCHEME_QUALITY_COLUMNS.
-   // Shows the majority value in each breakdown, since a table cell can only
+  // Shows the majority value in each breakdown, since a table cell can only
   // hold one value while each breakdown array has several. Full breakdowns
-  // remain visible in the scheme detail modal via schemeAggregate().
+  // remain visible in the scheme detail view via schemeAggregate().
   private schemeQualityCells(schemeName: string): string[] {
     const agg = SCHEME_AGGREGATES[schemeName];
     if (!agg) {
@@ -359,7 +418,55 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     ];
   }
 
-  // --- Sortable columns (applies to whichever table is currently shown) ---
+  // ============================================================
+  // Cell rendering helpers (used by the template)
+  // ============================================================
+
+  isStatusCell(i: number): boolean   { return this.isGeo() && i === 5; }
+  isGrowthCell(i: number): boolean   { return this.isGeo() && i === 4; }
+  isCoverageCell(i: number): boolean { return this.isGeo() && i === 3; }
+
+  growthClass(cell: string): string {
+    if (cell.startsWith('+')) return 'positive';
+    if (cell.startsWith('-')) return 'negative';
+    return 'neutral';
+  }
+
+  // ============================================================
+  // Row actions (⋮ menu)
+  // ============================================================
+
+  readonly hasRowActions = computed(() => this.workspaceKey() === 'schemes' || this.isGeo());
+  readonly detailsHeader = computed(() => (this.isGeo() ? 'DISTRICT DETAILS' : 'SCHEME DETAILS'));
+
+  // Unique key for the ⋮ menu: district name on geography, scheme name otherwise.
+  rowKey(row: string[]): string {
+    return this.isGeo() ? row[1] : row[0];
+  }
+
+  readonly openRowMenu = signal<string | null>(null);
+
+  toggleRowMenu(key: string, event: Event): void {
+    event.stopPropagation();
+    this.openRowMenu.update((current) => (current === key ? null : key));
+  }
+
+  closeRowMenu(): void {
+    this.openRowMenu.set(null);
+  }
+
+  // --- District drill-down (placeholder until DISTRICT_AGGREGATES exists) ---
+  readonly expandedDistrict = signal<string | null>(null);
+
+  viewDistrictDetails(name: string): void {
+    this.closeRowMenu();
+    this.expandedDistrict.set(name); // TODO: open the district / block drill-down
+  }
+
+  // ============================================================
+  // Sortable columns (applies to whichever table is currently shown)
+  // ============================================================
+
   readonly sortState = signal<SortState | null>(null);
 
   toggleSort(columnIndex: number): void {
@@ -413,8 +520,11 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     });
   });
 
-  // --- Scheme drill-down state (modal-based) ---
-  // Which scheme row is currently expanded / driving the modal.
+  // ============================================================
+  // Scheme drill-down state
+  // ============================================================
+
+  // Which scheme row is currently expanded / driving the full-page detail.
   readonly expandedScheme = signal<string | null>(null);
 
   toggleSchemeRow(schemeName: string): void {
@@ -424,18 +534,6 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
 
   closeSchemeDetail(): void {
     this.expandedScheme.set(null);
-  }
-
-    // --- Scheme row action menu (3-dot, single action) ---
-  readonly openRowMenu = signal<string | null>(null);
-
-  toggleRowMenu(schemeName: string, event: Event): void {
-    event.stopPropagation();
-    this.openRowMenu.update((current) => (current === schemeName ? null : schemeName));
-  }
-
-  closeRowMenu(): void {
-    this.openRowMenu.set(null);
   }
 
   viewSchemeDetails(schemeName: string): void {
@@ -463,60 +561,63 @@ readonly paginatedBars = computed<{ label: string; value: number; tone: string }
     return value.toLocaleString('en-IN');
   }
 
-  // --- Export view ---
-readonly showExportMenu = signal(false);
+  // ============================================================
+  // Export view
+  // ============================================================
 
-toggleExportMenu(): void {
-  this.showExportMenu.update((v) => !v);
-}
+  readonly showExportMenu = signal(false);
 
-closeExportMenu(): void {
-  this.showExportMenu.set(false);
-}
+  toggleExportMenu(): void {
+    this.showExportMenu.update((v) => !v);
+  }
 
-private slugify(text: string): string {
-  return text.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
-}
+  closeExportMenu(): void {
+    this.showExportMenu.set(false);
+  }
 
-private downloadBlob(content: string, filename: string, mimeType: string): void {
-  const blob = new Blob([content], { type: mimeType });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  link.click();
-  URL.revokeObjectURL(url);
-}
+  private slugify(text: string): string {
+    return text.trim().toLowerCase().replace(/[^a-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  }
 
-// Exports exactly what's on screen right now: current workspace tab,
-// current status filter (schemes), and current column sort.
-exportCsv(): void {
-  const page = this.config();
-  const rows = this.sortedRows();
+  private downloadBlob(content: string, filename: string, mimeType: string): void {
+    const blob = new Blob([content], { type: mimeType });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    link.click();
+    URL.revokeObjectURL(url);
+  }
 
-  const escapeCell = (cell: string) => `"${(cell ?? '').replace(/"/g, '""')}"`;
-  const header = page.columns.map(escapeCell).join(',');
-  const body = rows.map((row) => row.map(escapeCell).join(',')).join('\n');
-  const csv = `${header}\n${body}`;
+  // Exports exactly what's on screen right now: current workspace tab,
+  // current status filter, and current column sort.
+  exportCsv(): void {
+    const page = this.config();
+    const rows = this.sortedRows();
 
-  this.downloadBlob(csv, `${this.slugify(page.title)}.csv`, 'text/csv;charset=utf-8;');
-  this.closeExportMenu();
-}
+    const escapeCell = (cell: string) => `"${(cell ?? '').replace(/"/g, '""')}"`;
+    const header = page.columns.map(escapeCell).join(',');
+    const body = rows.map((row) => row.map(escapeCell).join(',')).join('\n');
+    const csv = `${header}\n${body}`;
 
-exportJson(): void {
-  const page = this.config();
-  const rows = this.sortedRows();
-  const data = rows.map((row) =>
-    Object.fromEntries(page.columns.map((col, i) => [col, row[i] ?? '']))
-  );
+    this.downloadBlob(csv, `${this.slugify(page.title)}.csv`, 'text/csv;charset=utf-8;');
+    this.closeExportMenu();
+  }
 
-  this.downloadBlob(JSON.stringify(data, null, 2), `${this.slugify(page.title)}.json`, 'application/json');
-  this.closeExportMenu();
-}
+  exportJson(): void {
+    const page = this.config();
+    const rows = this.sortedRows();
+    const data = rows.map((row) =>
+      Object.fromEntries(page.columns.map((col, i) => [col, row[i] ?? '']))
+    );
 
-printView(): void {
-  this.closeExportMenu();
-  // Let the menu close and repaint before the print dialog opens.
-  setTimeout(() => window.print(), 50);
-}
+    this.downloadBlob(JSON.stringify(data, null, 2), `${this.slugify(page.title)}.json`, 'application/json');
+    this.closeExportMenu();
+  }
+
+  printView(): void {
+    this.closeExportMenu();
+    // Let the menu close and repaint before the print dialog opens.
+    setTimeout(() => window.print(), 50);
+  }
 }
