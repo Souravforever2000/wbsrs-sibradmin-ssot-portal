@@ -3,25 +3,12 @@
 <!-- Full-page scheme detail — the ONLY thing rendered in <main> while a scheme is expanded -->
 <div class="fullpage-detail">
 
-
-  <!-- <div class="fullpage-detail-header"> -->
-  <!-- <button class="fullpage-back-btn" type="button" (click)="closeSchemeDetail()">
-      <span class="material-symbols-rounded">arrow_back</span>
-      Back to Scheme Performance
-    </button>
-    <app-page-heading
-  [eyebrow]="'SCHEME DETAILS'"
-  [title]="agg.schemeId"
-  [description]="'Detailed data quality and demographic breakdown for this scheme.'"
-></app-page-heading> -->
-
   <app-page-heading [eyebrow]="'SCHEME DETAILS'" [title]="agg.schemeId">
     <button heading-actions class="fullpage-back-btn" type="button" (click)="closeSchemeDetail()">
       <span class="material-symbols-rounded">arrow_back</span>
       Back to Scheme Performance
     </button>
   </app-page-heading>
-  <!-- </div> -->
 
   <div class="fullpage-detail-body">
     <div class="kv-banner">
@@ -32,12 +19,10 @@
     <div class="citizen-detail-grid">
       <div class="detail-block">
         <h4>Data quality</h4>
-        <div class="kv"><span>With mobile</span><b>{{ pct(agg.dataQuality.withMobile, agg.totalBeneficiaries) }}%</b>
-        </div>
+        <div class="kv"><span>With mobile</span><b>{{ pct(agg.dataQuality.withMobile, agg.totalBeneficiaries) }}%</b></div>
         <div class="kv"><span>With PAN</span><b>{{ pct(agg.dataQuality.withPan, agg.totalBeneficiaries) }}%</b></div>
         <div class="kv"><span>With EPIC</span><b>{{ pct(agg.dataQuality.withEpic, agg.totalBeneficiaries) }}%</b></div>
-        <div class="kv"><span>DOB mismatch (Aadhaar)</span><b>{{ pct(agg.dataQuality.dobMismatchCount,
-            agg.totalBeneficiaries) }}%</b></div>
+        <div class="kv"><span>DOB mismatch (Aadhaar)</span><b>{{ pct(agg.dataQuality.dobMismatchCount, agg.totalBeneficiaries) }}%</b></div>
       </div>
 
       <div class="detail-block">
@@ -55,16 +40,14 @@
       <div class="detail-block">
         <h4>Gender</h4>
         @for (g of agg.genderBreakdown; track g.gender) {
-        <div class="kv"><span>{{ g.gender ?? 'Unspecified' }}</span><b>{{ pct(g.count, agg.totalBeneficiaries) }}%</b>
-        </div>
+        <div class="kv"><span>{{ g.gender ?? 'Unspecified' }}</span><b>{{ pct(g.count, agg.totalBeneficiaries) }}%</b></div>
         }
       </div>
 
       <div class="detail-block">
         <h4>Caste</h4>
         @for (c of agg.casteBreakdown; track c.caste) {
-        <div class="kv"><span>{{ c.caste ?? 'Unspecified' }}</span><b>{{ pct(c.count, agg.totalBeneficiaries) }}%</b>
-        </div>
+        <div class="kv"><span>{{ c.caste ?? 'Unspecified' }}</span><b>{{ pct(c.count, agg.totalBeneficiaries) }}%</b></div>
         }
       </div>
 
@@ -85,9 +68,160 @@
   </div>
 </div>
 
+} @else if (workspaceKey() === 'geography' && expandedDistrict() && districtAggregate(); as dist) {
+
+<!-- Full-page district detail — geography-focused: blocks, coverage, growth, gaps -->
+<div class="fullpage-detail">
+
+  <app-page-heading [eyebrow]="'DISTRICT DETAILS'" [title]="dist.districtName">
+    <button heading-actions class="fullpage-back-btn" type="button" (click)="closeDistrictDetail()">
+      <span class="material-symbols-rounded">arrow_back</span>
+      Back to District &amp; Block Analytics
+    </button>
+  </app-page-heading>
+
+  <div class="fullpage-detail-body">
+    <div class="kv-banner">
+      <span><b>{{ dist.totalCitizens | number:'1.0-0' }}</b> citizens</span>
+      <span><b>{{ dist.coveragePct | number:'1.1-1' }}%</b> coverage</span>
+      <span><b>{{ dist.growth }}</b> growth</span>
+      @if (districtRank(); as r) { <span>State rank <b>#{{ r.rank }}</b> of {{ r.of }}</span> }
+      <span><b>{{ dist.blocksCount }}</b> blocks</span>
+      <span><b>{{ dist.avgSchemesPerCitizen | number:'1.1-1' }}</b> avg schemes / citizen</span>
+      <span>LGD code <b>{{ dist.lgdDistrictCode }}</b></span>
+    </div>
+
+    <div class="citizen-detail-grid">
+
+      <!-- Same columns and values as the District & Block table row -->
+      <div class="detail-block block-table-block">
+        <h4>District summary</h4>
+        @if (districtSummary(); as items) {
+        <div class="summary-grid">
+          @for (item of items; track item.label) {
+          <div class="summary-item">
+            <span class="summary-label">{{ item.label }}</span>
+            @if (isStatusCell(item.index)) {
+              <span [class]="'status-pill ' + item.value.toLowerCase()">{{ item.value }}</span>
+            } @else if (isGrowthCell(item.index)) {
+              <b [class]="'growth ' + growthClass(item.value)">{{ item.value }}</b>
+            } @else if (isCoverageCell(item.index)) {
+              <div class="cov">
+                <b>{{ item.value }}</b>
+                <div class="cov-track"><i [style.width]="item.value"></i></div>
+              </div>
+            } @else {
+              <b class="summary-value">{{ item.value }}</b>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Block ranking: the main analytic, full width -->
+      <div class="detail-block block-table-block">
+        <h4>Block ranking · showing {{ blockRows().length }} of {{ dist.blocksCount }} blocks</h4>
+        <div class="block-table-wrap">
+          <table class="block-table">
+            <thead>
+              <tr>
+                <th>Rank</th><th>Block</th><th>LGD block code</th><th>Citizens</th>
+                <th>Coverage</th><th>Growth</th><th>No scheme</th><th>Avg schemes</th><th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              @for (b of blockRows(); track b.lgdBlockCode) {
+              <tr>
+                <td><b>{{ b.rank }}</b></td>
+                <td><b>{{ b.blockName }}</b></td>
+                <td>{{ b.lgdBlockCode }}</td>
+                <td>{{ b.citizens | number:'1.0-0' }}</td>
+                <td>
+                  <div class="cov">
+                    <span>{{ b.coveragePct | number:'1.1-1' }}%</span>
+                    <div class="cov-track"><i [style.width.%]="b.coveragePct"></i></div>
+                  </div>
+                </td>
+                <td><span [class]="'growth ' + growthClass(b.growth)">{{ b.growth }}</span></td>
+                <td>{{ b.noSchemePct | number:'1.1-1' }}%</td>
+                <td>{{ b.avgSchemes | number:'1.1-1' }}</td>
+                <td><span [class]="'status-pill ' + b.status.toLowerCase()">{{ b.status }}</span></td>
+              </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="detail-block">
+        <h4>District vs state average</h4>
+        @for (r of stateComparison(); track r.label) {
+        <div class="kv">
+          <span>{{ r.label }}</span>
+          <b>{{ r.value }} <small [class]="'growth ' + (r.delta >= 0 ? 'positive' : 'negative')">
+            {{ r.delta >= 0 ? '+' : '' }}{{ r.delta | number:'1.1-1' }} vs {{ r.state }}</small></b>
+        </div>
+        }
+      </div>
+
+      <div class="detail-block">
+        <h4>Coverage bands (blocks)</h4>
+        @for (band of coverageBands(); track band.label) {
+        <div class="kv"><span>{{ band.label }}</span><b>{{ band.count }} blocks</b></div>
+        }
+      </div>
+
+      <div class="detail-block">
+        <h4>Scheme depth (citizens)</h4>
+        @for (s of dist.schemeDepth; track s.label) {
+        <div class="district-row">
+          <span class="district-name">{{ s.label }}</span>
+          <div class="district-bar"><i [style.width.%]="pct(s.count, dist.totalCitizens)"></i></div>
+          <span class="district-coverage">{{ s.count | number:'1.0-0' }}</span>
+          <span class="district-coverage">{{ pct(s.count, dist.totalCitizens) }}%</span>
+        </div>
+        }
+      </div>
+
+      <div class="detail-block">
+        <h4>Monthly enrollment trend</h4>
+        @for (t of trendRows(); track t.month; let i = $index) {
+        <div class="district-row">
+          <span class="district-name">{{ t.month }}</span>
+          <div class="district-bar"><i [style.width.%]="trendDisplayWidths()[i] || 0"></i></div>
+          <span class="district-coverage">{{ t.count | number:'1.0-0' }}</span>
+          <span class="district-coverage">{{ t.change }}</span>
+        </div>
+        }
+      </div>
+
+      <div class="detail-block">
+        <h4>Welfare gap signals</h4>
+        <div class="kv"><span>Citizens with no scheme</span><b>{{ dist.citizensWithNoScheme | number:'1.0-0' }} ({{ pct(dist.citizensWithNoScheme, dist.totalCitizens) }}%)</b></div>
+        <div class="kv"><span>Multi-scheme citizens (2+)</span><b>{{ dist.multiSchemeCitizens | number:'1.0-0' }}</b></div>
+        <div class="kv"><span>Blocks with declining growth</span><b>{{ gapSignals().declining.length }} of {{ blockRows().length }}</b></div>
+        @for (b of gapSignals().weakest; track b.lgdBlockCode) {
+        <div class="kv"><span>Lowest coverage · {{ b.blockName }}</span><b>{{ b.coveragePct | number:'1.1-1' }}%</b></div>
+        }
+      </div>
+
+      <div class="detail-block">
+        <h4>Data readiness</h4>
+        <div class="kv"><span>With mobile</span><b>{{ pct(dist.dataQuality.withMobile, dist.totalCitizens) }}%</b></div>
+        <div class="kv"><span>With PAN</span><b>{{ pct(dist.dataQuality.withPan, dist.totalCitizens) }}%</b></div>
+        <div class="kv"><span>With EPIC</span><b>{{ pct(dist.dataQuality.withEpic, dist.totalCitizens) }}%</b></div>
+        <div class="kv"><span>DOB mismatch (Aadhaar)</span><b>{{ pct(dist.dataQuality.dobMismatchCount, dist.totalCitizens) }}%</b></div>
+        <div class="kv"><span>Avg match confidence</span><b>{{ (dist.dataQuality.avgConfidenceScore * 100) | number:'1.0-0' }}%</b></div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
 } @else {
 
-<!-- Normal workspace content — everything you already have -->
+<!-- Normal workspace content -->
 @if (config(); as page) {
 <app-page-heading [eyebrow]="page.eyebrow" [title]="page.title" [description]="page.description"></app-page-heading>
 <app-global-filters></app-global-filters>
@@ -107,12 +241,9 @@
     @if (showExportMenu()) {
     <div class="export-backdrop" (click)="closeExportMenu()"></div>
     <div class="export-menu" (click)="$event.stopPropagation()">
-      <button type="button" (click)="exportCsv()"><span class="material-symbols-rounded">table_view</span> CSV
-        (.csv)</button>
-      <button type="button" (click)="exportJson()"><span class="material-symbols-rounded">data_object</span> JSON
-        (.json)</button>
-      <button type="button" (click)="printView()"><span class="material-symbols-rounded">print</span> Print / Save as
-        PDF</button>
+      <button type="button" (click)="exportCsv()"><span class="material-symbols-rounded">table_view</span> CSV (.csv)</button>
+      <button type="button" (click)="exportJson()"><span class="material-symbols-rounded">data_object</span> JSON (.json)</button>
+      <button type="button" (click)="printView()"><span class="material-symbols-rounded">print</span> Print / Save as PDF</button>
     </div>
     }
   </div>
@@ -125,18 +256,14 @@
 <section class="workspace-grid">
   <article class="table-card">
     <div class="card-head">
-      <div>
-        <h2>{{ page.title }} data</h2>
-      </div><span class="live"><i></i> Live view</span>
+      <div><h2>{{ page.title }} data</h2></div><span class="live"><i></i> Live view</span>
     </div>
 
     @if (hasStatusFilter()) {
     <div class="status-filter-bar">
-      <button class="status-chip" [class.active]="statusFilter() === null" (click)="setStatusFilter(null)"
-        type="button">All</button>
+      <button class="status-chip" [class.active]="statusFilter() === null" (click)="setStatusFilter(null)" type="button">All</button>
       @for (status of schemeStatuses(); track status) {
-      <button class="status-chip" [class.active]="statusFilter() === status" (click)="setStatusFilter(status)"
-        type="button">{{ status }}</button>
+      <button class="status-chip" [class.active]="statusFilter() === status" (click)="setStatusFilter(status)" type="button">{{ status }}</button>
       }
     </div>
     }
@@ -149,10 +276,8 @@
             <th (click)="toggleSort(i)" class="sortable-th">
               <span class="th-label">
                 {{ column }}
-                <span class="material-symbols-rounded sort-icon"
-                  [class.sort-icon-active]="sortState()?.columnIndex === i">
-                  {{ sortState()?.columnIndex === i && sortState()?.direction === 'desc' ? 'arrow_downward' :
-                  'arrow_upward' }}
+                <span class="material-symbols-rounded sort-icon" [class.sort-icon-active]="sortState()?.columnIndex === i">
+                  {{ sortState()?.columnIndex === i && sortState()?.direction === 'desc' ? 'arrow_downward' : 'arrow_upward' }}
                 </span>
               </span>
             </th>
@@ -163,59 +288,29 @@
 
         <tbody>
           @for (row of paginatedRows(); track $index) {
-          <tr [class.row-selected]="row[1] === selectedDistrictName()"
-            [class.row-expanded]="expandedScheme() === row[0]">
+          <tr [class.row-selected]="row[1] === selectedDistrictName()" [class.row-expanded]="expandedScheme() === row[0]">
             @for (cell of row; track $index) {
-            <!-- <td [class.strong]="$index === 0">
+            <td [class.strong]="$index === 0">
               @if (workspaceKey() === 'schemes' && $index >= 5 && $index <= 8) {
                 <span>{{ splitQualityCell(cell).label }} · </span><span
                   [class.quality-blue]="$index === 5"
                   [class.quality-orange]="$index === 6"
                   [class.quality-black]="$index === 7 || $index === 8"
                 >{{ splitQualityCell(cell).value }}</span>
-              } @else {
-                <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
-              }
-            </td> -->
-
-            <td [class.strong]="$index === 0">
-              @if (workspaceKey() === 'schemes' && $index >= 5 && $index <= 8) { <span>{{ splitQualityCell(cell).label
-                }} · </span><span [class.quality-blue]="$index === 5" [class.quality-orange]="$index === 6"
-                  [class.quality-black]="$index === 7 || $index === 8">{{ splitQualityCell(cell).value }}</span>
-                } @else if (isStatusCell($index)) {
+              } @else if (isStatusCell($index)) {
                 <span [class]="'status-pill ' + cell.toLowerCase()">{{ cell }}</span>
-                } @else if (isGrowthCell($index)) {
+              } @else if (isGrowthCell($index)) {
                 <span [class]="'growth ' + growthClass(cell)">{{ cell }}</span>
-                } @else if (isCoverageCell($index)) {
+              } @else if (isCoverageCell($index)) {
                 <div class="cov">
                   <span>{{ cell }}</span>
                   <div class="cov-track"><i [style.width]="cell"></i></div>
                 </div>
-                } @else {
-                <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{
-                  cell }}</span>
-                }
+              } @else {
+                <span [class.badge]="cell === 'CRITICAL' || cell === 'HIGH' || cell === 'Open' || cell === 'Denied'">{{ cell }}</span>
+              }
             </td>
             }
-            <!-- @if (workspaceKey() === 'schemes') {
-            <td class="actions-col">
-              <div class="row-menu-wrap">
-                <button class="row-menu-trigger" type="button" (click)="toggleRowMenu(row[0], $event)">
-                  <span class="material-symbols-rounded">more_vert</span>
-                </button>
-                @if (openRowMenu() === row[0]) {
-                <div class="export-backdrop" (click)="closeRowMenu()"></div>
-                <div class="export-menu row-menu">
-                  <button type="button" (click)="viewSchemeDetails(row[0])">
-                    <span class="material-symbols-rounded">visibility</span>
-                    View scheme details
-                  </button>
-                </div>
-                }
-              </div>
-            </td>
-            } -->
-
             @if (hasRowActions()) {
             <td class="actions-col">
               <div class="row-menu-wrap">
@@ -226,13 +321,13 @@
                 <div class="export-backdrop" (click)="closeRowMenu()"></div>
                 <div class="export-menu row-menu">
                   @if (workspaceKey() === 'schemes') {
-                  <button type="button" (click)="viewSchemeDetails(row[0])">
-                    <span class="material-symbols-rounded">visibility</span> View scheme details
-                  </button>
+                    <button type="button" (click)="viewSchemeDetails(row[0])">
+                      <span class="material-symbols-rounded">visibility</span> View scheme details
+                    </button>
                   } @else {
-                  <button type="button" (click)="viewDistrictDetails(row[1])">
-                    <span class="material-symbols-rounded">visibility</span> View district details
-                  </button>
+                    <button type="button" (click)="viewDistrictDetails(row[1])">
+                      <span class="material-symbols-rounded">visibility</span> View district details
+                    </button>
                   }
                 </div>
                 }
@@ -241,14 +336,6 @@
             }
           </tr>
           }
-          <!-- @if (sortedRows().length === 0) {
-          <tr>
-            <td [attr.colspan]="page.columns.length + (workspaceKey() === 'schemes' ? 1 : 0)" class="empty-state">
-              No results match the current filter.
-            </td>
-          </tr>
-          } -->
-
           @if (sortedRows().length === 0) {
           <tr>
             <td [attr.colspan]="page.columns.length + (hasRowActions() ? 1 : 0)" class="empty-state">
@@ -268,8 +355,7 @@
           <span class="material-symbols-rounded">chevron_left</span>
         </button>
         @for (p of [].constructor(totalPages()); track $index) {
-        <button class="page-btn" [class.active]="currentPage() === $index + 1" type="button"
-          (click)="goToPage($index + 1)">{{ $index + 1 }}</button>
+          <button class="page-btn" [class.active]="currentPage() === $index + 1" type="button" (click)="goToPage($index + 1)">{{ $index + 1 }}</button>
         }
         <button class="page-btn" type="button" [disabled]="currentPage() === totalPages()" (click)="nextPage()">
           <span class="material-symbols-rounded">chevron_right</span>
@@ -281,9 +367,7 @@
 
   <article class="chart-card">
     <div class="card-head">
-      <div>
-        <h2>Distribution</h2>
-      </div><span class="chart-tag">{{ page.primaryLabel }}</span>
+      <div><h2>Distribution</h2></div><span class="chart-tag">{{ page.primaryLabel }}</span>
     </div>
     <div class="bars">@for (bar of displayBars(); track bar.label) { <div class="bar-row"><span>{{ bar.label }}</span>
         <div><i [class]="'bar ' + bar.tone" [style.width.%]="bar.value"></i></div><b>{{ bar.value }}%</b>

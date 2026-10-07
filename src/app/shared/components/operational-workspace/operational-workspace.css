@@ -1049,6 +1049,67 @@ tbody tr.row-selected td:first-child {
 .cov-track i { display: block; height: 100%; background: #2563eb; border-radius: 999px; }
 
 
+.summary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: 16px 24px;
+}
+.summary-item { display: flex; flex-direction: column; gap: 6px; }
+.summary-label {
+  font-size: 11px; font-weight: 700; letter-spacing: .06em;
+  text-transform: uppercase; color: #64748b;
+}
+.summary-value { font-size: 15px; color: #0f172a; }
+
+/* Make the block ranking span the full width of the detail grid */
+.citizen-detail-grid .block-table-block {
+  grid-column: 1 / -1;
+  min-width: 0;
+}
+
+.block-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.block-table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+  font-size: 12px;
+}
+
+.block-table th {
+  padding: 8px 10px;
+  text-align: left;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: .05em;
+  text-transform: uppercase;
+  color: #64748b;
+  background: #f4f7fb;
+  white-space: nowrap;
+}
+
+.block-table td {
+  padding: 9px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #0f172a;
+  border-top: 1px solid #e5eaf3;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.block-table tbody tr:hover { background: #f8fafc; }
+
+/* Compact coverage bar and pills inside this table */
+.block-table .cov { min-width: 70px; gap: 3px; }
+.block-table .cov span { font-size: 12px; }
+.block-table .cov-track { height: 3px; }
+.block-table .status-pill { padding: 2px 8px; font-size: 11px; }
+.block-table .growth { font-size: 12px; }
+
 
 /* .fullpage-detail-header h2 {
   margin: 0;

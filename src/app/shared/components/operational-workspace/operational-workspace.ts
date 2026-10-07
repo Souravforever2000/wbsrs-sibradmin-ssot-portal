@@ -9,6 +9,12 @@ import { DISTRICT_PROFILES } from '../../../features/dashboard/data/district-pro
 import { DistrictAnalytics } from '../../../features/dashboard/models/district.models';
 import { SchemeMasterAggregate } from '../../../features/dashboard/models/scheme.models';
 import { SCHEME_AGGREGATES } from '../../../features/dashboard/models/scheme-aggregates-data';
+import {
+  BlockStat,
+  DISTRICT_AGGREGATES,
+  DistrictMasterAggregate,
+  TREND_MONTHS,
+} from '../../../features/dashboard/models/district-aggregates-data';
 import { FilterStateService } from '../../services/filter-state.service';
 
 interface WorkspaceConfig {
@@ -80,6 +86,7 @@ export class OperationalWorkspacePage {
 
   readonly displayBars = signal<{ label: string; value: number; tone: string }[]>([]);
   readonly districtDisplayWidths = signal<number[]>([]);
+  readonly trendDisplayWidths = signal<number[]>([]);
 
   // --- Pagination state ---
   readonly pageSize = signal(5);
@@ -139,6 +146,18 @@ export class OperationalWorkspacePage {
       requestAnimationFrame(() => {
         requestAnimationFrame(() => {
           this.displayBars.set(bars);
+        });
+      });
+    }, { allowSignalWrites: true });
+
+    // Animate the enrollment-trend bars on the district detail page from
+    // 0 -> actual width whenever it opens or switches district.
+    effect(() => {
+      const targets = this.trendRows().map((t) => t.width);
+      this.trendDisplayWidths.set(targets.map(() => 0));
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
+          this.trendDisplayWidths.set(targets);
         });
       });
     }, { allowSignalWrites: true });
@@ -455,13 +474,124 @@ export class OperationalWorkspacePage {
     this.openRowMenu.set(null);
   }
 
-  // --- District drill-down (placeholder until DISTRICT_AGGREGATES exists) ---
+  // --- District drill-down (full-page detail, same pattern as schemes) ---
   readonly expandedDistrict = signal<string | null>(null);
 
   viewDistrictDetails(name: string): void {
     this.closeRowMenu();
-    this.expandedDistrict.set(name); // TODO: open the district / block drill-down
+    this.expandedDistrict.set(name);
   }
+
+  closeDistrictDetail(): void {
+    this.expandedDistrict.set(null);
+  }
+
+  // Static for now — swap this body for a live DistrictAggregateService call later.
+  readonly districtAggregate = computed<DistrictMasterAggregate | null>(() => {
+    const key = this.expandedDistrict();
+    return key ? DISTRICT_AGGREGATES[key] ?? null : null;
+  });
+
+  // --- Derived view data for the district detail page ---
+
+  // The selected district's row from the District & Block table, labelled with
+  // the table's own column names, so the detail page always matches the table.
+  readonly districtSummary = computed(() => {
+    const name = this.expandedDistrict();
+    if (!name) return null;
+    const row = this.geographyBaseRows().find((r) => r[1] === name);
+    if (!row) return null;
+    return configs['geography'].columns.map((label, index) => ({ label, value: row[index] ?? 'N/A', index }));
+  });
+
+  private numericGrowth(g: string): number {
+    const n = parseFloat(g);
+    return isNaN(n) ? 0 : n;
+  }
+
+  // Same thresholds as the main table: Watch if coverage < 75% or shrinking,
+  // Growing if > 8%, otherwise Stable.
+  private blockStatus(b: BlockStat): string {
+    const g = this.numericGrowth(b.growth);
+    if (b.coveragePct < 75 || g < 0) return 'Watch';
+    if (g > 8) return 'Growing';
+    return 'Stable';
+  }
+
+  // Blocks ranked by coverage, with the gap and status worked out.
+  readonly blockRows = computed(() => {
+    const d = this.districtAggregate();
+    if (!d) return [];
+    return [...d.blocks]
+      .sort((a, b) => b.coveragePct - a.coveragePct)
+      .map((b, i) => ({
+        ...b,
+        rank: i + 1,
+        noSchemePct: Math.round((100 - b.coveragePct) * 10) / 10,
+        status: this.blockStatus(b),
+      }));
+  });
+
+  readonly coverageBands = computed(() => {
+    const rows = this.blockRows();
+    return [
+      { label: '90% and above', count: rows.filter((r) => r.coveragePct >= 90).length },
+      { label: '75% to 90%', count: rows.filter((r) => r.coveragePct >= 75 && r.coveragePct < 90).length },
+      { label: 'Below 75%', count: rows.filter((r) => r.coveragePct < 75).length },
+    ];
+  });
+
+  readonly gapSignals = computed(() => {
+    const rows = this.blockRows();
+    return {
+      weakest: [...rows].sort((a, b) => a.coveragePct - b.coveragePct).slice(0, 3),
+      declining: rows.filter((r) => this.numericGrowth(r.growth) < 0),
+    };
+  });
+
+  readonly trendRows = computed(() => {
+    const d = this.districtAggregate();
+    if (!d) return [];
+    const values = d.monthlyEnrollments;
+    const max = Math.max(...values, 1);
+    return TREND_MONTHS.map((month, i) => {
+      const prev = values[i - 1];
+      const change = i === 0 || !prev
+        ? '—'
+        : `${values[i] >= prev ? '+' : ''}${(((values[i] - prev) / prev) * 100).toFixed(1)}%`;
+      return { month, count: values[i], width: Math.round((values[i] / max) * 100), change };
+    });
+  });
+
+  // 1-based coverage rank among all districts (matches the table rank).
+  readonly districtRank = computed(() => {
+    const d = this.districtAggregate();
+    if (!d) return null;
+    const sorted = Object.values(DISTRICT_AGGREGATES).sort((a, b) => b.coveragePct - a.coveragePct);
+    return { rank: sorted.findIndex((x) => x.districtName === d.districtName) + 1, of: sorted.length };
+  });
+
+  // This district compared with the average of all districts in DISTRICT_AGGREGATES.
+  readonly stateComparison = computed(() => {
+    const d = this.districtAggregate();
+    if (!d) return [];
+    const all = Object.values(DISTRICT_AGGREGATES);
+    const avg = (vals: number[]) => vals.reduce((s, v) => s + v, 0) / (vals.length || 1);
+
+    const stateCoverage = avg(all.map((x) => x.coveragePct));
+    const stateSchemes = avg(all.map((x) => x.avgSchemesPerCitizen));
+    const growthVals = all.filter((x) => !isNaN(parseFloat(x.growth))).map((x) => parseFloat(x.growth));
+    const stateGrowth = avg(growthVals);
+
+    const rows = [
+      { label: 'Coverage', value: `${d.coveragePct.toFixed(1)}%`, state: `${stateCoverage.toFixed(1)}%`, delta: d.coveragePct - stateCoverage },
+      { label: 'Avg schemes / citizen', value: d.avgSchemesPerCitizen.toFixed(1), state: stateSchemes.toFixed(1), delta: d.avgSchemesPerCitizen - stateSchemes },
+    ];
+    if (!isNaN(parseFloat(d.growth))) {
+      rows.splice(1, 0, { label: 'Growth', value: d.growth, state: `${stateGrowth.toFixed(1)}%`, delta: parseFloat(d.growth) - stateGrowth });
+    }
+    return rows;
+  });
 
   // ============================================================
   // Sortable columns (applies to whichever table is currently shown)
